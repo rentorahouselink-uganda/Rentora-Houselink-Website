@@ -32,7 +32,9 @@ export function PropertyFilters() {
     });
 
     params.set("page", "1");
-    router.push(`/explore?${params.toString()}`);
+    
+    // ── FIXED: Added { scroll: false } to prevent jumping to the top ──
+    router.push(`/explore?${params.toString()}`, { scroll: false });
   }
 
   function submitSearch(event: FormEvent<HTMLFormElement>) {
@@ -75,7 +77,6 @@ export function PropertyFilters() {
               className="h-11 rounded-lg border border-slate-200 bg-white px-3 text-sm font-medium text-slate-700 shadow-sm outline-none transition focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500"
             >
               <option value="">Recommended</option>
-              {/* ── FIXED: Uppercase ASC and DESC to match the backend DTO ── */}
               <option value="createdAt:DESC">Newest first</option>
               <option value="price:ASC">Lowest price</option>
               <option value="price:DESC">Highest price</option>
