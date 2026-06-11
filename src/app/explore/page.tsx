@@ -1,6 +1,8 @@
 import { ExplorePage } from "@/components/properties/ExplorePage";
 import { getProperties } from "@/lib/api/properties";
-import { PropertyQuery } from "@/types/property";
+// 1. Import Property and PaginationMeta types
+import { Property, PropertyQuery } from "@/types/property";
+import { PaginationMeta } from "@/types/pagination"; 
 
 type ExplorePageProps = {
   searchParams: Promise<Record<string, string | string[] | undefined>>;
@@ -47,24 +49,45 @@ function buildPropertyQuery(
 export default async function ExploreRoute({ searchParams }: ExplorePageProps) {
   const params = await searchParams;
 
-  // Fetch main listing and featured properties in parallel.
-  // Featured fetch is non-critical — a failure silently yields an empty banner.
-  const [result, featuredResult] = await Promise.all([
-    getProperties(buildPropertyQuery(params)),
-    getProperties({
-      status: "AVAILABLE",
-      isFeatured: true,
-      limit: 8,
-      page: 1,
-    }).catch(() => null),
-  ]);
+  // 2. Add explicit types to your initial states
+  let propertiesData: { data: Property[]; meta: PaginationMeta } = { 
+    data: [], 
+    meta: { page: 1, limit: 12, total: 0, totalPages: 0, hasNextPage: false, hasPreviousPage: false } 
+  };
+  
+  // Explicitly set the type to Property[] instead of relying on inference
+  let featuredData: Property[] = []; 
+  let errorMessage: string | undefined = undefined;
+
+  try {
+    const [result, featuredResult] = await Promise.all([
+      getProperties(buildPropertyQuery(params)),
+      getProperties({
+        status: "AVAILABLE",
+        isFeatured: true,
+        limit: 8,
+        page: 1,
+      }).catch(() => null),
+    ]);
+    
+    propertiesData = result; // No longer needs 'as any'
+    featuredData = featuredResult?.data ?? [];
+  } catch (error: any) {
+    // Check if it's a network/DNS resolution error
+    if (error?.message?.includes("fetch failed") || error?.cause?.code === "ENOTFOUND") {
+      errorMessage = "Unable to connect to the server. Please check your internet connection or try again in a moment.";
+    } else {
+      errorMessage = "We encountered an issue while loading the properties. Please try again later.";
+    }
+  }
 
   return (
     <ExplorePage
-      properties={result.data}
-      meta={result.meta}
+      properties={propertiesData.data}
+      meta={propertiesData.meta} // No longer needs 'as any'
       searchParams={params}
-      featuredProperties={featuredResult?.data ?? []}
+      featuredProperties={featuredData}
+      error={errorMessage} 
     />
   );
 }

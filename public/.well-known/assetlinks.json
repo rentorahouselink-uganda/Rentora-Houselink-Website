@@ -1,0 +1,12 @@
+[
+  {
+    "relation": ["delegate_permission/common.handle_all_urls"],
+    "target": {
+      "namespace": "android_app",
+      "package_name": "com.rentoraug.app",
+      "sha256_cert_fingerprints": [
+        "0D:A6:03:3D:97:F0:47:96:97:97:26:39:C7:E8:BA:8C:7C:74:76:B9:57:1A:C3:7F:38:9C:E2:3D:7C:D3:92:E7"
+      ]
+    }
+  }
+]
