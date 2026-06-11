@@ -1,0 +1,128 @@
+import { PaginatedResponse, PaginationMeta } from "@/types/pagination";
+import { Property, PropertyQuery } from "@/types/property";
+
+const API_BASE_URL =
+  process.env.NEXT_PUBLIC_API_BASE_URL ?? "https://rentora-api.duckdns.org/api/v1";
+
+type RawPropertyResponse = {
+  data?: Property[];
+  meta?: Partial<PaginationMeta>;
+  page?: number;
+  limit?: number;
+  total?: number;
+  totalPages?: number;
+};
+
+function buildQueryString(query: PropertyQuery): string {
+  const params = new URLSearchParams();
+  Object.entries(query).forEach(([key, value]) => {
+    if (value !== undefined && value !== null && value !== "") {
+      params.set(key, String(value));
+    }
+  });
+  return params.toString();
+}
+
+function normalizeMeta(response: RawPropertyResponse): PaginationMeta {
+  const page = Number(response.meta?.page ?? response.page ?? 1);
+  const limit = Number(response.meta?.limit ?? response.limit ?? 12);
+  const total = Number(response.meta?.total ?? response.total ?? 0);
+  const totalPages = Number(
+    response.meta?.totalPages ??
+      response.totalPages ??
+      Math.ceil(total / limit),
+  );
+  return {
+    page,
+    limit,
+    total,
+    totalPages,
+    hasNextPage: response.meta?.hasNextPage ?? page < totalPages,
+    hasPreviousPage: response.meta?.hasPreviousPage ?? page > 1,
+  };
+}
+
+export async function getProperties(
+  query: PropertyQuery,
+): Promise<PaginatedResponse<Property>> {
+  const queryString = buildQueryString(query);
+  const response = await fetch(`${API_BASE_URL}/properties?${queryString}`, {
+    headers: { Accept: "application/json", "Content-Type": "application/json" },
+    cache: "no-store",
+  });
+  if (!response.ok) throw new Error("Failed to load properties.");
+  const body = (await response.json()) as RawPropertyResponse;
+  return { data: body.data ?? [], meta: normalizeMeta(body) };
+}
+
+export async function getProperty(id: string): Promise<Property> {
+  const response = await fetch(`${API_BASE_URL}/properties/${id}`, {
+    headers: { Accept: "application/json", "Content-Type": "application/json" },
+    cache: "no-store",
+  });
+  if (!response.ok) {
+    if (response.status === 404) throw new Error("Property not found");
+    throw new Error("Failed to load property details.");
+  }
+  return response.json();
+}
+
+/**
+ * Fetches up to 5 similar properties.
+ * Primary: same district + same type.
+ * Fallback: same type only (when primary returns fewer than 3 results).
+ */
+export async function getSimilarProperties(
+  property: Property,
+  limit = 5,
+): Promise<Property[]> {
+  const headers = { Accept: "application/json", "Content-Type": "application/json" };
+
+  try {
+    // ── Primary pass ──────────────────────────────────────────────────────
+    const primaryRes = await fetch(
+      `${API_BASE_URL}/properties?${buildQueryString({
+        districtId: property.district.id,
+        type: property.type,
+        status: "AVAILABLE",
+        limit: 6,
+        page: 1,
+      })}`,
+      { headers, cache: "no-store" },
+    );
+
+    if (!primaryRes.ok) return [];
+
+    const primaryData = ((await primaryRes.json()) as RawPropertyResponse).data ?? [];
+    const primaryList = primaryData
+      .filter((p) => p.id !== property.id)
+      .slice(0, limit);
+
+    if (primaryList.length >= 3) return primaryList;
+
+    // ── Fallback pass (broader area) ──────────────────────────────────────
+    const seenIds = new Set([property.id, ...primaryList.map((p) => p.id)]);
+    const needed = limit - primaryList.length;
+
+    const fallbackRes = await fetch(
+      `${API_BASE_URL}/properties?${buildQueryString({
+        type: property.type,
+        status: "AVAILABLE",
+        limit: needed + seenIds.size,
+        page: 1,
+      })}`,
+      { headers, cache: "no-store" },
+    );
+
+    if (!fallbackRes.ok) return primaryList;
+
+    const fallbackData = ((await fallbackRes.json()) as RawPropertyResponse).data ?? [];
+    const fallbackList = fallbackData
+      .filter((p) => !seenIds.has(p.id))
+      .slice(0, needed);
+
+    return [...primaryList, ...fallbackList];
+  } catch {
+    return [];
+  }
+}
