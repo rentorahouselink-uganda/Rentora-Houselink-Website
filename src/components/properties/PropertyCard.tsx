@@ -31,6 +31,7 @@ export function PropertyCard({ property }: { property: Property }) {
   const handleMouseEnter = () => {
     if (!hasVideo) return;
     setIsHovering(true);
+    // Because of preload="none", it will start fetching only now
     videoRef.current?.play().catch(() => {});
   };
 
@@ -82,6 +83,7 @@ export function PropertyCard({ property }: { property: Property }) {
             muted
             loop
             playsInline
+            preload="none" /* 👈 THIS IS THE MAGIC FIX FOR SCROLL JANK */
             className={[
               "absolute inset-0 h-full w-full object-cover transition-opacity duration-300",
               isHovering ? "opacity-100" : "opacity-0",
@@ -98,7 +100,6 @@ export function PropertyCard({ property }: { property: Property }) {
             ].join(" ")}
           >
             <div className="flex h-14 w-14 items-center justify-center rounded-full bg-slate-950/40 text-white backdrop-blur-md ring-1 ring-white/30 shadow-2xl transition-transform duration-300 group-hover:scale-110">
-              {/* Offset right slightly by 0.5 to balance the geometry of a play triangle */}
               <PlayIcon className="h-6 w-6 translate-x-0.5 drop-shadow-sm" />
             </div>
           </div>

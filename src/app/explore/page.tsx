@@ -1,6 +1,5 @@
 import { ExplorePage } from "@/components/properties/ExplorePage";
 import { getProperties } from "@/lib/api/properties";
-// 1. Import Property and PaginationMeta types
 import { Property, PropertyQuery } from "@/types/property";
 import { PaginationMeta } from "@/types/pagination"; 
 
@@ -8,27 +7,19 @@ type ExplorePageProps = {
   searchParams: Promise<Record<string, string | string[] | undefined>>;
 };
 
-function getString(
-  params: Record<string, string | string[] | undefined>,
-  key: string,
-) {
+function getString(params: Record<string, string | string[] | undefined>, key: string) {
   const value = params[key];
   return Array.isArray(value) ? value[0] : value;
 }
 
-function getNumber(
-  params: Record<string, string | string[] | undefined>,
-  key: string,
-) {
+function getNumber(params: Record<string, string | string[] | undefined>, key: string) {
   const value = getString(params, key);
   if (!value) return undefined;
   const parsed = Number(value);
   return Number.isFinite(parsed) ? parsed : undefined;
 }
 
-function buildPropertyQuery(
-  params: Record<string, string | string[] | undefined>,
-): PropertyQuery {
+function buildPropertyQuery(params: Record<string, string | string[] | undefined>): PropertyQuery {
   return {
     page: getNumber(params, "page") ?? 1,
     limit: getNumber(params, "limit") ?? 12,
@@ -49,13 +40,11 @@ function buildPropertyQuery(
 export default async function ExploreRoute({ searchParams }: ExplorePageProps) {
   const params = await searchParams;
 
-  // 2. Add explicit types to your initial states
   let propertiesData: { data: Property[]; meta: PaginationMeta } = { 
     data: [], 
     meta: { page: 1, limit: 12, total: 0, totalPages: 0, hasNextPage: false, hasPreviousPage: false } 
   };
   
-  // Explicitly set the type to Property[] instead of relying on inference
   let featuredData: Property[] = []; 
   let errorMessage: string | undefined = undefined;
 
@@ -70,21 +59,28 @@ export default async function ExploreRoute({ searchParams }: ExplorePageProps) {
       }).catch(() => null),
     ]);
     
-    propertiesData = result; // No longer needs 'as any'
+    propertiesData = result;
     featuredData = featuredResult?.data ?? [];
   } catch (error: any) {
-    // Check if it's a network/DNS resolution error
-    if (error?.message?.includes("fetch failed") || error?.cause?.code === "ENOTFOUND") {
-      errorMessage = "Unable to connect to the server. Please check your internet connection or try again in a moment.";
+    // 👈 THIS CONSOLE LOG IS CRITICAL FOR YOUR DEBUGGING
+    console.error("🔥 [ExploreRoute] Server Fetch Error:", error);
+
+    const isFetchFailure = 
+      error?.message?.includes("fetch failed") || 
+      error?.cause?.code === "ENOTFOUND" || 
+      error?.cause?.code === "ECONNRESET";
+
+    if (isFetchFailure) {
+      errorMessage = "Unable to reach the server. The backend API might be offline, dropping connections, or crashing during your search.";
     } else {
-      errorMessage = "We encountered an issue while loading the properties. Please try again later.";
+      errorMessage = error?.message || "We encountered an issue while loading the properties.";
     }
   }
 
   return (
     <ExplorePage
       properties={propertiesData.data}
-      meta={propertiesData.meta} // No longer needs 'as any'
+      meta={propertiesData.meta} 
       searchParams={params}
       featuredProperties={featuredData}
       error={errorMessage} 

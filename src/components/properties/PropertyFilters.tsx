@@ -7,14 +7,15 @@ import {
   MagnifyingGlassIcon,
 } from "@heroicons/react/24/outline";
 
+// Categories mapped strictly to backend enums
 const categories = [
   { label: "All", type: "", listingPurpose: "" },
   { label: "Rentals", type: "RESIDENTIAL_HOUSE", listingPurpose: "RENT" },
   { label: "Houses for sale", type: "RESIDENTIAL_HOUSE", listingPurpose: "SALE" },
   { label: "Apartments", type: "APARTMENT", listingPurpose: "" },
   { label: "Hostels", type: "HOSTEL", listingPurpose: "" },
-  { label: "Hotels", type: "HOTEL", listingPurpose: "" },
-  { label: "Business spaces", type: "COMMERCIAL", listingPurpose: "" },
+  { label: "Hotel / Guest Houses", type: "HOTEL_LODGE", listingPurpose: "" }, 
+  { label: "Business spaces", type: "BUSINESS_SPACE", listingPurpose: "" }, 
 ];
 
 export function PropertyFilters() {
@@ -46,7 +47,7 @@ export function PropertyFilters() {
     <section className="sticky top-16 z-20 border-b border-slate-200 bg-white/95 backdrop-blur">
       <div className="mx-auto max-w-7xl px-4 py-5 sm:px-6 lg:px-8">
         <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
-          {/* Search Input - perfectly rounded + shadow */}
+          {/* Search Input */}
           <form
             onSubmit={submitSearch}
             className="flex h-11 w-full items-center gap-2 rounded-lg border border-slate-200 bg-white px-3 shadow-sm focus-within:border-emerald-500 focus-within:ring-1 focus-within:ring-emerald-500 lg:max-w-md"
@@ -60,7 +61,7 @@ export function PropertyFilters() {
             />
           </form>
 
-          {/* Dropdowns & Buttons aligned to h-11 */}
+          {/* Dropdowns & Buttons */}
           <div className="flex items-center gap-3">
             <select
               defaultValue={`${searchParams.get("sortBy") ?? ""}:${searchParams.get("sortOrder") ?? ""}`}
@@ -74,9 +75,10 @@ export function PropertyFilters() {
               className="h-11 rounded-lg border border-slate-200 bg-white px-3 text-sm font-medium text-slate-700 shadow-sm outline-none transition focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500"
             >
               <option value="">Recommended</option>
-              <option value="createdAt:desc">Newest first</option>
-              <option value="price:asc">Lowest price</option>
-              <option value="price:desc">Highest price</option>
+              {/* ── FIXED: Uppercase ASC and DESC to match the backend DTO ── */}
+              <option value="createdAt:DESC">Newest first</option>
+              <option value="price:ASC">Lowest price</option>
+              <option value="price:DESC">Highest price</option>
             </select>
 
             <button
@@ -89,7 +91,7 @@ export function PropertyFilters() {
           </div>
         </div>
 
-        {/* Categories - Tighter spacing + hidden scrollbar */}
+        {/* Categories */}
         <div className="no-scrollbar mt-4 flex gap-2 overflow-x-auto pb-1">
           {categories.map((category) => {
             const isActive =
