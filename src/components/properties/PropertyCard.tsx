@@ -37,6 +37,14 @@ export function PropertyCard({ property }: { property: Property }) {
   const videoRef = useRef<HTMLVideoElement>(null);
   const [isHovering, setIsHovering] = useState(false);
 
+  // Whether this device supports real hover (desktop/trackpad/mouse).
+  // Defaults to true so SSR/initial render matches the existing
+  // hover-based behaviour; corrected on mount.
+  const [canHover, setCanHover] = useState(true);
+
+  // Tap-to-play state for touch / no-hover devices.
+  const [isPlaying, setIsPlaying] = useState(false);
+
   const [isSaved, setIsSaved] = useState(false);
   const [showLoginPrompt, setShowLoginPrompt] = useState(false);
   const [isToggling, setIsToggling] = useState(false);
@@ -46,15 +54,50 @@ export function PropertyCard({ property }: { property: Property }) {
     setIsSaved(favoriteIds.has(property.id));
   }, [favoriteIds, property.id, ready]);
 
+  // Detect hover-capable devices on mount and keep it in sync if the
+  // user switches input methods (e.g. a hybrid touchscreen laptop).
+  useEffect(() => {
+    if (typeof window === "undefined" || !window.matchMedia) return;
+
+    const mq = window.matchMedia("(hover: hover) and (pointer: fine)");
+    setCanHover(mq.matches);
+
+    const handler = (e: MediaQueryListEvent) => setCanHover(e.matches);
+    mq.addEventListener("change", handler);
+    return () => mq.removeEventListener("change", handler);
+  }, []);
+
   const handleMouseEnter = () => {
-    if (!hasVideo) return;
+    if (!hasVideo || !canHover) return;
     setIsHovering(true);
     videoRef.current?.play().catch(() => {});
   };
 
   const handleMouseLeave = () => {
-    if (!hasVideo) return;
+    if (!hasVideo || !canHover) return;
     setIsHovering(false);
+    if (videoRef.current) {
+      videoRef.current.pause();
+      videoRef.current.currentTime = 0;
+    }
+  };
+
+  // Touch / no-hover devices: tap the play button to start the preview
+  // in place, instead of navigating to the detail page.
+  const handlePlayClick = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setIsPlaying(true);
+    videoRef.current?.play().catch(() => {});
+  };
+
+  // Touch / no-hover devices: while playing, tapping the card again
+  // pauses the preview and returns to the thumbnail, instead of
+  // navigating to the detail page.
+  const handlePauseClick = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setIsPlaying(false);
     if (videoRef.current) {
       videoRef.current.pause();
       videoRef.current.currentTime = 0;
@@ -102,6 +145,8 @@ export function PropertyCard({ property }: { property: Property }) {
         year: "numeric",
       }).format(new Date(property.availableFrom))
     : "";
+
+  const isPreviewActive = isHovering || isPlaying;
 
   return (
     <>
@@ -152,7 +197,7 @@ export function PropertyCard({ property }: { property: Property }) {
               alt={property.title}
               className={[
                 "h-full w-full object-cover transition-transform duration-700 group-hover:scale-105",
-                isHovering && hasVideo ? "opacity-0" : "opacity-100",
+                isPreviewActive && hasVideo ? "opacity-0" : "opacity-100",
               ].join(" ")}
             />
           ) : (
@@ -171,21 +216,51 @@ export function PropertyCard({ property }: { property: Property }) {
               preload="none"
               className={[
                 "absolute inset-0 h-full w-full object-cover transition-opacity duration-300",
-                isHovering ? "opacity-100" : "opacity-0",
+                isPreviewActive ? "opacity-100" : "opacity-0",
               ].join(" ")}
+            />
+          )}
+
+          {hasVideo && !canHover && isPlaying && (
+            // Touch / no-hover devices: while the preview is playing, this
+            // transparent layer sits above the navigation Link (z-10) but
+            // below the favorite button (z-20), so tapping the card pauses
+            // the preview instead of navigating to the detail page.
+            <button
+              type="button"
+              aria-label="Pause video preview"
+              onClick={handlePauseClick}
+              className="absolute inset-0 z-[15]"
             />
           )}
 
           {hasVideo && (
             <div
               className={[
-                "pointer-events-none absolute inset-0 flex items-center justify-center transition-all duration-300 ease-out",
-                isHovering ? "scale-90 opacity-0" : "scale-100 opacity-100",
+                "absolute inset-0 flex items-center justify-center transition-all duration-300 ease-out",
+                isPreviewActive
+                  ? "pointer-events-none scale-90 opacity-0"
+                  : "scale-100 opacity-100",
+                !canHover && !isPreviewActive ? "z-[15]" : "",
+                canHover ? "pointer-events-none" : "",
               ].join(" ")}
             >
-              <div className="flex h-14 w-14 items-center justify-center rounded-full bg-slate-950/40 text-white ring-1 ring-white/30 backdrop-blur-md transition-transform duration-300 group-hover:scale-110">
-                <PlayIcon className="h-6 w-6 translate-x-0.5" />
-              </div>
+              {canHover ? (
+                <div className="flex h-14 w-14 items-center justify-center rounded-full bg-slate-950/40 text-white ring-1 ring-white/30 backdrop-blur-md transition-transform duration-300 group-hover:scale-110">
+                  <PlayIcon className="h-6 w-6 translate-x-0.5" />
+                </div>
+              ) : (
+                // Touch / no-hover devices: real button, above the
+                // navigation Link, that plays the preview in place.
+                <button
+                  type="button"
+                  aria-label="Play video preview"
+                  onClick={handlePlayClick}
+                  className="flex h-14 w-14 items-center justify-center rounded-full bg-slate-950/40 text-white ring-1 ring-white/30 backdrop-blur-md"
+                >
+                  <PlayIcon className="h-6 w-6 translate-x-0.5" />
+                </button>
+              )}
             </div>
           )}
 
