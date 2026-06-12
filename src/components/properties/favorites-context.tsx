@@ -1,11 +1,21 @@
 "use client";
 
-import { createContext, useContext, useEffect, useState, ReactNode } from "react";
+import {
+  createContext,
+  ReactNode,
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useState,
+} from "react";
 import { useAuth } from "@/lib/auth/auth-context";
 import { getFavorites } from "@/lib/api/favorites";
 
 type FavoritesContextType = {
+  ready: boolean;
   favoriteIds: Set<string>;
+  refreshFavorites: () => Promise<void>;
   toggleFavoriteId: (id: string, isSaved: boolean) => void;
 };
 
@@ -13,34 +23,54 @@ const FavoritesContext = createContext<FavoritesContextType | null>(null);
 
 export function FavoritesProvider({ children }: { children: ReactNode }) {
   const { isAuthenticated } = useAuth();
+  const [ready, setReady] = useState(false);
   const [favoriteIds, setFavoriteIds] = useState<Set<string>>(new Set());
 
-  // Fetch favorites from backend whenever the user logs in or refreshes the page
-  useEffect(() => {
-    if (isAuthenticated) {
-      getFavorites()
-        .then((favs) => {
-          // Extract the property ID from the backend payload
-          setFavoriteIds(new Set(favs.map((f: any) => f.id)));
-        })
-        .catch(console.error);
-    } else {
-      setFavoriteIds(new Set()); // Clear on logout
+  const refreshFavorites = useCallback(async () => {
+    if (!isAuthenticated) {
+      setFavoriteIds(new Set());
+      setReady(true);
+      return;
+    }
+
+    setReady(false);
+
+    try {
+      const ids = await getFavorites();
+      setFavoriteIds(new Set(ids));
+    } catch (error) {
+      console.error("Failed to load favorites:", error);
+      setFavoriteIds(new Set());
+    } finally {
+      setReady(true);
     }
   }, [isAuthenticated]);
 
-  // Instantly update the UI across all components
-  const toggleFavoriteId = (id: string, isSaved: boolean) => {
+  useEffect(() => {
+    void refreshFavorites();
+  }, [refreshFavorites]);
+
+  const toggleFavoriteId = useCallback((id: string, isSaved: boolean) => {
     setFavoriteIds((prev) => {
       const next = new Set(prev);
       if (isSaved) next.add(id);
       else next.delete(id);
       return next;
     });
-  };
+  }, []);
+
+  const value = useMemo(
+    () => ({
+      ready,
+      favoriteIds,
+      refreshFavorites,
+      toggleFavoriteId,
+    }),
+    [ready, favoriteIds, refreshFavorites, toggleFavoriteId],
+  );
 
   return (
-    <FavoritesContext.Provider value={{ favoriteIds, toggleFavoriteId }}>
+    <FavoritesContext.Provider value={value}>
       {children}
     </FavoritesContext.Provider>
   );

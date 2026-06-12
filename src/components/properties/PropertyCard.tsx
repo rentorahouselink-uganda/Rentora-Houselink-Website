@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
   CalendarDaysIcon,
   EyeIcon,
@@ -23,21 +23,28 @@ import { Property } from "@/types/property";
 import { useAuth } from "@/lib/auth/auth-context";
 import { toggleFavorite } from "@/lib/api/favorites";
 import { ConfirmModal } from "@/components/shared/ConfirmModal";
+import { useFavorites } from "./favorites-context";
 
 export function PropertyCard({ property }: { property: Property }) {
   const router = useRouter();
   const { isAuthenticated } = useAuth();
-  
+  const { ready, favoriteIds, toggleFavoriteId } = useFavorites();
+
   const imageUrl = getPropertyImage(property);
   const location = getPropertyLocation(property);
   const hasVideo = (property.videos ?? []).length > 0;
 
   const videoRef = useRef<HTMLVideoElement>(null);
   const [isHovering, setIsHovering] = useState(false);
-  
+
   const [isSaved, setIsSaved] = useState(false);
   const [showLoginPrompt, setShowLoginPrompt] = useState(false);
   const [isToggling, setIsToggling] = useState(false);
+
+  useEffect(() => {
+    if (!ready) return;
+    setIsSaved(favoriteIds.has(property.id));
+  }, [favoriteIds, property.id, ready]);
 
   const handleMouseEnter = () => {
     if (!hasVideo) return;
@@ -66,16 +73,22 @@ export function PropertyCard({ property }: { property: Property }) {
 
     if (isToggling) return;
 
+    const previousSaved = isSaved;
+    const nextSaved = !previousSaved;
+
     // Optimistic UI update for snappy feel
-    setIsSaved((prev) => !prev);
+    setIsSaved(nextSaved);
+    toggleFavoriteId(property.id, nextSaved);
     setIsToggling(true);
 
     try {
       const response = await toggleFavorite(property.id);
       setIsSaved(response.saved);
+      toggleFavoriteId(property.id, response.saved);
     } catch (error) {
       // Revert if API fails
-      setIsSaved((prev) => !prev);
+      setIsSaved(previousSaved);
+      toggleFavoriteId(property.id, previousSaved);
       console.error("Failed to toggle favorite:", error);
     } finally {
       setIsToggling(false);
@@ -84,7 +97,9 @@ export function PropertyCard({ property }: { property: Property }) {
 
   const formattedAvailableFrom = property.availableFrom
     ? new Intl.DateTimeFormat("en-GB", {
-        day: "2-digit", month: "2-digit", year: "numeric",
+        day: "2-digit",
+        month: "2-digit",
+        year: "numeric",
       }).format(new Date(property.availableFrom))
     : "";
 
@@ -103,15 +118,15 @@ export function PropertyCard({ property }: { property: Property }) {
       />
 
       <div
-        className="group relative flex flex-col overflow-hidden rounded-xl border border-slate-200 bg-white transition-all duration-300 hover:-translate-y-1 hover:border-emerald-400 dark:border-slate-700 dark:bg-slate-800 dark:hover:border-emerald-600 shadow-sm"
+        className="group relative flex flex-col overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm transition-all duration-300 hover:-translate-y-1 hover:border-emerald-400 dark:border-slate-700 dark:bg-slate-800 dark:hover:border-emerald-600"
         onMouseEnter={handleMouseEnter}
         onMouseLeave={handleMouseLeave}
       >
         {/* ── Invisible Link to handle navigation (z-10) ── */}
-        <Link 
-          href={`/properties/${property.id}`} 
-          className="absolute inset-0 z-10 focus:outline-none" 
-          aria-label={`View details for ${property.title}`} 
+        <Link
+          href={`/properties/${property.id}`}
+          className="absolute inset-0 z-10 focus:outline-none"
+          aria-label={`View details for ${property.title}`}
         />
 
         {/* ── Favorite Button (Moved OUTSIDE media wrapper so z-20 actually beats the link) ── */}
@@ -119,7 +134,7 @@ export function PropertyCard({ property }: { property: Property }) {
           type="button"
           aria-label={isSaved ? "Remove from saved" : "Save property"}
           onClick={handleFavoriteClick}
-          disabled={isToggling}
+          disabled={isToggling || !ready}
           className="absolute right-3 top-3 z-20 grid h-9 w-9 place-items-center rounded-full bg-white/90 text-slate-400 backdrop-blur-md transition-all hover:scale-110 hover:text-rose-500 dark:bg-slate-900/80 dark:text-slate-400 disabled:opacity-70"
         >
           {isSaved ? (
@@ -168,7 +183,7 @@ export function PropertyCard({ property }: { property: Property }) {
                 isHovering ? "scale-90 opacity-0" : "scale-100 opacity-100",
               ].join(" ")}
             >
-              <div className="flex h-14 w-14 items-center justify-center rounded-full bg-slate-950/40 text-white backdrop-blur-md ring-1 ring-white/30 transition-transform duration-300 group-hover:scale-110">
+              <div className="flex h-14 w-14 items-center justify-center rounded-full bg-slate-950/40 text-white ring-1 ring-white/30 backdrop-blur-md transition-transform duration-300 group-hover:scale-110">
                 <PlayIcon className="h-6 w-6 translate-x-0.5" />
               </div>
             </div>
@@ -189,7 +204,7 @@ export function PropertyCard({ property }: { property: Property }) {
         </div>
 
         {/* ── Content ── */}
-        <div className="flex flex-1 flex-col p-4 relative">
+        <div className="relative flex flex-1 flex-col p-4">
           <div className="mb-1 flex items-center justify-between">
             <span className="text-[11px] font-semibold uppercase tracking-wider text-emerald-600 dark:text-emerald-400">
               {formatLabel(property.type)}
@@ -226,8 +241,16 @@ export function PropertyCard({ property }: { property: Property }) {
               <span className="h-3 w-px bg-slate-200 dark:bg-slate-600" />
               <span>{property.parkingAvailable ? "Parking" : "No Parking"}</span>
               <span className="h-3 w-px bg-slate-200 dark:bg-slate-600" />
-              <span className={property.status === "AVAILABLE" ? "text-emerald-600 dark:text-emerald-400" : ""}>
-                {property.status === "AVAILABLE" ? "Available" : formatLabel(property.status)}
+              <span
+                className={
+                  property.status === "AVAILABLE"
+                    ? "text-emerald-600 dark:text-emerald-400"
+                    : ""
+                }
+              >
+                {property.status === "AVAILABLE"
+                  ? "Available"
+                  : formatLabel(property.status)}
               </span>
             </div>
 

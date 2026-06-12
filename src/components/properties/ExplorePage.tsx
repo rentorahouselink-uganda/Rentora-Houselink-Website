@@ -13,6 +13,7 @@ import {
   ExplorePendingProvider,
   useExplorePending,
 } from "./explore-pending-context";
+import { FavoritesProvider } from "./favorites-context";
 
 type ExplorePageProps = {
   properties: Property[];
@@ -53,7 +54,9 @@ const useIsomorphicLayoutEffect =
 export function ExplorePage(props: ExplorePageProps) {
   return (
     <ExplorePendingProvider>
-      <ExplorePageContent {...props} />
+      <FavoritesProvider>
+        <ExplorePageContent {...props} />
+      </FavoritesProvider>
     </ExplorePendingProvider>
   );
 }
@@ -139,9 +142,7 @@ function ExplorePageContent({
   const showBadge = !error && filtered;
 
   return (
-    <main
-      className="min-h-screen bg-slate-50 pb-12 dark:bg-slate-950 [overflow-anchor:none]"
-    >
+    <main className="min-h-screen bg-slate-50 pb-12 dark:bg-slate-950 [overflow-anchor:none]">
       {/* ── 1. Featured Banner ── */}
       {featuredProperties.length > 0 && !error && (
         <FeaturedBanner properties={featuredProperties} />

@@ -1,8 +1,33 @@
 import { getAuthToken } from "@/lib/auth/auth-context";
 
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL ?? "https://rentora-api.duckdns.org/api/v1";
+const API_BASE_URL =
+  process.env.NEXT_PUBLIC_API_BASE_URL ??
+  "https://rentora-api.duckdns.org/api/v1";
 
-export async function toggleFavorite(propertyId: string): Promise<{ saved: boolean }> {
+type FavoriteRecord = {
+  id?: string;
+  propertyId?: string;
+  property_id?: string;
+  property?: {
+    id?: string;
+    _id?: string;
+  };
+};
+
+function extractFavoriteId(item: unknown): string | null {
+  if (!item || typeof item !== "object") return null;
+
+  const fav = item as FavoriteRecord;
+
+  const directId =
+    fav.propertyId ?? fav.property_id ?? fav.id ?? fav.property?.id ?? fav.property?._id;
+
+  return typeof directId === "string" && directId.trim() ? directId : null;
+}
+
+export async function toggleFavorite(
+  propertyId: string,
+): Promise<{ saved: boolean }> {
   const token = getAuthToken();
   if (!token) throw new Error("Authentication required");
 
@@ -22,7 +47,7 @@ export async function toggleFavorite(propertyId: string): Promise<{ saved: boole
   return response.json();
 }
 
-export async function getFavorites(): Promise<any[]> {
+export async function getFavorites(): Promise<string[]> {
   const token = getAuthToken();
   if (!token) return [];
 
@@ -31,8 +56,16 @@ export async function getFavorites(): Promise<any[]> {
       "Content-Type": "application/json",
       Authorization: `Bearer ${token}`,
     },
+    cache: "no-store",
   });
 
   if (!response.ok) return [];
-  return response.json();
+
+  const payload = (await response.json()) as unknown;
+
+  if (!Array.isArray(payload)) return [];
+
+  return payload
+    .map(extractFavoriteId)
+    .filter((id): id is string => Boolean(id));
 }
