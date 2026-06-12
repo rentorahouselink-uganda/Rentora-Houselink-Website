@@ -9,7 +9,6 @@ import {
   EyeSlashIcon,
   CheckCircleIcon,
 } from "@heroicons/react/24/outline";
-import { AuthInput } from "@/components/auth/AuthInput";
 import { useAuth } from "@/lib/auth/auth-context";
 
 function passwordStrength(pw: string): { score: number; label: string; color: string } {
@@ -19,11 +18,11 @@ function passwordStrength(pw: string): { score: number; label: string; color: st
   if (/[A-Z]/.test(pw)) score++;
   if (/[0-9!@#$%^&*]/.test(pw)) score++;
   const levels = [
-    { label: "Weak",   color: "bg-red-500"    },
-    { label: "Weak",   color: "bg-red-500"    },
-    { label: "Fair",   color: "bg-amber-400"  },
-    { label: "Good",   color: "bg-yellow-400" },
-    { label: "Strong", color: "bg-emerald-500" },
+    { label: "Weak",   color: "bg-red-500 dark:bg-red-600" },
+    { label: "Weak",   color: "bg-red-500 dark:bg-red-600" },
+    { label: "Fair",   color: "bg-amber-400 dark:bg-amber-500" },
+    { label: "Good",   color: "bg-yellow-400 dark:bg-yellow-500" },
+    { label: "Strong", color: "bg-emerald-500 dark:bg-emerald-600" },
   ];
   return { score, ...levels[score] };
 }
@@ -45,7 +44,6 @@ export default function ChangePasswordPage() {
 
   useEffect(() => {
     if (!authLoading && !isAuthenticated) router.push("/login");
-    // Only LOCAL accounts can change password
     if (!authLoading && user && user.provider !== "LOCAL") router.push("/account");
   }, [authLoading, isAuthenticated, user, router]);
 
@@ -63,8 +61,7 @@ export default function ChangePasswordPage() {
 
   async function handleSubmit(e: FormEvent) {
     e.preventDefault();
-    setApiError("");
-    setSuccess(false);
+    setApiError(""); setSuccess(false);
     if (!validate()) return;
 
     setLoading(true);
@@ -82,93 +79,108 @@ export default function ChangePasswordPage() {
 
   if (authLoading || !user) {
     return (
-      <div className="flex min-h-[calc(100vh-64px)] items-center justify-center">
+      <div className="flex min-h-[calc(100vh-64px)] items-center justify-center bg-slate-50 dark:bg-slate-950">
         <div className="h-6 w-6 animate-spin rounded-full border-2 border-emerald-600 border-t-transparent" />
       </div>
     );
   }
 
+  const inputClass = "w-full rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 px-4 py-3.5 text-sm text-slate-900 dark:text-white outline-none transition placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20 disabled:opacity-60 disabled:cursor-not-allowed";
+  const inputClassError = "w-full rounded-xl border border-red-300 dark:border-red-900 bg-red-50 dark:bg-red-950/30 px-4 py-3.5 text-sm text-slate-900 dark:text-white outline-none transition placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:border-red-400 focus:ring-2 focus:ring-red-500/20 disabled:opacity-60 disabled:cursor-not-allowed";
+
   return (
-    <main className="min-h-[calc(100vh-64px)] bg-slate-50 py-10">
+    <main className="min-h-[calc(100vh-64px)] bg-slate-50 dark:bg-slate-950 py-10 lg:py-16">
       <div className="mx-auto max-w-lg px-4 sm:px-6">
 
         <Link
           href="/account"
-          className="mb-6 inline-flex items-center gap-1.5 text-sm font-medium text-slate-500 hover:text-slate-800 transition"
+          className="mb-8 inline-flex items-center gap-2 text-sm font-semibold text-slate-500 dark:text-slate-400 hover:text-emerald-600 dark:hover:text-emerald-400 transition"
         >
           <ArrowLeftIcon className="h-4 w-4" />
           Back to account
         </Link>
 
         <div className="mb-8">
-          <h1 className="text-2xl font-extrabold tracking-tight text-slate-900">Change Password</h1>
-          <p className="mt-1 text-sm text-slate-500">Choose a strong password to keep your account secure.</p>
+          <h1 className="text-3xl font-extrabold tracking-tight text-slate-900 dark:text-white">Change Password</h1>
+          <p className="mt-2 text-base text-slate-600 dark:text-slate-400">Choose a strong password to keep your account secure.</p>
         </div>
 
-        <div className="rounded-2xl border border-slate-100 bg-white p-6 shadow-sm">
+        <div className="rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-8">
           {apiError && (
-            <div className="mb-5 rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
+            <div className="mb-6 rounded-xl border border-red-200 dark:border-red-900/50 bg-red-50 dark:bg-red-950/30 px-4 py-3 text-sm font-medium text-red-700 dark:text-red-400">
               {apiError}
             </div>
           )}
           {success && (
-            <div className="mb-5 flex items-center gap-2 rounded-xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm text-emerald-700">
-              <CheckCircleIcon className="h-4 w-4 shrink-0" />
+            <div className="mb-6 flex items-center gap-3 rounded-xl border border-emerald-200 dark:border-emerald-900/50 bg-emerald-50 dark:bg-emerald-900/20 px-4 py-3 text-sm font-bold text-emerald-700 dark:text-emerald-400">
+              <CheckCircleIcon className="h-5 w-5 shrink-0" />
               Password changed successfully!
             </div>
           )}
 
-          <form onSubmit={handleSubmit} noValidate className="space-y-5">
-            <AuthInput
-              label="Current password"
-              type={showCur ? "text" : "password"}
-              value={current}
-              onChange={setCurrent}
-              placeholder="Your current password"
-              autoComplete="current-password"
-              disabled={loading}
-              error={errors.current}
-              autoFocus
-              suffix={
-                <button type="button" onClick={() => setShowCur((v) => !v)} className="text-slate-400 hover:text-slate-600 transition" tabIndex={-1}>
+          <form onSubmit={handleSubmit} noValidate className="space-y-6">
+            
+            {/* Current Password */}
+            <div>
+              <label className="mb-2 block text-sm font-bold text-slate-700 dark:text-slate-300">
+                Current password
+              </label>
+              <div className="relative">
+                <input
+                  type={showCur ? "text" : "password"}
+                  value={current}
+                  onChange={(e) => setCurrent(e.target.value)}
+                  placeholder="Your current password"
+                  autoComplete="current-password"
+                  disabled={loading}
+                  autoFocus
+                  className={`${errors.current ? inputClassError : inputClass} pr-12`}
+                />
+                <button type="button" onClick={() => setShowCur((v) => !v)} className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 dark:hover:text-slate-300 transition" tabIndex={-1}>
                   {showCur ? <EyeSlashIcon className="h-5 w-5" /> : <EyeIcon className="h-5 w-5" />}
                 </button>
-              }
-            />
+              </div>
+              {errors.current && <p className="mt-1.5 text-xs font-medium text-red-600 dark:text-red-400">{errors.current}</p>}
+            </div>
 
+            {/* New Password */}
             <div>
-              <AuthInput
-                label="New password"
-                type={showNext ? "text" : "password"}
-                value={next}
-                onChange={setNext}
-                placeholder="At least 8 characters"
-                autoComplete="new-password"
-                disabled={loading}
-                error={errors.next}
-                suffix={
-                  <button type="button" onClick={() => setShowNext((v) => !v)} className="text-slate-400 hover:text-slate-600 transition" tabIndex={-1}>
-                    {showNext ? <EyeSlashIcon className="h-5 w-5" /> : <EyeIcon className="h-5 w-5" />}
-                  </button>
-                }
-              />
+              <label className="mb-2 block text-sm font-bold text-slate-700 dark:text-slate-300">
+                New password
+              </label>
+              <div className="relative">
+                <input
+                  type={showNext ? "text" : "password"}
+                  value={next}
+                  onChange={(e) => setNext(e.target.value)}
+                  placeholder="At least 8 characters"
+                  autoComplete="new-password"
+                  disabled={loading}
+                  className={`${errors.next ? inputClassError : inputClass} pr-12`}
+                />
+                <button type="button" onClick={() => setShowNext((v) => !v)} className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 dark:hover:text-slate-300 transition" tabIndex={-1}>
+                  {showNext ? <EyeSlashIcon className="h-5 w-5" /> : <EyeIcon className="h-5 w-5" />}
+                </button>
+              </div>
+              {errors.next && <p className="mt-1.5 text-xs font-medium text-red-600 dark:text-red-400">{errors.next}</p>}
+              
               {/* Strength bar */}
               {next.length > 0 && (
-                <div className="mt-2.5 space-y-1.5">
-                  <div className="flex gap-1">
+                <div className="mt-3 space-y-2">
+                  <div className="flex gap-1.5">
                     {[0, 1, 2, 3].map((i) => (
                       <div
                         key={i}
-                        className={`h-1 flex-1 rounded-full transition-colors ${
-                          i < strength.score ? strength.color : "bg-slate-100"
+                        className={`h-1.5 flex-1 rounded-full transition-colors duration-300 ${
+                          i < strength.score ? strength.color : "bg-slate-100 dark:bg-slate-800"
                         }`}
                       />
                     ))}
                   </div>
-                  <p className={`text-xs font-medium ${
-                    strength.score >= 4 ? "text-emerald-600"
-                    : strength.score >= 3 ? "text-yellow-600"
-                    : "text-red-500"
+                  <p className={`text-xs font-bold tracking-wide uppercase ${
+                    strength.score >= 4 ? "text-emerald-600 dark:text-emerald-500"
+                    : strength.score >= 3 ? "text-yellow-600 dark:text-yellow-500"
+                    : "text-red-500 dark:text-red-400"
                   }`}>
                     {strength.label} password
                   </p>
@@ -176,29 +188,35 @@ export default function ChangePasswordPage() {
               )}
             </div>
 
-            <AuthInput
-              label="Confirm new password"
-              type={showConf ? "text" : "password"}
-              value={confirm}
-              onChange={setConfirm}
-              placeholder="Re-enter your new password"
-              autoComplete="new-password"
-              disabled={loading}
-              error={errors.confirm}
-              suffix={
-                <button type="button" onClick={() => setShowConf((v) => !v)} className="text-slate-400 hover:text-slate-600 transition" tabIndex={-1}>
+            {/* Confirm New Password */}
+            <div>
+              <label className="mb-2 block text-sm font-bold text-slate-700 dark:text-slate-300">
+                Confirm new password
+              </label>
+              <div className="relative">
+                <input
+                  type={showConf ? "text" : "password"}
+                  value={confirm}
+                  onChange={(e) => setConfirm(e.target.value)}
+                  placeholder="Re-enter your new password"
+                  autoComplete="new-password"
+                  disabled={loading}
+                  className={`${errors.confirm ? inputClassError : inputClass} pr-12`}
+                />
+                <button type="button" onClick={() => setShowConf((v) => !v)} className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 dark:hover:text-slate-300 transition" tabIndex={-1}>
                   {showConf ? <EyeSlashIcon className="h-5 w-5" /> : <EyeIcon className="h-5 w-5" />}
                 </button>
-              }
-            />
+              </div>
+              {errors.confirm && <p className="mt-1.5 text-xs font-medium text-red-600 dark:text-red-400">{errors.confirm}</p>}
+            </div>
 
             <button
               type="submit"
               disabled={loading}
-              className="flex w-full items-center justify-center gap-2 rounded-xl bg-emerald-600 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-emerald-700 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2 disabled:opacity-60 disabled:cursor-not-allowed"
+              className="mt-4 flex w-full items-center justify-center gap-2 rounded-xl bg-emerald-600 py-4 text-base font-bold text-white transition hover:bg-emerald-700 focus:outline-none focus:ring-4 focus:ring-emerald-600/20 disabled:opacity-60 disabled:cursor-not-allowed"
             >
               {loading && (
-                <svg className="h-4 w-4 animate-spin" viewBox="0 0 24 24" fill="none">
+                <svg className="h-5 w-5 animate-spin" viewBox="0 0 24 24" fill="none">
                   <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
                   <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
                 </svg>

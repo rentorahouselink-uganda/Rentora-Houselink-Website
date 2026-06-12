@@ -1,5 +1,6 @@
 import Link from "next/link";
-import { EnvelopeIcon, HomeModernIcon, MapPinIcon } from "@heroicons/react/24/outline";
+import Image from "next/image";
+import { EnvelopeIcon, MapPinIcon } from "@heroicons/react/24/outline";
 
 const exploreLinks = [
   { label: "All properties", href: "/explore" },
@@ -27,11 +28,15 @@ export function Footer() {
         <div className="grid gap-10 py-14 sm:grid-cols-2 lg:grid-cols-4">
           {/* Brand */}
           <div className="sm:col-span-2 lg:col-span-1">
-            <Link href="/" className="inline-flex items-center gap-2.5">
-              <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-emerald-600">
-                <HomeModernIcon className="h-5 w-5 text-white" strokeWidth={2} />
-              </div>
-              <span className="text-base font-extrabold tracking-tight text-white">
+            <Link href="/" className="inline-flex items-center gap-3">
+              <Image
+                src="/logo_no_bg.png"
+                alt="Rentora Houselink logo"
+                width={40}
+                height={40}
+                className="h-10 w-10 object-contain invert brightness-0"
+              />
+              <span className="text-xl font-extrabold tracking-tight text-white">
                 Rentora<span className="text-emerald-400"> Houselink UG</span>
               </span>
             </Link>
@@ -155,7 +160,7 @@ export function Footer() {
   );
 }
 
-// ── Custom SVG Icons ─────────────────────────────────────────────────────────
+// ── Custom SVG Icons ──
 
 function AppleIcon({ className }: { className?: string }) {
   return (

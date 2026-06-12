@@ -6,7 +6,7 @@ import { Footer } from "@/components/layout/Footer";
 import { AuthProvider } from "@/lib/auth/auth-context";
 import { NotificationProvider } from "@/lib/notifications/notification-context";
 import NextTopLoader from "nextjs-toploader";
-import { ThemeProvider } from "@/components/theme-provider";
+import { ThemeProvider } from "@/components/shared/theme-provider";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",

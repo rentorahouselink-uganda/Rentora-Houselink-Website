@@ -18,20 +18,20 @@ export function BookingSuccess({ property, cancellationToken }: BookingSuccessPr
   return (
     <div className="py-8 text-center">
       {/* Icon */}
-      <div className="mx-auto mb-6 flex h-20 w-20 items-center justify-center rounded-full bg-emerald-50">
-        <CheckCircleIcon className="h-10 w-10 text-emerald-600" />
+      <div className="mx-auto mb-6 flex h-20 w-20 items-center justify-center rounded-full bg-emerald-50 dark:bg-emerald-900/30">
+        <CheckCircleIcon className="h-10 w-10 text-emerald-600 dark:text-emerald-500" />
       </div>
 
-      <h1 className="text-2xl font-extrabold text-slate-900">Request Submitted!</h1>
-      <p className="mt-3 text-slate-600 leading-relaxed">
+      <h1 className="text-2xl font-extrabold text-slate-900 dark:text-white">Request Submitted!</h1>
+      <p className="mt-3 text-slate-600 dark:text-slate-400 leading-relaxed">
         Your booking request for{" "}
-        <strong className="text-slate-900">{property.title}</strong> has been
+        <strong className="text-slate-900 dark:text-white">{property.title}</strong> has been
         sent. The property contact will reach out to you shortly.
       </p>
 
       {/* What happens next */}
-      <div className="mt-8 rounded-2xl border border-slate-200 bg-white p-6 text-left">
-        <h2 className="mb-5 font-bold text-slate-900">What happens next?</h2>
+      <div className="mt-8 rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-6 text-left">
+        <h2 className="mb-5 font-bold text-slate-900 dark:text-white">What happens next?</h2>
         <div className="space-y-4">
           {[
             {
@@ -48,10 +48,10 @@ export function BookingSuccess({ property, cancellationToken }: BookingSuccessPr
             },
           ].map(({ Icon, text }, i) => (
             <div key={i} className="flex gap-3">
-              <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-slate-100">
-                <Icon className="h-4 w-4 text-slate-600" />
+              <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-slate-100 dark:bg-slate-800">
+                <Icon className="h-4 w-4 text-slate-600 dark:text-slate-400" />
               </div>
-              <p className="pt-1.5 text-sm leading-relaxed text-slate-600">
+              <p className="pt-1.5 text-sm leading-relaxed text-slate-600 dark:text-slate-300">
                 {text}
               </p>
             </div>
@@ -61,11 +61,11 @@ export function BookingSuccess({ property, cancellationToken }: BookingSuccessPr
 
       {/* Cancellation token */}
       {cancellationToken && (
-        <div className="mt-4 rounded-xl border border-amber-200 bg-amber-50 p-4 text-left">
-          <p className="mb-1 text-xs font-bold uppercase tracking-wide text-amber-700">
+        <div className="mt-4 rounded-xl border border-amber-200 dark:border-amber-900/50 bg-amber-50 dark:bg-amber-950/30 p-4 text-left">
+          <p className="mb-1 text-xs font-bold uppercase tracking-wide text-amber-700 dark:text-amber-500">
             Cancellation Token — save this
           </p>
-          <p className="break-all font-mono text-sm font-semibold text-amber-900">
+          <p className="break-all font-mono text-sm font-semibold text-amber-900 dark:text-amber-300">
             {cancellationToken}
           </p>
         </div>
@@ -81,7 +81,7 @@ export function BookingSuccess({ property, cancellationToken }: BookingSuccessPr
         </Link>
         <Link
           href={`/properties/${property.id}`}
-          className="block w-full rounded-xl border-2 border-slate-200 bg-white px-6 py-3.5 text-center text-sm font-bold text-slate-900 transition hover:border-slate-300 hover:bg-slate-50"
+          className="block w-full rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 px-6 py-3.5 text-center text-sm font-bold text-slate-900 dark:text-white transition hover:bg-slate-50 dark:hover:bg-slate-800"
         >
           Back to listing
         </Link>

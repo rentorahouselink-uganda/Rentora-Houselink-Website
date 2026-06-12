@@ -4,8 +4,6 @@ import { FormEvent, useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { EyeIcon, EyeSlashIcon } from "@heroicons/react/24/outline";
-import { AuthLayout } from "@/components/auth/AuthLayout";
-import { AuthInput } from "@/components/auth/AuthInput";
 import { useAuth } from "@/lib/auth/auth-context";
 
 export default function LoginPage() {
@@ -18,7 +16,6 @@ export default function LoginPage() {
   const [error,    setError]    = useState("");
   const [loading,  setLoading]  = useState(false);
 
-  // Already logged in → go to browse
   useEffect(() => {
     if (!authLoading && isAuthenticated) router.replace("/explore");
   }, [authLoading, isAuthenticated, router]);
@@ -41,90 +38,103 @@ export default function LoginPage() {
     }
   }
 
+  const inputClass = "w-full rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 px-4 py-3.5 text-sm text-slate-900 dark:text-white outline-none transition placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20 disabled:opacity-60 disabled:cursor-not-allowed";
+
   return (
-    <AuthLayout>
-      {/* Header */}
-      <div className="mb-8">
-        <h1 className="text-2xl font-extrabold tracking-tight text-slate-900">
-          Welcome back
-        </h1>
-        <p className="mt-1 text-sm text-slate-500">
-          Sign in to continue your property search.
+    <main className="min-h-[calc(100vh-64px)] flex items-center justify-center bg-slate-50 dark:bg-slate-950 py-12 px-4 sm:px-6 lg:px-8">
+      <div className="w-full max-w-md space-y-8">
+        
+        {/* Header */}
+        <div className="text-center">
+          <h1 className="text-3xl font-extrabold tracking-tight text-slate-900 dark:text-white">
+            Welcome back
+          </h1>
+          <p className="mt-2 text-sm text-slate-500 dark:text-slate-400">
+            Sign in to continue your property search.
+          </p>
+        </div>
+
+        {/* Error banner */}
+        {error && (
+          <div className="rounded-xl border border-red-200 dark:border-red-900/50 bg-red-50 dark:bg-red-950/30 px-4 py-3 text-sm font-medium text-red-700 dark:text-red-400">
+            {error}
+          </div>
+        )}
+
+        <form onSubmit={handleSubmit} noValidate className="space-y-5">
+          <div>
+            <label className="mb-2 block text-sm font-bold text-slate-700 dark:text-slate-300">
+              Email address
+            </label>
+            <input
+              type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              placeholder="you@example.com"
+              autoComplete="email"
+              disabled={loading}
+              required
+              className={inputClass}
+            />
+          </div>
+
+          <div>
+            <label className="mb-2 block text-sm font-bold text-slate-700 dark:text-slate-300">
+              Password
+            </label>
+            <div className="relative">
+              <input
+                type={showPw ? "text" : "password"}
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                placeholder="Enter your password"
+                autoComplete="current-password"
+                disabled={loading}
+                required
+                className={`${inputClass} pr-12`}
+              />
+              <button
+                type="button"
+                onClick={() => setShowPw((v) => !v)}
+                className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 dark:hover:text-slate-300 transition"
+                tabIndex={-1}
+              >
+                {showPw ? <EyeSlashIcon className="h-5 w-5" /> : <EyeIcon className="h-5 w-5" />}
+              </button>
+            </div>
+          </div>
+
+          <div className="flex justify-end">
+            <Link
+              href="/forgot-password"
+              className="text-sm font-bold text-emerald-600 hover:text-emerald-700 dark:text-emerald-500 dark:hover:text-emerald-400 transition"
+            >
+              Forgot password?
+            </Link>
+          </div>
+
+          <button
+            type="submit"
+            disabled={loading}
+            className="flex w-full items-center justify-center gap-2 rounded-xl bg-emerald-600 py-4 text-base font-bold text-white transition hover:bg-emerald-700 focus:outline-none focus:ring-4 focus:ring-emerald-600/20 disabled:opacity-60 disabled:cursor-not-allowed"
+          >
+            {loading && (
+              <svg className="h-5 w-5 animate-spin" viewBox="0 0 24 24" fill="none">
+                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
+              </svg>
+            )}
+            {loading ? "Signing in…" : "Sign In"}
+          </button>
+        </form>
+
+        <p className="text-center text-sm text-slate-500 dark:text-slate-400">
+          Don&apos;t have an account?{" "}
+          <Link href="/register" className="font-bold text-emerald-600 hover:text-emerald-700 dark:text-emerald-500 dark:hover:text-emerald-400 transition">
+            Create one
+          </Link>
         </p>
       </div>
-
-      {/* Error banner */}
-      {error && (
-        <div className="mb-5 rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
-          {error}
-        </div>
-      )}
-
-      <form onSubmit={handleSubmit} noValidate className="space-y-4">
-        <AuthInput
-          label="Email address"
-          type="email"
-          value={email}
-          onChange={setEmail}
-          placeholder="you@example.com"
-          autoComplete="email"
-          disabled={loading}
-          required
-        />
-
-        <AuthInput
-          label="Password"
-          type={showPw ? "text" : "password"}
-          value={password}
-          onChange={setPassword}
-          placeholder="Enter your password"
-          autoComplete="current-password"
-          disabled={loading}
-          required
-          suffix={
-            <button
-              type="button"
-              onClick={() => setShowPw((v) => !v)}
-              className="text-slate-400 hover:text-slate-600 transition"
-              tabIndex={-1}
-            >
-              {showPw
-                ? <EyeSlashIcon className="h-5 w-5" />
-                : <EyeIcon className="h-5 w-5" />}
-            </button>
-          }
-        />
-
-        <div className="flex justify-end">
-          <Link
-            href="/forgot-password"
-            className="text-sm font-medium text-emerald-600 hover:text-emerald-700 transition"
-          >
-            Forgot password?
-          </Link>
-        </div>
-
-        <button
-          type="submit"
-          disabled={loading}
-          className="flex w-full items-center justify-center gap-2 rounded-xl bg-emerald-600 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-emerald-700 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2 disabled:opacity-60 disabled:cursor-not-allowed"
-        >
-          {loading && (
-            <svg className="h-4 w-4 animate-spin" viewBox="0 0 24 24" fill="none">
-              <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
-              <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
-            </svg>
-          )}
-          {loading ? "Signing in…" : "Sign In"}
-        </button>
-      </form>
-
-      <p className="mt-6 text-center text-sm text-slate-500">
-        Don&apos;t have an account?{" "}
-        <Link href="/register" className="font-semibold text-emerald-600 hover:text-emerald-700 transition">
-          Create one
-        </Link>
-      </p>
-    </AuthLayout>
+    </main>
   );
 }
