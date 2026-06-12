@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { PropertyCard } from "@/components/properties/PropertyCard";
 import { PropertyFilters } from "@/components/properties/PropertyFilters";
 import { PropertyPagination } from "@/components/properties/PropertyPagination";
@@ -9,22 +9,33 @@ import { PaginationMeta } from "@/types/pagination";
 import { Property } from "@/types/property";
 import { ExclamationTriangleIcon } from "@heroicons/react/24/outline";
 import { useHeaderCompact } from "../layout/header-compact-context";
-import { ExplorePendingProvider, useExplorePending } from "./explore-pending-context";
+import {
+  ExplorePendingProvider,
+  useExplorePending,
+} from "./explore-pending-context";
 
 type ExplorePageProps = {
-  properties:         Property[];
-  meta:               PaginationMeta;
-  searchParams:       Record<string, string | string[] | undefined>;
+  properties: Property[];
+  meta: PaginationMeta;
+  searchParams: Record<string, string | string[] | undefined>;
   featuredProperties: Property[];
-  error?:             string;
+  error?: string;
 };
 
 const FILTER_KEYS = [
-  "search", "type", "listingPurpose", "districtId",
-  "universityId", "minPrice", "maxPrice", "numberOfRooms",
+  "search",
+  "type",
+  "listingPurpose",
+  "districtId",
+  "universityId",
+  "minPrice",
+  "maxPrice",
+  "numberOfRooms",
 ];
 
-function isFiltered(params: Record<string, string | string[] | undefined>): boolean {
+function isFiltered(
+  params: Record<string, string | string[] | undefined>,
+): boolean {
   return FILTER_KEYS.some((key) => {
     const v = params[key];
     return v !== undefined && v !== "" && v !== null;
@@ -33,6 +44,11 @@ function isFiltered(params: Record<string, string | string[] | undefined>): bool
 
 const COMPACT_THRESHOLD = 60;
 const SCROLL_DELTA = 20;
+
+// Use a layout effect only on the client so we can read the restored scroll
+// position before paint, without triggering a server-side warning.
+const useIsomorphicLayoutEffect =
+  typeof window !== "undefined" ? useLayoutEffect : useEffect;
 
 export function ExplorePage(props: ExplorePageProps) {
   return (
@@ -49,21 +65,22 @@ function ExplorePageContent({
   featuredProperties,
   error,
 }: ExplorePageProps) {
-  // Initialize based on the *actual* scroll position at mount time.
-  // This matters when returning from a detail page where the browser
-  // restores the previous scroll offset — without this, the header
-  // would render expanded for a frame at a scroll position where it
-  // should already be compact, causing an immediate layout-shift loop.
-  const [isCompact, setIsCompact] = useState<boolean>(() => {
-    if (typeof window === "undefined") return false;
-    return window.scrollY > COMPACT_THRESHOLD;
-  });
+  // Start from a deterministic SSR-safe value, then sync to the real scroll
+  // position immediately after mount. This avoids hydration mismatch when the
+  // browser restores scroll position on back/forward navigation.
+  const [isCompact, setIsCompact] = useState(false);
 
   const lastScrollY = useRef(0);
-  const tickingRef  = useRef(false);
+  const tickingRef = useRef(false);
 
   const { setIsHeaderCompact } = useHeaderCompact();
   const { isPending } = useExplorePending();
+
+  useIsomorphicLayoutEffect(() => {
+    const y = window.scrollY;
+    lastScrollY.current = y;
+    setIsCompact(y > COMPACT_THRESHOLD);
+  }, []);
 
   // Mirror this page's compact state up to the global Header so its
   // bottom border can fade out and the two bars read as one piece.
@@ -74,8 +91,6 @@ function ExplorePageContent({
   }, [isCompact, setIsHeaderCompact]);
 
   useEffect(() => {
-    lastScrollY.current = window.scrollY;
-
     const handleScroll = () => {
       if (tickingRef.current) return;
       tickingRef.current = true;
@@ -120,14 +135,13 @@ function ExplorePageContent({
     // anchoring, causing the toggle to immediately flip back.
   }, []);
 
-  const filtered   = isFiltered(searchParams);
-  const showBadge  = !error && filtered;
+  const filtered = isFiltered(searchParams);
+  const showBadge = !error && filtered;
 
   return (
     <main
       className="min-h-screen bg-slate-50 pb-12 dark:bg-slate-950 [overflow-anchor:none]"
     >
-
       {/* ── 1. Featured Banner ── */}
       {featuredProperties.length > 0 && !error && (
         <FeaturedBanner properties={featuredProperties} />
@@ -143,7 +157,6 @@ function ExplorePageContent({
         ].join(" ")}
       >
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-
           {/* Title section — collapses on scroll-down */}
           <div
             className={[
@@ -160,7 +173,9 @@ function ExplorePageContent({
                 </h1>
                 <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">
                   {filtered
-                    ? `${meta.total.toLocaleString()} ${meta.total === 1 ? "property" : "properties"} found`
+                    ? `${meta.total.toLocaleString()} ${
+                        meta.total === 1 ? "property" : "properties"
+                      } found`
                     : "Verified properties across Uganda"}
                 </p>
               </div>
@@ -194,9 +209,16 @@ function ExplorePageContent({
       >
         {error ? (
           <div className="flex flex-col items-center justify-center rounded-2xl border border-red-200 bg-red-50 px-6 py-16 text-center dark:border-red-900 dark:bg-red-950/30">
-            <ExclamationTriangleIcon className="mb-4 h-12 w-12 text-red-500" strokeWidth={1.5} />
-            <h2 className="text-lg font-bold text-red-800 dark:text-red-400">Connection Error</h2>
-            <p className="mt-2 max-w-md text-sm text-red-600 dark:text-red-300">{error}</p>
+            <ExclamationTriangleIcon
+              className="mb-4 h-12 w-12 text-red-500"
+              strokeWidth={1.5}
+            />
+            <h2 className="text-lg font-bold text-red-800 dark:text-red-400">
+              Connection Error
+            </h2>
+            <p className="mt-2 max-w-md text-sm text-red-600 dark:text-red-300">
+              {error}
+            </p>
             <button
               onClick={() => window.location.reload()}
               className="mt-6 rounded-lg bg-red-600 px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-red-700"
