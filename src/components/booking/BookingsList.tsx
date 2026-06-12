@@ -1,8 +1,8 @@
 "use client";
 
-import { useEffect, useMemo, useState, useCallback } from "react";
+import { useEffect, useState, useCallback } from "react";
 import Link from "next/link";
-import { ReceiptRefundIcon } from "@heroicons/react/24/outline";
+import { ReceiptRefundIcon, XCircleIcon } from "@heroicons/react/24/outline";
 import { BookingCard } from "./BookingCard";
 import type { SavedBooking, BookingFilterTab } from "@/types/booking";
 import { getAllBookings, markBookingCancelled } from "@/lib/bookings-storage";
@@ -12,6 +12,7 @@ import {
   getMyBookings,
 } from "@/lib/api/bookings";
 import { useAuth } from "@/lib/auth/auth-context";
+import { ConfirmModal } from "@/components/shared/ConfirmModal";
 
 // ── Filter tab pill ──
 function FilterPill({
@@ -47,63 +48,6 @@ function FilterPill({
         {count}
       </span>
     </button>
-  );
-}
-
-// ── Confirmation dialog ──
-function CancelDialog({
-  booking,
-  isCancelling,
-  error,
-  onConfirm,
-  onClose,
-}: {
-  booking: SavedBooking;
-  isCancelling: boolean;
-  error: string | null;
-  onConfirm: () => void;
-  onClose: () => void;
-}) {
-  return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-      <div
-        className="absolute inset-0 bg-slate-900/50 backdrop-blur-sm"
-        onClick={!isCancelling ? onClose : undefined}
-      />
-      <div className="relative w-full max-w-md rounded-2xl border border-slate-200 bg-white p-6 shadow-2xl dark:border-slate-800 dark:bg-slate-900">
-        <h3 className="text-lg font-extrabold text-slate-900 dark:text-white">
-          Cancel Booking?
-        </h3>
-        <p className="mt-2 text-sm leading-relaxed text-slate-600 dark:text-slate-400">
-          Are you sure you want to cancel your request for{" "}
-          <span className="font-semibold capitalize text-slate-900 dark:text-white">
-            {booking.propertyTitle.toLowerCase()}
-          </span>
-          ? This action cannot be undone.
-        </p>
-        {error && (
-          <p className="mt-3 rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700 dark:border-red-900 dark:bg-red-950/30 dark:text-red-400">
-            {error}
-          </p>
-        )}
-        <div className="mt-6 flex justify-end gap-3">
-          <button
-            onClick={onClose}
-            disabled={isCancelling}
-            className="rounded-xl px-4 py-2.5 text-sm font-semibold text-slate-700 transition hover:bg-slate-100 disabled:opacity-50 dark:text-slate-300 dark:hover:bg-slate-800"
-          >
-            Keep Booking
-          </button>
-          <button
-            onClick={onConfirm}
-            disabled={isCancelling}
-            className="rounded-xl bg-red-600 px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-red-700 disabled:opacity-60"
-          >
-            {isCancelling ? "Cancelling…" : "Yes, Cancel"}
-          </button>
-        </div>
-      </div>
-    </div>
   );
 }
 
@@ -279,6 +223,11 @@ export function BookingsList() {
 
   const isGuestView = !isAuthenticated;
 
+  // Format the modal description safely handling empty states
+  const cancelDescription = cancelError 
+    ? `Error: ${cancelError}` 
+    : `Are you sure you want to cancel your request for ${pendingCancel?.propertyTitle?.toLowerCase()}? This action cannot be undone.`;
+
   return (
     <>
       <div className="min-h-screen bg-slate-50 dark:bg-slate-950">
@@ -368,20 +317,23 @@ export function BookingsList() {
         </div>
       </div>
 
-      {pendingCancel && (
-        <CancelDialog
-          booking={pendingCancel}
-          isCancelling={isCancelling}
-          error={cancelError}
-          onConfirm={handleCancelConfirm}
-          onClose={() => {
-            if (!isCancelling) {
-              setPendingCancel(null);
-              setCancelError(null);
-            }
-          }}
-        />
-      )}
+      <ConfirmModal
+        isOpen={!!pendingCancel}
+        onClose={() => {
+          if (!isCancelling) {
+            setPendingCancel(null);
+            setCancelError(null);
+          }
+        }}
+        onConfirm={handleCancelConfirm}
+        title="Cancel Booking?"
+        description={cancelDescription}
+        confirmText="Yes, Cancel"
+        cancelText="Keep Booking"
+        isLoading={isCancelling}
+        isDanger={true}
+        icon={<XCircleIcon className="h-6 w-6" strokeWidth={2} />}
+      />
     </>
   );
 }
