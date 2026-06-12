@@ -8,6 +8,7 @@ import { FeaturedBanner } from "@/components/properties/FeaturedBanner";
 import { PaginationMeta } from "@/types/pagination";
 import { Property } from "@/types/property";
 import { ExclamationTriangleIcon } from "@heroicons/react/24/outline";
+import { useHeaderCompact } from "../layout/header-compact-context";
 
 type ExplorePageProps = {
   properties:         Property[];
@@ -29,6 +30,9 @@ function isFiltered(params: Record<string, string | string[] | undefined>): bool
   });
 }
 
+const COMPACT_THRESHOLD = 60;
+const SCROLL_DELTA = 20;
+
 export function ExplorePage({
   properties,
   meta,
@@ -36,48 +40,83 @@ export function ExplorePage({
   featuredProperties,
   error,
 }: ExplorePageProps) {
-  const [isCompact, setIsCompact] = useState(false);
+  // Initialize based on the *actual* scroll position at mount time.
+  // This matters when returning from a detail page where the browser
+  // restores the previous scroll offset — without this, the header
+  // would render expanded for a frame at a scroll position where it
+  // should already be compact, causing an immediate layout-shift loop.
+  const [isCompact, setIsCompact] = useState<boolean>(() => {
+    if (typeof window === "undefined") return false;
+    return window.scrollY > COMPACT_THRESHOLD;
+  });
+
   const lastScrollY = useRef(0);
+  const tickingRef  = useRef(false);
+
+  const { setIsHeaderCompact } = useHeaderCompact();
+
+  // Mirror this page's compact state up to the global Header so its
+  // bottom border can fade out and the two bars read as one piece.
+  // Reset on unmount so navigating away restores the header's normal border.
+  useEffect(() => {
+    setIsHeaderCompact(isCompact);
+    return () => setIsHeaderCompact(false);
+  }, [isCompact, setIsHeaderCompact]);
 
   useEffect(() => {
     lastScrollY.current = window.scrollY;
 
-    const onScroll = () => {
-      const y = window.scrollY;
+    const handleScroll = () => {
+      if (tickingRef.current) return;
+      tickingRef.current = true;
 
-      // 1. Mobile rubber-banding protection
-      if (y <= 0) return; 
+      requestAnimationFrame(() => {
+        const y = window.scrollY;
 
-      // 2. Safety Net: Always snap open if we are near the very top
-      if (y < 60) {
-        if (isCompact) setIsCompact(false);
-        lastScrollY.current = y;
-        return;
-      }
+        // 1. Mobile rubber-banding protection
+        if (y <= 0) {
+          tickingRef.current = false;
+          return;
+        }
 
-      const diff = y - lastScrollY.current;
+        // 2. Safety net: always snap open near the very top
+        if (y < COMPACT_THRESHOLD) {
+          setIsCompact((prev) => (prev ? false : prev));
+          lastScrollY.current = y;
+          tickingRef.current = false;
+          return;
+        }
 
-      // 3. Deliberate scrolling thresholds (20px instead of 3px)
-      if (diff > 20) {
-        // Scrolled down deliberately
-        setIsCompact(true);
-        lastScrollY.current = y; // Reset anchor only when threshold is hit
-      } else if (diff < -20) {
-        // Scrolled up deliberately
-        setIsCompact(false);
-        lastScrollY.current = y; // Reset anchor only when threshold is hit
-      }
+        const diff = y - lastScrollY.current;
+
+        // 3. Deliberate scrolling thresholds
+        if (diff > SCROLL_DELTA) {
+          setIsCompact((prev) => (prev ? prev : true));
+          lastScrollY.current = y;
+        } else if (diff < -SCROLL_DELTA) {
+          setIsCompact((prev) => (prev ? false : prev));
+          lastScrollY.current = y;
+        }
+
+        tickingRef.current = false;
+      });
     };
 
-    window.addEventListener("scroll", onScroll, { passive: true });
-    return () => window.removeEventListener("scroll", onScroll);
-  }, [isCompact]); // <-- Added isCompact to dependency array so the top safety net works
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    return () => window.removeEventListener("scroll", handleScroll);
+    // Intentionally no deps: handler must stay stable across isCompact
+    // changes, otherwise every toggle re-anchors lastScrollY against a
+    // scroll position the browser may have just shifted via scroll
+    // anchoring, causing the toggle to immediately flip back.
+  }, []);
 
   const filtered   = isFiltered(searchParams);
   const showBadge  = !error && filtered;
 
   return (
-    <main className="min-h-screen bg-slate-50 pb-12 dark:bg-slate-950">
+    <main
+      className="min-h-screen bg-slate-50 pb-12 dark:bg-slate-950 [overflow-anchor:none]"
+    >
 
       {/* ── 1. Featured Banner ── */}
       {featuredProperties.length > 0 && !error && (
@@ -85,7 +124,14 @@ export function ExplorePage({
       )}
 
       {/* ── 2. Sticky header + filters ── */}
-      <div className="sticky top-16 z-20 border-b border-slate-200 bg-white/95 backdrop-blur-md dark:border-slate-700 dark:bg-slate-900/95">
+      <div
+        className={[
+          "sticky top-16 z-40 border-b bg-white/95 backdrop-blur-md transition-colors duration-300 dark:bg-slate-900/95",
+          isCompact
+            ? "border-transparent shadow-none"
+            : "border-slate-200 shadow-sm dark:border-slate-700",
+        ].join(" ")}
+      >
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
 
           {/* Title section — collapses on scroll-down */}

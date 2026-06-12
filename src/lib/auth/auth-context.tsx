@@ -13,6 +13,16 @@ import { authApi } from "@/lib/api/auth";
 const TOKEN_KEY = "rh_token";
 const USER_KEY  = "rh_user";
 
+// ── Standalone Helper ─────────────────────────────────────────────────────────
+
+// Exported so non-React files (like API utilities) can grab the token safely
+export function getAuthToken(): string | null {
+  if (typeof window !== "undefined") {
+    return localStorage.getItem(TOKEN_KEY);
+  }
+  return null;
+}
+
 // ── Types ─────────────────────────────────────────────────────────────────────
 
 type AuthContextValue = {

@@ -1,6 +1,7 @@
 "use client";
 
-import { useEffect, ReactNode } from "react";
+import { useEffect, useState, ReactNode } from "react";
+import { createPortal } from "react-dom";
 
 type ConfirmModalProps = {
   isOpen: boolean;
@@ -27,6 +28,12 @@ export function ConfirmModal({
   isLoading = false,
   isDanger = true,
 }: ConfirmModalProps) {
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === "Escape" && !isLoading) onClose();
@@ -41,9 +48,10 @@ export function ConfirmModal({
     };
   }, [isOpen, isLoading, onClose]);
 
-  if (!isOpen) return null;
+  // Ensure we don't try to render the portal on the server, and only when open
+  if (!isOpen || !mounted) return null;
 
-  return (
+  const modalContent = (
     <div className="fixed inset-0 z-[100] flex items-center justify-center px-4">
       {/* Subtle backdrop */}
       <div 
@@ -96,4 +104,6 @@ export function ConfirmModal({
       </div>
     </div>
   );
+
+  return createPortal(modalContent, document.body);
 }

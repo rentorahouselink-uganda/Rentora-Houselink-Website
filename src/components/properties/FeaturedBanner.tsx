@@ -122,7 +122,7 @@ export function FeaturedBanner({ properties }: { properties: Property[] }) {
         <div className="flex items-center gap-2">
           <span className="inline-flex items-center gap-1.5 rounded-full bg-amber-400 px-3 py-1.5 text-xs font-bold text-slate-950">
             <StarIcon className="h-3 w-3" strokeWidth={2.5} />
-            Featured {isSingle ? "Property" : "Properties"}
+            Recommended
           </span>
           {hasVideo && (
             <span className="inline-flex items-center gap-1 rounded-full bg-white/15 px-2.5 py-1.5 text-xs font-semibold text-white backdrop-blur-sm">

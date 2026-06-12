@@ -18,6 +18,7 @@ import { useAuth } from "@/lib/auth/auth-context";
 import { useNotifications } from "@/lib/notifications/notification-context";
 import { useTheme } from "next-themes";
 import { ConfirmModal } from "@/components/shared/ConfirmModal";
+import { useHeaderCompact } from "./header-compact-context";
 
 const navLinks = [
   { label: "Explore",      href: "/explore" },
@@ -88,6 +89,7 @@ export function Header() {
   const { user, isAuthenticated, isLoading, logout } = useAuth();
   const { unreadCount } = useNotifications();
   const dropdownRef = useRef<HTMLDivElement>(null);
+  const { isHeaderCompact } = useHeaderCompact();
 
   useEffect(() => {
     function onOutside(e: MouseEvent) {
@@ -124,8 +126,15 @@ export function Header() {
         isDanger={true}
         icon={<ArrowRightStartOnRectangleIcon className="h-6 w-6" strokeWidth={2} />}
       />
-      
-      <header className="sticky top-0 z-50 border-b border-slate-200 bg-white/95 backdrop-blur-md dark:border-slate-700 dark:bg-slate-900/95">
+
+      <header
+        className={[
+          "sticky top-0 z-50 border-b bg-white/95 backdrop-blur-md transition-colors duration-300 dark:bg-slate-900/95",
+          isHeaderCompact
+            ? "border-transparent"
+            : "border-slate-200 dark:border-slate-700",
+        ].join(" ")}
+      >
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="flex h-16 items-center justify-between gap-4">
 

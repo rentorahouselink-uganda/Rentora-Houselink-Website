@@ -7,6 +7,7 @@ import { AuthProvider } from "@/lib/auth/auth-context";
 import { NotificationProvider } from "@/lib/notifications/notification-context";
 import NextTopLoader from "nextjs-toploader";
 import { ThemeProvider } from "@/components/shared/theme-provider";
+import { HeaderCompactProvider } from "@/components/layout/header-compact-context";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -26,7 +27,7 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body className="antialiased bg-background text-foreground dark:bg-slate-950 dark:text-slate-50">
+      <body className="antialiased bg-background text-foreground dark:bg-slate-950 dark:text-slate-50 [overflow-anchor:none]">
         <NextTopLoader 
           color="#059669" 
           initialPosition={0.08} 
@@ -41,8 +42,10 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
           <AuthProvider>
             <NotificationProvider>
-              <Header />
-              {children}
+              <HeaderCompactProvider>
+                <Header />
+                {children}
+              </HeaderCompactProvider>
               <Footer />
             </NotificationProvider>
           </AuthProvider>
