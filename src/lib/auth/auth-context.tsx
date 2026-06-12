@@ -9,7 +9,7 @@ import {
   type ReactNode,
 } from "react";
 import { AuthUser } from "@/types/auth";
-import { authApi } from "@/lib/api/auth";
+import { authApi, type AppleAuthUserPayload } from "@/lib/api/auth";
 import {
   clearGuestBookings,
   getGuestBookingSyncPayload,
@@ -39,6 +39,11 @@ type AuthContextValue = {
   isAuthenticated: boolean;
   isSyncingGuestBookings: boolean;
   login: (email: string, password: string) => Promise<void>;
+  loginWithGoogle: (idToken: string) => Promise<void>;
+  loginWithApple: (
+    identityToken: string,
+    user?: AppleAuthUserPayload,
+  ) => Promise<void>;
   register: (name: string, email: string, password: string) => Promise<void>;
   logout: () => void;
   forgotPassword: (email: string) => Promise<void>;
@@ -143,6 +148,19 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     persist(res.accessToken, res.user);
   }
 
+  async function loginWithGoogle(idToken: string) {
+    const res = await authApi.googleLogin(idToken);
+    persist(res.accessToken, res.user);
+  }
+
+  async function loginWithApple(
+    identityToken: string,
+    socialUser?: AppleAuthUserPayload,
+  ) {
+    const res = await authApi.appleLogin(identityToken, socialUser);
+    persist(res.accessToken, res.user);
+  }
+
   async function register(name: string, email: string, password: string) {
     const res = await authApi.register(name, email, password);
     persist(res.accessToken, res.user);
@@ -187,6 +205,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         isAuthenticated: user !== null,
         isSyncingGuestBookings,
         login,
+        loginWithGoogle,
+        loginWithApple,
         register,
         logout,
         forgotPassword,

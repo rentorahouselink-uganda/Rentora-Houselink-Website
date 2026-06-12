@@ -34,6 +34,16 @@ async function apiFetch<T>(path: string, opts: FetchOpts = {}): Promise<T> {
   return res.json() as Promise<T>;
 }
 
+export type GoogleLoginResponse = AuthResponse;
+
+export type AppleAuthUserPayload = {
+  name?: {
+    firstName?: string;
+    lastName?: string;
+  };
+  email?: string;
+};
+
 export const authApi = {
   login: (email: string, password: string) =>
     apiFetch<AuthResponse>("/auth/login", {
@@ -45,6 +55,18 @@ export const authApi = {
     apiFetch<AuthResponse>("/auth/register", {
       method: "POST",
       body: JSON.stringify({ name, email, password }),
+    }),
+
+  googleLogin: (idToken: string) =>
+    apiFetch<AuthResponse>("/auth/google", {
+      method: "POST",
+      body: JSON.stringify({ idToken }),
+    }),
+
+  appleLogin: (identityToken: string, user?: AppleAuthUserPayload) =>
+    apiFetch<AuthResponse>("/auth/apple", {
+      method: "POST",
+      body: JSON.stringify({ identityToken, user }),
     }),
 
   forgotPassword: (email: string) =>
