@@ -5,7 +5,8 @@ import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
 import { AuthProvider } from "@/lib/auth/auth-context";
 import { NotificationProvider } from "@/lib/notifications/notification-context";
-import NextTopLoader from "nextjs-toploader"; // ── 1. Import the top loader
+import NextTopLoader from "nextjs-toploader";
+import { ThemeProvider } from "@/components/theme-provider";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -24,9 +25,8 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en">
-      <body className="antialiased">
-        {/* ── 2. Add the loader at the top of your body ── */}
+    <html lang="en" suppressHydrationWarning>
+      <body className="antialiased bg-background text-foreground dark:bg-slate-950 dark:text-slate-50">
         <NextTopLoader 
           color="#059669" 
           initialPosition={0.08} 
@@ -38,14 +38,15 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           speed={200} 
           shadow="0 0 10px #059669,0 0 5px #059669" 
         />
-        
-        <AuthProvider>
-          <NotificationProvider>
-            <Header />
-            {children}
-            <Footer />
-          </NotificationProvider>
-        </AuthProvider>
+        <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
+          <AuthProvider>
+            <NotificationProvider>
+              <Header />
+              {children}
+              <Footer />
+            </NotificationProvider>
+          </AuthProvider>
+        </ThemeProvider>
       </body>
     </html>
   );

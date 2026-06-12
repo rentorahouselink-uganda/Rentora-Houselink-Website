@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import {
   ChevronLeftIcon,
@@ -25,8 +25,9 @@ export function FeaturedBanner({ properties }: { properties: Property[] }) {
 
   const [current, setCurrent] = useState(0);
   const [paused, setPaused] = useState(false);
+  const videoRef = useRef<HTMLVideoElement>(null);
 
-  // Auto-advance — restarts cleanly when paused state changes
+  // Auto-advance for multi-slide only
   useEffect(() => {
     if (count <= 1 || paused) return;
     const id = setInterval(
@@ -41,52 +42,87 @@ export function FeaturedBanner({ properties }: { properties: Property[] }) {
     [count],
   );
 
+  // Single property: auto‑play video if exists
+  useEffect(() => {
+    if (count !== 1) return;
+    const property = slides[0];
+    if ((property.videos ?? []).length > 0) {
+      videoRef.current?.play().catch(() => {});
+    }
+  }, [count, slides]);
+
+  // Single property with multiple images: cycle images
+  const [imageIndex, setImageIndex] = useState(0);
+  useEffect(() => {
+    if (count !== 1) return;
+    const property = slides[0];
+    const images = property.images ?? [];
+    if (images.length > 1) {
+      const id = setInterval(() => {
+        setImageIndex((prev) => (prev + 1) % images.length);
+      }, 4000);
+      return () => clearInterval(id);
+    }
+  }, [count, slides]);
+
   if (count === 0) return null;
 
   const property = slides[current];
-  const imageUrl = getPropertyImage(property);
-  const location = getPropertyLocation(property);
+  const isSingle = count === 1;
   const hasVideo = (property.videos ?? []).length > 0;
+
+  // Get image for the current slide, but for single+multi image use imageIndex
+  let displayImage: string | undefined;
+  if (isSingle) {
+    const images = property.images ?? [];
+    if (hasVideo) {
+      // will show video, but also fallback image
+      displayImage = images.length > 0 ? images[0]?.url : undefined;
+    } else if (images.length > 0) {
+      displayImage = images[imageIndex % images.length]?.url;
+    }
+  } else {
+    displayImage = getPropertyImage(property);
+  }
+
+  const location = getPropertyLocation(property);
 
   return (
     <section
       aria-label="Featured properties"
-      className="relative h-[440px] select-none overflow-hidden bg-slate-900"
+      className="relative h-[440px] lg:h-[500px] xl:max-h-[600px] select-none overflow-hidden bg-slate-900"
       onMouseEnter={() => setPaused(true)}
       onMouseLeave={() => setPaused(false)}
     >
-      {/* ── Background slides (all pre-rendered for instant crossfade) ── */}
-      {slides.map((p, i) => {
-        const img = getPropertyImage(p);
-        return (
-          <div
-            key={p.id}
-            aria-hidden={i !== current}
-            className={[
-              "absolute inset-0 transition-opacity duration-700 ease-in-out",
-              i === current ? "opacity-100" : "opacity-0",
-            ].join(" ")}
-          >
-            {img ? (
-              <img src={img} alt="" className="h-full w-full object-cover" />
-            ) : (
-              <div className="h-full w-full bg-gradient-to-br from-emerald-900 to-slate-900" />
-            )}
-          </div>
-        );
-      })}
+      {/* Background media */}
+      {isSingle && hasVideo ? (
+        <video
+          ref={videoRef}
+          src={property.videos[0].url}
+          muted
+          loop
+          playsInline
+          autoPlay
+          className="absolute inset-0 h-full w-full object-cover"
+        />
+      ) : (
+        <img
+          src={displayImage}
+          alt=""
+          className="absolute inset-0 h-full w-full object-cover"
+        />
+      )}
 
-      {/* ── Gradient overlays ── */}
-      <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/90 via-black/35 to-black/10" />
-      <div className="pointer-events-none absolute inset-0 bg-gradient-to-r from-black/55 via-transparent to-transparent" />
+      {/* Solid overlay (NO gradients) */}
+      <div className="pointer-events-none absolute inset-0 bg-black/60" />
+      <div className="pointer-events-none absolute inset-0 bg-black/40" />
 
-      {/* ── Content ── */}
+      {/* Content */}
       <div className="absolute inset-0 flex flex-col px-8 py-8 lg:px-12 lg:py-10">
-        {/* Top badges */}
         <div className="flex items-center gap-2">
-          <span className="inline-flex items-center gap-1.5 rounded-full bg-amber-400 px-3 py-1.5 text-xs font-bold text-slate-950 shadow-sm">
+          <span className="inline-flex items-center gap-1.5 rounded-full bg-amber-400 px-3 py-1.5 text-xs font-bold text-slate-950">
             <StarIcon className="h-3 w-3" strokeWidth={2.5} />
-            Featured Properties
+            Featured {isSingle ? "Property" : "Properties"}
           </span>
           {hasVideo && (
             <span className="inline-flex items-center gap-1 rounded-full bg-white/15 px-2.5 py-1.5 text-xs font-semibold text-white backdrop-blur-sm">
@@ -98,7 +134,6 @@ export function FeaturedBanner({ properties }: { properties: Property[] }) {
 
         <div className="flex-1" />
 
-        {/* Property info */}
         <div className="max-w-xl">
           <p className="text-xs font-bold uppercase tracking-widest text-emerald-400">
             {property.listingPurpose === "SALE" ? "For Sale" : "For Rent"}
@@ -123,7 +158,7 @@ export function FeaturedBanner({ properties }: { properties: Property[] }) {
             </p>
             <Link
               href={`/properties/${property.id}`}
-              className="inline-flex items-center gap-1.5 rounded-xl bg-emerald-600 px-5 py-2.5 text-sm font-semibold text-white shadow-md transition hover:bg-emerald-500 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-400"
+              className="inline-flex items-center gap-1.5 rounded-xl bg-emerald-600 px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-emerald-500 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-400"
             >
               View Property
               <ChevronRightIcon className="h-4 w-4" strokeWidth={2.5} />
@@ -131,8 +166,8 @@ export function FeaturedBanner({ properties }: { properties: Property[] }) {
           </div>
         </div>
 
-        {/* Dot indicators + counter */}
-        {count > 1 && (
+        {/* Dot indicators + counter only if more than one */}
+        {!isSingle && (
           <div className="mt-6 flex items-center justify-between">
             <div className="flex items-center gap-2">
               {slides.map((_, i) => (
@@ -157,8 +192,8 @@ export function FeaturedBanner({ properties }: { properties: Property[] }) {
         )}
       </div>
 
-      {/* ── Arrow navigation ── */}
-      {count > 1 && (
+      {/* Arrow navigation only if more than one */}
+      {!isSingle && (
         <>
           <button
             type="button"

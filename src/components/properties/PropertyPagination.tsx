@@ -1,3 +1,5 @@
+"use client";
+
 import Link from "next/link";
 import { PaginationMeta } from "@/types/pagination";
 
@@ -33,13 +35,13 @@ export function PropertyPagination({
       {meta.hasPreviousPage && (
         <Link
           href={getPageHref(searchParams, meta.page - 1)}
-          className="rounded-md border border-slate-200 bg-white px-4 py-2 text-sm font-semibold text-slate-700 hover:border-emerald-300"
+          className="rounded-md border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 px-4 py-2 text-sm font-semibold text-slate-700 dark:text-slate-300 hover:border-emerald-300 dark:hover:border-emerald-500 transition-colors"
         >
           Previous
         </Link>
       )}
 
-      <span className="text-sm font-medium text-slate-500">
+      <span className="text-sm font-medium text-slate-500 dark:text-slate-400">
         Page {meta.page} of {meta.totalPages}
       </span>
 
@@ -47,7 +49,7 @@ export function PropertyPagination({
         <Link
           href={getPageHref(searchParams, meta.page + 1)}
           scroll={false}
-          className="rounded-md border border-slate-200 bg-white px-4 py-2 text-sm font-semibold text-slate-700 hover:border-emerald-300"
+          className="rounded-md border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 px-4 py-2 text-sm font-semibold text-slate-700 dark:text-slate-300 hover:border-emerald-300 dark:hover:border-emerald-500 transition-colors"
         >
           Next
         </Link>

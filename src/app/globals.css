@@ -1,8 +1,16 @@
 @import "tailwindcss";
 
+/* Class-based dark mode for next-themes (attribute="class") */
+@variant dark (&:where(.dark, .dark *));
+
 :root {
   --background: #f8fafc;
   --foreground: #020617;
+}
+
+.dark {
+  --background: #0b1120;
+  --foreground: #f1f5f9;
 }
 
 * {
@@ -34,4 +42,12 @@ select {
   overflow: hidden;
   -webkit-box-orient: vertical;
   -webkit-line-clamp: 2;
+}
+
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
 }
