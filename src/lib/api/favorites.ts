@@ -4,10 +4,7 @@ const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL ?? "https://rentora-ap
 
 export async function toggleFavorite(propertyId: string): Promise<{ saved: boolean }> {
   const token = getAuthToken();
-  
-  if (!token) {
-    throw new Error("Authentication required");
-  }
+  if (!token) throw new Error("Authentication required");
 
   const response = await fetch(`${API_BASE_URL}/favorites/${propertyId}`, {
     method: "POST",
@@ -22,5 +19,20 @@ export async function toggleFavorite(propertyId: string): Promise<{ saved: boole
     throw new Error(errorBody?.message || "Failed to toggle favorite");
   }
 
+  return response.json();
+}
+
+export async function getFavorites(): Promise<any[]> {
+  const token = getAuthToken();
+  if (!token) return [];
+
+  const response = await fetch(`${API_BASE_URL}/favorites`, {
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+  });
+
+  if (!response.ok) return [];
   return response.json();
 }
