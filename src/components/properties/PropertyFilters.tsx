@@ -1,11 +1,13 @@
 "use client";
 
-import { FormEvent, useState } from "react";
+import { FormEvent, useEffect, useRef, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import {
   AdjustmentsHorizontalIcon,
   MagnifyingGlassIcon,
+  XMarkIcon,
 } from "@heroicons/react/24/outline";
+import { useExplorePending } from "./explore-pending-context";
 
 const categories = [
   { label: "All",                type: "",                 listingPurpose: "" },
@@ -17,6 +19,8 @@ const categories = [
   { label: "Business spaces",    type: "BUSINESS_SPACE",    listingPurpose: "" },
 ];
 
+const SEARCH_DEBOUNCE_MS = 450;
+
 type PropertyFiltersProps = {
   isCompact?: boolean;
 };
@@ -24,7 +28,23 @@ type PropertyFiltersProps = {
 export function PropertyFilters({ isCompact = false }: PropertyFiltersProps) {
   const router       = useRouter();
   const searchParams = useSearchParams();
+  const { isPending, startUpdate } = useExplorePending();
+
   const [search, setSearch] = useState(searchParams.get("search") ?? "");
+  const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  // Keep the input in sync if the URL changes from outside this component
+  // (browser back/forward, category pill clicks elsewhere, etc).
+  useEffect(() => {
+    setSearch(searchParams.get("search") ?? "");
+  }, [searchParams]);
+
+  // Clean up any pending debounce on unmount.
+  useEffect(() => {
+    return () => {
+      if (debounceRef.current) clearTimeout(debounceRef.current);
+    };
+  }, []);
 
   function updateParams(values: Record<string, string | null>) {
     const params = new URLSearchParams(searchParams.toString());
@@ -33,12 +53,31 @@ export function PropertyFilters({ isCompact = false }: PropertyFiltersProps) {
       else params.set(key, value);
     });
     params.set("page", "1");
-    router.push(`/explore?${params.toString()}`, { scroll: false });
+
+    startUpdate(() => {
+      router.push(`/explore?${params.toString()}`, { scroll: false });
+    });
+  }
+
+  function handleSearchChange(value: string) {
+    setSearch(value);
+
+    if (debounceRef.current) clearTimeout(debounceRef.current);
+    debounceRef.current = setTimeout(() => {
+      updateParams({ search: value.trim() || null });
+    }, SEARCH_DEBOUNCE_MS);
   }
 
   function submitSearch(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
+    if (debounceRef.current) clearTimeout(debounceRef.current);
     updateParams({ search: search.trim() || null });
+  }
+
+  function clearSearch() {
+    if (debounceRef.current) clearTimeout(debounceRef.current);
+    setSearch("");
+    updateParams({ search: null });
   }
 
   const activeType    = searchParams.get("type") ?? "";
@@ -50,27 +89,49 @@ export function PropertyFilters({ isCompact = false }: PropertyFiltersProps) {
       <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
         <form
           onSubmit={submitSearch}
-          className="flex h-11 w-full items-center gap-2 rounded-lg border border-slate-200 bg-white px-3 focus-within:border-emerald-500 focus-within:ring-1 focus-within:ring-emerald-500 dark:border-slate-700 dark:bg-slate-800 lg:max-w-md"
+          className="flex h-11 w-full items-center gap-2 rounded-lg border border-slate-200 bg-white px-3 transition-colors focus-within:border-emerald-500 focus-within:ring-1 focus-within:ring-emerald-500 dark:border-slate-700 dark:bg-slate-800 lg:max-w-md"
         >
-          <MagnifyingGlassIcon className="h-5 w-5 shrink-0 text-slate-400" />
+          {isPending ? (
+            <svg
+              className="h-5 w-5 shrink-0 animate-spin text-emerald-500"
+              viewBox="0 0 24 24"
+              fill="none"
+              aria-hidden="true"
+            >
+              <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+              <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 0 1 8-8v4a4 4 0 0 0-4 4H4z" />
+            </svg>
+          ) : (
+            <MagnifyingGlassIcon className="h-5 w-5 shrink-0 text-slate-400" />
+          )}
           <input
             value={search}
-            onChange={(e) => setSearch(e.target.value)}
+            onChange={(e) => handleSearchChange(e.target.value)}
             placeholder="Search by area, district..."
             className="h-full w-full bg-transparent text-sm text-slate-900 outline-none placeholder:text-slate-400 dark:text-slate-100"
           />
+          {search && (
+            <button
+              type="button"
+              onClick={clearSearch}
+              aria-label="Clear search"
+              className="shrink-0 rounded-full p-0.5 text-slate-400 transition hover:bg-slate-100 hover:text-slate-600 dark:hover:bg-slate-700 dark:hover:text-slate-200"
+            >
+              <XMarkIcon className="h-4 w-4" />
+            </button>
+          )}
         </form>
 
         <div className="flex items-center gap-3">
           <select
-            defaultValue={`${searchParams.get("sortBy") ?? ""}:${searchParams.get("sortOrder") ?? ""}`}
+            value={`${searchParams.get("sortBy") ?? ""}:${searchParams.get("sortOrder") ?? ""}`}
             onChange={(e) => {
               const [sortBy, sortOrder] = e.target.value.split(":");
               updateParams({ sortBy: sortBy || null, sortOrder: sortOrder || null });
             }}
             className="h-11 rounded-lg border border-slate-200 bg-white px-3 text-sm font-medium text-slate-700 outline-none transition focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-200"
           >
-            <option value="">Recommended</option>
+            <option value=":">Recommended</option>
             <option value="createdAt:DESC">Newest first</option>
             <option value="price:ASC">Lowest price</option>
             <option value="price:DESC">Highest price</option>

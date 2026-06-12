@@ -9,6 +9,7 @@ import { PaginationMeta } from "@/types/pagination";
 import { Property } from "@/types/property";
 import { ExclamationTriangleIcon } from "@heroicons/react/24/outline";
 import { useHeaderCompact } from "../layout/header-compact-context";
+import { ExplorePendingProvider, useExplorePending } from "./explore-pending-context";
 
 type ExplorePageProps = {
   properties:         Property[];
@@ -33,7 +34,15 @@ function isFiltered(params: Record<string, string | string[] | undefined>): bool
 const COMPACT_THRESHOLD = 60;
 const SCROLL_DELTA = 20;
 
-export function ExplorePage({
+export function ExplorePage(props: ExplorePageProps) {
+  return (
+    <ExplorePendingProvider>
+      <ExplorePageContent {...props} />
+    </ExplorePendingProvider>
+  );
+}
+
+function ExplorePageContent({
   properties,
   meta,
   searchParams,
@@ -54,6 +63,7 @@ export function ExplorePage({
   const tickingRef  = useRef(false);
 
   const { setIsHeaderCompact } = useHeaderCompact();
+  const { isPending } = useExplorePending();
 
   // Mirror this page's compact state up to the global Header so its
   // bottom border can fade out and the two bars read as one piece.
@@ -175,7 +185,13 @@ export function ExplorePage({
       </div>
 
       {/* ── 3. Property grid ── */}
-      <section className="mx-auto mt-8 max-w-7xl px-4 sm:px-6 lg:px-8">
+      <section
+        aria-busy={isPending}
+        className={[
+          "mx-auto mt-8 max-w-7xl px-4 sm:px-6 lg:px-8 transition-opacity duration-200",
+          isPending ? "pointer-events-none opacity-50" : "opacity-100",
+        ].join(" ")}
+      >
         {error ? (
           <div className="flex flex-col items-center justify-center rounded-2xl border border-red-200 bg-red-50 px-6 py-16 text-center dark:border-red-900 dark:bg-red-950/30">
             <ExclamationTriangleIcon className="mb-4 h-12 w-12 text-red-500" strokeWidth={1.5} />
