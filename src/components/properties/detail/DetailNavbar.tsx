@@ -8,6 +8,7 @@ import {
   ShareIcon,
 } from "@heroicons/react/24/outline";
 import { HeartIcon as HeartIconSolid } from "@heroicons/react/24/solid";
+import toast, { Toaster } from "react-hot-toast";
 import { ConfirmModal } from "@/components/shared/ConfirmModal";
 import { toggleFavorite } from "@/lib/api/favorites";
 import { useAuth } from "@/lib/auth/auth-context";
@@ -25,6 +26,7 @@ export function DetailNavbar({ propertyId }: Props) {
   const [isSaved, setIsSaved] = useState(false);
   const [isToggling, setIsToggling] = useState(false);
   const [showLoginPrompt, setShowLoginPrompt] = useState(false);
+  const [copied, setCopied] = useState(false);
 
   useEffect(() => {
     if (!ready) return;
@@ -59,8 +61,25 @@ export function DetailNavbar({ propertyId }: Props) {
     }
   };
 
+  const handleShare = async () => {
+    await navigator.clipboard.writeText(window.location.href);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
+    toast.success("Link copied! Paste it anywhere to share this property.", {
+      duration: 3000,
+      position: "top-center",
+      style: {
+        borderRadius: "12px",
+        fontSize: "13px",
+        fontWeight: "600",
+      },
+    });
+  };
+
   return (
     <>
+      <Toaster />
+
       <ConfirmModal
         isOpen={showLoginPrompt}
         onClose={() => setShowLoginPrompt(false)}
@@ -94,8 +113,18 @@ export function DetailNavbar({ propertyId }: Props) {
             )}
           </button>
 
-          <button className="flex h-10 w-10 items-center justify-center rounded-full text-slate-700 transition hover:bg-slate-100 dark:text-slate-300 dark:hover:bg-slate-800">
-            <ShareIcon className="h-5 w-5" />
+          <button
+            onClick={handleShare}
+            aria-label="Copy link to property"
+            className="flex h-10 w-10 items-center justify-center rounded-full text-slate-700 transition hover:bg-slate-100 dark:text-slate-300 dark:hover:bg-slate-800"
+          >
+            {copied ? (
+              <span className="text-[10px] font-bold text-emerald-600 dark:text-emerald-400">
+                Copied!
+              </span>
+            ) : (
+              <ShareIcon className="h-5 w-5" />
+            )}
           </button>
         </div>
       </div>

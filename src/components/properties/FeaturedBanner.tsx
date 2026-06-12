@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
 import {
   ChevronLeftIcon,
@@ -20,14 +20,17 @@ import { Property } from "@/types/property";
 const SLIDE_DURATION_MS = 5_000;
 
 export function FeaturedBanner({ properties }: { properties: Property[] }) {
-  const slides = properties.slice(0, 6);
+  // ✅ Memoized — stable reference across renders, effects won't re-fire spuriously
+  const slides = useMemo(() => properties.slice(0, 6), [properties]);
   const count = slides.length;
 
   const [current, setCurrent] = useState(0);
   const [paused, setPaused] = useState(false);
   const videoRef = useRef<HTMLVideoElement>(null);
 
-  // Auto-advance for multi-slide only
+  const [videoLoading, setVideoLoading] = useState(true);
+  const [videoBuffering, setVideoBuffering] = useState(false);
+
   useEffect(() => {
     if (count <= 1 || paused) return;
     const id = setInterval(
@@ -42,16 +45,16 @@ export function FeaturedBanner({ properties }: { properties: Property[] }) {
     [count],
   );
 
-  // Single property: auto‑play video if exists
   useEffect(() => {
     if (count !== 1) return;
     const property = slides[0];
     if ((property.videos ?? []).length > 0) {
+      setVideoLoading(true);
+      setVideoBuffering(false);
       videoRef.current?.play().catch(() => {});
     }
   }, [count, slides]);
 
-  // Single property with multiple images: cycle images
   const [imageIndex, setImageIndex] = useState(0);
   useEffect(() => {
     if (count !== 1) return;
@@ -71,12 +74,10 @@ export function FeaturedBanner({ properties }: { properties: Property[] }) {
   const isSingle = count === 1;
   const hasVideo = (property.videos ?? []).length > 0;
 
-  // Get image for the current slide, but for single+multi image use imageIndex
   let displayImage: string | undefined;
   if (isSingle) {
     const images = property.images ?? [];
     if (hasVideo) {
-      // will show video, but also fallback image
       displayImage = images.length > 0 ? images[0]?.url : undefined;
     } else if (images.length > 0) {
       displayImage = images[imageIndex % images.length]?.url;
@@ -86,6 +87,7 @@ export function FeaturedBanner({ properties }: { properties: Property[] }) {
   }
 
   const location = getPropertyLocation(property);
+  const showVideoLoader = isSingle && hasVideo && (videoLoading || videoBuffering);
 
   return (
     <section
@@ -94,17 +96,44 @@ export function FeaturedBanner({ properties }: { properties: Property[] }) {
       onMouseEnter={() => setPaused(true)}
       onMouseLeave={() => setPaused(false)}
     >
-      {/* Background media */}
       {isSingle && hasVideo ? (
-        <video
-          ref={videoRef}
-          src={property.videos[0].url}
-          muted
-          loop
-          playsInline
-          autoPlay
-          className="absolute inset-0 h-full w-full object-cover"
-        />
+        <>
+          {displayImage && (
+            <img
+              src={displayImage}
+              alt=""
+              className={`absolute inset-0 h-full w-full object-cover transition-opacity duration-700 ${
+                videoLoading ? "opacity-100" : "opacity-0"
+              }`}
+            />
+          )}
+          <video
+            ref={videoRef}
+            src={property.videos[0].url}
+            muted
+            loop
+            playsInline
+            autoPlay
+            onLoadStart={() => setVideoLoading(true)}
+            onCanPlay={() => setVideoLoading(false)}
+            onPlaying={() => { setVideoLoading(false); setVideoBuffering(false); }}
+            onWaiting={() => setVideoBuffering(true)}
+            className={`absolute inset-0 h-full w-full object-cover transition-opacity duration-700 ${
+              videoLoading ? "opacity-0" : "opacity-100"
+            }`}
+          />
+
+          {showVideoLoader && (
+            <div className="absolute inset-0 z-10 flex flex-col items-center justify-center gap-3">
+              <div className="relative flex h-14 w-14 items-center justify-center">
+                <div className="absolute h-14 w-14 rounded-full border-2 border-white/10" />
+                <div className="absolute h-14 w-14 animate-spin rounded-full border-2 border-transparent border-t-emerald-400" />
+                <PlayIcon className="h-5 w-5 text-white/80" />
+              </div>
+
+            </div>
+          )}
+        </>
       ) : (
         <img
           src={displayImage}
@@ -113,11 +142,9 @@ export function FeaturedBanner({ properties }: { properties: Property[] }) {
         />
       )}
 
-      {/* Solid overlay (NO gradients) */}
       <div className="pointer-events-none absolute inset-0 bg-black/60" />
       <div className="pointer-events-none absolute inset-0 bg-black/40" />
 
-      {/* Content */}
       <div className="absolute inset-0 flex flex-col px-8 py-8 lg:px-12 lg:py-10">
         <div className="flex items-center gap-2">
           <span className="inline-flex items-center gap-1.5 rounded-full bg-amber-400 px-3 py-1.5 text-xs font-bold text-slate-950">
@@ -166,7 +193,6 @@ export function FeaturedBanner({ properties }: { properties: Property[] }) {
           </div>
         </div>
 
-        {/* Dot indicators + counter only if more than one */}
         {!isSingle && (
           <div className="mt-6 flex items-center justify-between">
             <div className="flex items-center gap-2">
@@ -192,7 +218,6 @@ export function FeaturedBanner({ properties }: { properties: Property[] }) {
         )}
       </div>
 
-      {/* Arrow navigation only if more than one */}
       {!isSingle && (
         <>
           <button
