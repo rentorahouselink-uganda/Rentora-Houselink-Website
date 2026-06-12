@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import {
   CalendarDaysIcon,
   EyeIcon,
@@ -11,7 +11,11 @@ import {
   MapPinIcon,
   StarIcon,
 } from "@heroicons/react/24/outline";
-import { HeartIcon as HeartIconSolid, PlayIcon } from "@heroicons/react/24/solid";
+import {
+  HeartIcon as HeartIconSolid,
+  PauseIcon,
+  PlayIcon,
+} from "@heroicons/react/24/solid";
 import {
   formatBillingCycle,
   formatLabel,
@@ -24,38 +28,83 @@ import { useAuth } from "@/lib/auth/auth-context";
 import { toggleFavorite } from "@/lib/api/favorites";
 import { ConfirmModal } from "@/components/shared/ConfirmModal";
 import { useFavorites } from "./favorites-context";
+import { useVideoPlayback } from "./video-playback-context";
+
+// ---------------------------------------------------------------------------
+// Types
+// ---------------------------------------------------------------------------
+
+/**
+ * Three-state touch preview lifecycle:
+ *
+ *   idle    → thumbnail shown, play button visible
+ *   playing → video running, tap-to-pause overlay active
+ *   paused  → video frozen on current frame, resume button visible
+ *
+ * Transitioning to `idle` always resets currentTime so the preview
+ * restarts from the beginning next time. Transitioning between
+ * `playing` ↔ `paused` preserves currentTime for seamless resume.
+ */
+type PreviewState = "idle" | "playing" | "paused";
+
+// ---------------------------------------------------------------------------
+// Component
+// ---------------------------------------------------------------------------
 
 export function PropertyCard({ property }: { property: Property }) {
   const router = useRouter();
   const { isAuthenticated } = useAuth();
   const { ready, favoriteIds, toggleFavoriteId } = useFavorites();
+  const { activeVideoId, claimPlayback } = useVideoPlayback();
 
   const imageUrl = getPropertyImage(property);
   const location = getPropertyLocation(property);
   const hasVideo = (property.videos ?? []).length > 0;
 
+  // Refs ────────────────────────────────────────────────────────────────────
+  const cardRef = useRef<HTMLDivElement>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
+
+  // ── Hover (pointer-device) state ─────────────────────────────────────────
   const [isHovering, setIsHovering] = useState(false);
 
-  // Whether this device supports real hover (desktop/trackpad/mouse).
-  // Defaults to true so SSR/initial render matches the existing
-  // hover-based behaviour; corrected on mount.
+  /**
+   * Whether the device supports genuine hover (desktop / trackpad / mouse).
+   * Defaults `true` so SSR and first paint match the hover branch, then
+   * corrected on the client to prevent hydration mismatch.
+   */
   const [canHover, setCanHover] = useState(true);
 
-  // Tap-to-play state for touch / no-hover devices.
-  const [isPlaying, setIsPlaying] = useState(false);
+  // ── Touch preview state ───────────────────────────────────────────────────
+  const [previewState, _setPreviewState] = useState<PreviewState>("idle");
 
+  /**
+   * Ref that mirrors `previewState` so stable callbacks (IntersectionObserver,
+   * context effect) always read the current value without needing to be
+   * recreated on every render.
+   */
+  const previewStateRef = useRef<PreviewState>("idle");
+
+  /** Wrapped setter — keeps the ref and React state in sync atomically. */
+  const setPreviewState = useCallback((next: PreviewState) => {
+    previewStateRef.current = next;
+    _setPreviewState(next);
+  }, []);
+
+  // ── Favorites state ───────────────────────────────────────────────────────
   const [isSaved, setIsSaved] = useState(false);
   const [showLoginPrompt, setShowLoginPrompt] = useState(false);
   const [isToggling, setIsToggling] = useState(false);
 
+  // ── Effects ───────────────────────────────────────────────────────────────
+
+  // Sync saved state from the shared favorites context.
   useEffect(() => {
     if (!ready) return;
     setIsSaved(favoriteIds.has(property.id));
   }, [favoriteIds, property.id, ready]);
 
-  // Detect hover-capable devices on mount and keep it in sync if the
-  // user switches input methods (e.g. a hybrid touchscreen laptop).
+  // Detect hover-capable devices on mount; keep in sync for hybrid inputs.
   useEffect(() => {
     if (typeof window === "undefined" || !window.matchMedia) return;
 
@@ -66,6 +115,58 @@ export function PropertyCard({ property }: { property: Property }) {
     mq.addEventListener("change", handler);
     return () => mq.removeEventListener("change", handler);
   }, []);
+
+  /**
+   * Stable helper — resets to `idle`:
+   *   • pauses the video and rewinds to the start
+   *   • clears both hover and touch preview state
+   *
+   * Called by the context effect and IntersectionObserver.
+   */
+  const resetPreview = useCallback(() => {
+    if (videoRef.current) {
+      videoRef.current.pause();
+      videoRef.current.currentTime = 0;
+    }
+    setIsHovering(false);
+    setPreviewState("idle");
+  }, [setPreviewState]);
+
+  /**
+   * "One video at a time" — when another card claims playback on touch
+   * devices, reset this one.  Hover devices self-manage via `mouseLeave`.
+   */
+  useEffect(() => {
+    if (canHover) return;
+    if (activeVideoId !== null && activeVideoId !== property.id) {
+      if (previewStateRef.current !== "idle") {
+        resetPreview();
+      }
+    }
+  }, [activeVideoId, canHover, property.id, resetPreview]);
+
+  /**
+   * Scroll-out detection — stop any active preview (hover or touch) when
+   * the card fully leaves the viewport.
+   */
+  useEffect(() => {
+    if (!hasVideo || !cardRef.current) return;
+
+    const el = cardRef.current;
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (!entry.isIntersecting) {
+          resetPreview();
+        }
+      },
+      { threshold: 0 },
+    );
+
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, [hasVideo, resetPreview]);
+
+  // ── Hover handlers (pointer devices) ─────────────────────────────────────
 
   const handleMouseEnter = () => {
     if (!hasVideo || !canHover) return;
@@ -82,30 +183,40 @@ export function PropertyCard({ property }: { property: Property }) {
     }
   };
 
-  // Touch / no-hover devices: tap the play button to start the preview
-  // in place, instead of navigating to the detail page.
+  // ── Touch preview handlers (non-hover devices) ────────────────────────────
+
+  /** Start playing from idle. */
   const handlePlayClick = (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
-    setIsPlaying(true);
+    claimPlayback(property.id); // stops all other touch previews
+    setPreviewState("playing");
     videoRef.current?.play().catch(() => {});
   };
 
-  // Touch / no-hover devices: while playing, tapping the card again
-  // pauses the preview and returns to the thumbnail, instead of
-  // navigating to the detail page.
+  /**
+   * Pause in place — intentionally does NOT reset `currentTime` so the
+   * next resume continues from the same frame (play → pause → resume cycle).
+   */
   const handlePauseClick = (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
-    setIsPlaying(false);
-    if (videoRef.current) {
-      videoRef.current.pause();
-      videoRef.current.currentTime = 0;
-    }
+    videoRef.current?.pause();
+    setPreviewState("paused");
   };
 
+  /** Resume from the paused frame. */
+  const handleResumeClick = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    claimPlayback(property.id);
+    setPreviewState("playing");
+    videoRef.current?.play().catch(() => {});
+  };
+
+  // ── Favorites handler ─────────────────────────────────────────────────────
+
   const handleFavoriteClick = async (e: React.MouseEvent) => {
-    // Prevent the click from bubbling to anything else
     e.preventDefault();
     e.stopPropagation();
 
@@ -119,7 +230,7 @@ export function PropertyCard({ property }: { property: Property }) {
     const previousSaved = isSaved;
     const nextSaved = !previousSaved;
 
-    // Optimistic UI update for snappy feel
+    // Optimistic update for snappy feel.
     setIsSaved(nextSaved);
     toggleFavoriteId(property.id, nextSaved);
     setIsToggling(true);
@@ -129,7 +240,7 @@ export function PropertyCard({ property }: { property: Property }) {
       setIsSaved(response.saved);
       toggleFavoriteId(property.id, response.saved);
     } catch (error) {
-      // Revert if API fails
+      // Revert on API failure.
       setIsSaved(previousSaved);
       toggleFavoriteId(property.id, previousSaved);
       console.error("Failed to toggle favorite:", error);
@@ -137,6 +248,11 @@ export function PropertyCard({ property }: { property: Property }) {
       setIsToggling(false);
     }
   };
+
+  // ── Derived values ────────────────────────────────────────────────────────
+
+  /** True when the video element should be visible (either interaction type). */
+  const isPreviewActive = isHovering || previewState !== "idle";
 
   const formattedAvailableFrom = property.availableFrom
     ? new Intl.DateTimeFormat("en-GB", {
@@ -146,7 +262,7 @@ export function PropertyCard({ property }: { property: Property }) {
       }).format(new Date(property.availableFrom))
     : "";
 
-  const isPreviewActive = isHovering || isPlaying;
+  // ── Render ─────────────────────────────────────────────────────────────────
 
   return (
     <>
@@ -163,18 +279,22 @@ export function PropertyCard({ property }: { property: Property }) {
       />
 
       <div
+        ref={cardRef}
         className="group relative flex flex-col overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm transition-all duration-300 hover:-translate-y-1 hover:border-emerald-400 dark:border-slate-700 dark:bg-slate-800 dark:hover:border-emerald-600"
         onMouseEnter={handleMouseEnter}
         onMouseLeave={handleMouseLeave}
       >
-        {/* ── Invisible Link to handle navigation (z-10) ── */}
+        {/* ── Full-card navigation link (z-10) ──────────────────────────── */}
+        {/* Invisible anchor that makes the entire card keyboard- and
+            pointer-navigable. Interactive overlays sit above this at z-[15]
+            and z-20 and intercept their own click areas. */}
         <Link
           href={`/properties/${property.id}`}
           className="absolute inset-0 z-10 focus:outline-none"
           aria-label={`View details for ${property.title}`}
         />
 
-        {/* ── Favorite Button (Moved OUTSIDE media wrapper so z-20 actually beats the link) ── */}
+        {/* ── Favorite button (z-20, top-right) ─────────────────────────── */}
         <button
           type="button"
           aria-label={isSaved ? "Remove from saved" : "Save property"}
@@ -189,8 +309,12 @@ export function PropertyCard({ property }: { property: Property }) {
           )}
         </button>
 
-        {/* ── Media ── */}
+        {/* ════════════════════════════════════════════════════════════════ */}
+        {/* Media area                                                       */}
+        {/* ════════════════════════════════════════════════════════════════ */}
         <div className="relative aspect-[4/3] w-full overflow-hidden bg-slate-100 dark:bg-slate-700">
+
+          {/* Thumbnail image ─────────────────────────────────────────────── */}
           {imageUrl ? (
             <img
               src={imageUrl}
@@ -206,6 +330,7 @@ export function PropertyCard({ property }: { property: Property }) {
             </div>
           )}
 
+          {/* Video element ───────────────────────────────────────────────── */}
           {hasVideo && (
             <video
               ref={videoRef}
@@ -221,49 +346,7 @@ export function PropertyCard({ property }: { property: Property }) {
             />
           )}
 
-          {hasVideo && !canHover && isPlaying && (
-            // Touch / no-hover devices: while the preview is playing, this
-            // transparent layer sits above the navigation Link (z-10) but
-            // below the favorite button (z-20), so tapping the card pauses
-            // the preview instead of navigating to the detail page.
-            <button
-              type="button"
-              aria-label="Pause video preview"
-              onClick={handlePauseClick}
-              className="absolute inset-0 z-[15]"
-            />
-          )}
-
-          {hasVideo && (
-            <div
-              className={[
-                "absolute inset-0 flex items-center justify-center transition-all duration-300 ease-out",
-                isPreviewActive
-                  ? "pointer-events-none scale-90 opacity-0"
-                  : "scale-100 opacity-100",
-                !canHover && !isPreviewActive ? "z-[15]" : "",
-                canHover ? "pointer-events-none" : "",
-              ].join(" ")}
-            >
-              {canHover ? (
-                <div className="flex h-14 w-14 items-center justify-center rounded-full bg-slate-950/40 text-white ring-1 ring-white/30 backdrop-blur-md transition-transform duration-300 group-hover:scale-110">
-                  <PlayIcon className="h-6 w-6 translate-x-0.5" />
-                </div>
-              ) : (
-                // Touch / no-hover devices: real button, above the
-                // navigation Link, that plays the preview in place.
-                <button
-                  type="button"
-                  aria-label="Play video preview"
-                  onClick={handlePlayClick}
-                  className="flex h-14 w-14 items-center justify-center rounded-full bg-slate-950/40 text-white ring-1 ring-white/30 backdrop-blur-md"
-                >
-                  <PlayIcon className="h-6 w-6 translate-x-0.5" />
-                </button>
-              )}
-            </div>
-          )}
-
+          {/* Top-left badges ─────────────────────────────────────────────── */}
           <div className="absolute left-3 top-3 flex flex-col items-start gap-2">
             {property.isFeatured && (
               <span className="inline-flex items-center gap-1 rounded-md bg-emerald-600 px-2.5 py-1 text-[11px] font-bold uppercase tracking-wider text-white">
@@ -276,9 +359,94 @@ export function PropertyCard({ property }: { property: Property }) {
               </span>
             )}
           </div>
+
+          {/* ── Hover play indicator (pointer devices, pointer-events-none) ── */}
+          {/* A purely decorative cue; actual playback is via mouseEnter.     */}
+          {hasVideo && canHover && (
+            <div
+              className={[
+                "pointer-events-none absolute inset-0 flex items-center justify-center",
+                "transition-all duration-300 ease-out",
+                isHovering ? "scale-90 opacity-0" : "scale-100 opacity-100",
+              ].join(" ")}
+            >
+              <div className="flex h-14 w-14 items-center justify-center rounded-full bg-slate-950/40 text-white ring-1 ring-white/30 backdrop-blur-md transition-transform duration-300 group-hover:scale-110">
+                <PlayIcon className="h-6 w-6 translate-x-0.5" />
+              </div>
+            </div>
+          )}
+
+          {/* ── Touch controls (non-hover devices) ──────────────────────── */}
+          {/*                                                                 */}
+          {/* idle    → centered play button                                  */}
+          {/* playing → translucent tap-to-pause layer                       */}
+          {/* paused  → centered resume button                               */}
+          {/*                                                                 */}
+          {/* All sit at z-[15]: above the navigation link (z-10) but below  */}
+          {/* the favorite button and Book/Enquire CTA (z-20).               */}
+          {hasVideo && !canHover && (
+            <>
+              {/* ── Idle: play button ── */}
+              {previewState === "idle" && (
+                <div className="absolute inset-0 z-[15] flex items-center justify-center">
+                  <button
+                    type="button"
+                    aria-label="Play video preview"
+                    onClick={handlePlayClick}
+                    className="flex h-14 w-14 items-center justify-center rounded-full bg-slate-950/40 text-white ring-1 ring-white/30 backdrop-blur-md transition-transform active:scale-95"
+                  >
+                    <PlayIcon className="h-6 w-6 translate-x-0.5" />
+                  </button>
+                </div>
+              )}
+
+              {/* ── Playing: tap the video to pause ── */}
+              {/* The translucent pause hint lets the user know this area is  */}
+              {/* tappable without obscuring the video.                       */}
+              {previewState === "playing" && (
+                <button
+                  type="button"
+                  aria-label="Pause video preview"
+                  onClick={handlePauseClick}
+                  className="absolute inset-0 z-[15] flex items-center justify-center"
+                >
+                  <div className="flex h-12 w-12 items-center justify-center rounded-full bg-slate-950/20 text-white/50 backdrop-blur-sm">
+                    <PauseIcon className="h-5 w-5" />
+                  </div>
+                </button>
+              )}
+
+              {/* ── Paused: resume button ── */}
+              {previewState === "paused" && (
+                <div className="absolute inset-0 z-[15] flex items-center justify-center">
+                  <button
+                    type="button"
+                    aria-label="Resume video preview"
+                    onClick={handleResumeClick}
+                    className="flex h-14 w-14 items-center justify-center rounded-full bg-slate-950/40 text-white ring-1 ring-white/30 backdrop-blur-md transition-transform active:scale-95"
+                  >
+                    <PlayIcon className="h-6 w-6 translate-x-0.5" />
+                  </button>
+                </div>
+              )}
+            </>
+          )}
+
+          {/* ── Book / Enquire CTA (z-20, bottom-right of media) ─────────── */}
+          {/* Sits above the navigation link (z-10) so it intercepts its own  */}
+          {/* tap area; navigates to the same detail page for a focused CTA.  */}
+          <Link
+            href={`/properties/${property.id}`}
+            aria-label={`Book or enquire about ${property.title}`}
+            className="absolute bottom-3 right-3 z-20 inline-flex items-center rounded-full bg-emerald-600/90 px-3 py-1.5 text-[11px] font-bold uppercase tracking-wide text-white shadow-md backdrop-blur-sm transition-all duration-150 hover:bg-emerald-600 hover:scale-105 active:scale-95"
+          >
+            Book / Enquire
+          </Link>
         </div>
 
-        {/* ── Content ── */}
+        {/* ════════════════════════════════════════════════════════════════ */}
+        {/* Content area                                                     */}
+        {/* ════════════════════════════════════════════════════════════════ */}
         <div className="relative flex flex-1 flex-col p-4">
           <div className="mb-1 flex items-center justify-between">
             <span className="text-[11px] font-semibold uppercase tracking-wider text-emerald-600 dark:text-emerald-400">

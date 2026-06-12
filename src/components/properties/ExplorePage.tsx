@@ -14,6 +14,7 @@ import {
   useExplorePending,
 } from "./explore-pending-context";
 import { FavoritesProvider } from "./favorites-context";
+import { VideoPlaybackProvider } from "./video-playback-context";
 
 type ExplorePageProps = {
   properties: Property[];
@@ -51,15 +52,27 @@ const SCROLL_DELTA = 20;
 const useIsomorphicLayoutEffect =
   typeof window !== "undefined" ? useLayoutEffect : useEffect;
 
+// ---------------------------------------------------------------------------
+// Root export — provider tree
+// ---------------------------------------------------------------------------
+
 export function ExplorePage(props: ExplorePageProps) {
   return (
     <ExplorePendingProvider>
       <FavoritesProvider>
-        <ExplorePageContent {...props} />
+        {/* VideoPlaybackProvider coordinates "one video at a time" across
+            all PropertyCard instances rendered in this explore grid. */}
+        <VideoPlaybackProvider>
+          <ExplorePageContent {...props} />
+        </VideoPlaybackProvider>
       </FavoritesProvider>
     </ExplorePendingProvider>
   );
 }
+
+// ---------------------------------------------------------------------------
+// Inner content (consumes all providers above)
+// ---------------------------------------------------------------------------
 
 function ExplorePageContent({
   properties,
