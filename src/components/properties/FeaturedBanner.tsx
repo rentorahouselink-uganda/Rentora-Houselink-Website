@@ -48,11 +48,32 @@ export function FeaturedBanner({ properties }: { properties: Property[] }) {
   useEffect(() => {
     if (count !== 1) return;
     const property = slides[0];
-    if ((property.videos ?? []).length > 0) {
+    if ((property.videos ?? []).length === 0) return;
+
+    const video = videoRef.current;
+    if (!video) return;
+
+    setVideoBuffering(false);
+
+    // ── Race-condition fix ────────────────────────────────────────────────
+    // `autoPlay` tells the browser to start loading and playing as soon as
+    // the DOM element is created. For cached videos (Cloudflare CDN), the
+    // browser fires `canplay` *during* that initial DOM creation — before
+    // React's commit phase has had a chance to attach the `onCanPlay`
+    // synthetic handler. The event is lost, `setVideoLoading(false)` never
+    // runs, and the spinner loops forever.
+    //
+    // Checking `readyState` synchronously here recovers from that lost event:
+    //   readyState >= HAVE_FUTURE_DATA (3) means the browser already has
+    //   enough buffered data to play — i.e. `canplay` already fired.
+    // ─────────────────────────────────────────────────────────────────────
+    if (video.readyState >= HTMLMediaElement.HAVE_FUTURE_DATA) {
+      setVideoLoading(false);
+    } else {
       setVideoLoading(true);
-      setVideoBuffering(false);
-      videoRef.current?.play().catch(() => {});
     }
+
+    video.play().catch(() => {});
   }, [count, slides]);
 
   const [imageIndex, setImageIndex] = useState(0);
@@ -130,7 +151,6 @@ export function FeaturedBanner({ properties }: { properties: Property[] }) {
                 <div className="absolute h-14 w-14 animate-spin rounded-full border-2 border-transparent border-t-emerald-400" />
                 <PlayIcon className="h-5 w-5 text-white/80" />
               </div>
-
             </div>
           )}
         </>
