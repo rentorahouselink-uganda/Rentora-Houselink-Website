@@ -112,8 +112,14 @@ export function BookingDetail({ bookingId }: Props) {
 
   async function handleCancel() {
     if (!booking) return;
+    if (!booking.cancellationToken) {
+      setCancelError("No cancellation token available for this booking.");
+      return;
+    }
+
     setCancelling(true);
     setCancelError(null);
+
     try {
       await cancelBooking(booking.id, booking.cancellationToken);
       markBookingCancelled(booking.id);
