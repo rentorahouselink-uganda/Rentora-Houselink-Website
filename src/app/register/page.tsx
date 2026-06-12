@@ -60,15 +60,21 @@ export default function RegisterPage() {
     }
   }
 
-  const inputClass =
-    "w-full rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 px-4 py-3.5 text-sm text-slate-900 dark:text-white outline-none transition placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20 disabled:opacity-60 disabled:cursor-not-allowed";
-  const inputClassError =
-    "w-full rounded-xl border border-red-300 dark:border-red-900 bg-red-50 dark:bg-red-950/30 px-4 py-3.5 text-sm text-slate-900 dark:text-white outline-none transition placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:border-red-400 focus:ring-2 focus:ring-red-500/20 disabled:opacity-60 disabled:cursor-not-allowed";
+  const inputBase =
+    "w-full rounded-xl border bg-white dark:bg-slate-800/60 px-4 py-3.5 text-sm text-slate-900 dark:text-white outline-none transition placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:ring-2 disabled:opacity-60 disabled:cursor-not-allowed";
+  const inputNormal = `${inputBase} border-slate-200 dark:border-slate-700 focus:border-emerald-500 focus:ring-emerald-500/20`;
+  const inputError  = `${inputBase} border-red-300 dark:border-red-800 bg-red-50 dark:bg-red-950/20 focus:border-red-400 focus:ring-red-400/20`;
+
+  function field(key: string) {
+    return errors[key] ? inputError : inputNormal;
+  }
 
   return (
     <main className="min-h-[calc(100vh-64px)] flex items-center justify-center bg-slate-50 dark:bg-slate-950 py-12 px-4 sm:px-6 lg:px-8">
-      <div className="w-full max-w-md space-y-8">
-        <div className="text-center">
+      <div className="w-full max-w-md">
+
+        {/* Header */}
+        <div className="mb-8 text-center">
           <h1 className="text-3xl font-extrabold tracking-tight text-slate-900 dark:text-white">
             Create your account
           </h1>
@@ -77,168 +83,145 @@ export default function RegisterPage() {
           </p>
         </div>
 
-        <SocialAuthButtons mode="register" />
+        {/* Card */}
+        <div className="rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-8 shadow-xl shadow-slate-200/60 dark:shadow-none">
 
-        {apiError && (
-          <div className="rounded-xl border border-red-200 dark:border-red-900/50 bg-red-50 dark:bg-red-950/30 px-4 py-3 text-sm font-medium text-red-700 dark:text-red-400">
-            {apiError}
-          </div>
-        )}
+          <SocialAuthButtons mode="register" />
 
-        <form onSubmit={handleSubmit} noValidate className="space-y-5">
-          <div>
-            <label className="mb-2 block text-sm font-bold text-slate-700 dark:text-slate-300">
-              Full name
-            </label>
-            <input
-              type="text"
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-              placeholder="John Doe"
-              autoComplete="name"
-              disabled={loading}
-              className={errors.name ? inputClassError : inputClass}
-            />
-            {errors.name && (
-              <p className="mt-1.5 text-xs font-medium text-red-600 dark:text-red-400">
-                {errors.name}
-              </p>
-            )}
-          </div>
-
-          <div>
-            <label className="mb-2 block text-sm font-bold text-slate-700 dark:text-slate-300">
-              Email address
-            </label>
-            <input
-              type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              placeholder="you@example.com"
-              autoComplete="email"
-              disabled={loading}
-              className={errors.email ? inputClassError : inputClass}
-            />
-            {errors.email && (
-              <p className="mt-1.5 text-xs font-medium text-red-600 dark:text-red-400">
-                {errors.email}
-              </p>
-            )}
-          </div>
-
-          <div>
-            <label className="mb-2 block text-sm font-bold text-slate-700 dark:text-slate-300">
-              Password
-            </label>
-            <div className="relative">
-              <input
-                type={showPw ? "text" : "password"}
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                placeholder="At least 8 characters"
-                autoComplete="new-password"
-                disabled={loading}
-                className={`${errors.password ? inputClassError : inputClass} pr-12`}
-              />
-              <button
-                type="button"
-                onClick={() => setShowPw((v) => !v)}
-                className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 transition hover:text-slate-600 dark:hover:text-slate-300"
-                tabIndex={-1}
-              >
-                {showPw ? (
-                  <EyeSlashIcon className="h-5 w-5" />
-                ) : (
-                  <EyeIcon className="h-5 w-5" />
-                )}
-              </button>
+          {apiError && (
+            <div className="mt-5 rounded-xl border border-red-200 dark:border-red-900/50 bg-red-50 dark:bg-red-950/30 px-4 py-3 text-sm font-medium text-red-700 dark:text-red-400">
+              {apiError}
             </div>
-            {errors.password && (
-              <p className="mt-1.5 text-xs font-medium text-red-600 dark:text-red-400">
-                {errors.password}
-              </p>
-            )}
-          </div>
+          )}
 
-          <div>
-            <label className="mb-2 block text-sm font-bold text-slate-700 dark:text-slate-300">
-              Confirm password
-            </label>
-            <div className="relative">
+          <form onSubmit={handleSubmit} noValidate className="mt-5 space-y-5">
+
+            {/* Full name */}
+            <div>
+              <label className="mb-2 block text-sm font-bold text-slate-700 dark:text-slate-300">
+                Full name
+              </label>
               <input
-                type={showCf ? "text" : "password"}
-                value={confirm}
-                onChange={(e) => setConfirm(e.target.value)}
-                placeholder="Re-enter your password"
-                autoComplete="new-password"
+                type="text"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                placeholder="John Doe"
+                autoComplete="name"
                 disabled={loading}
-                className={`${errors.confirm ? inputClassError : inputClass} pr-12`}
+                className={field("name")}
               />
-              <button
-                type="button"
-                onClick={() => setShowCf((v) => !v)}
-                className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 transition hover:text-slate-600 dark:hover:text-slate-300"
-                tabIndex={-1}
-              >
-                {showCf ? (
-                  <EyeSlashIcon className="h-5 w-5" />
-                ) : (
-                  <EyeIcon className="h-5 w-5" />
-                )}
-              </button>
+              {errors.name && (
+                <p className="mt-1.5 text-xs font-medium text-red-600 dark:text-red-400">{errors.name}</p>
+              )}
             </div>
-            {errors.confirm && (
-              <p className="mt-1.5 text-xs font-medium text-red-600 dark:text-red-400">
-                {errors.confirm}
-              </p>
-            )}
-          </div>
 
-          <p className="text-center text-xs leading-relaxed text-slate-500 dark:text-slate-400">
-            By creating an account you agree to Rentora&apos;s{" "}
-            <Link
-              href="/terms"
-              className="font-bold text-slate-700 underline underline-offset-2 transition hover:text-emerald-600 dark:text-slate-300 dark:hover:text-emerald-400"
-            >
-              Terms of Use
-            </Link>
-            {" "}and{" "}
-            <Link
-              href="/privacy"
-              className="font-bold text-slate-700 underline underline-offset-2 transition hover:text-emerald-600 dark:text-slate-300 dark:hover:text-emerald-400"
-            >
-              Privacy Policy
-            </Link>
-            .
-          </p>
+            {/* Email */}
+            <div>
+              <label className="mb-2 block text-sm font-bold text-slate-700 dark:text-slate-300">
+                Email address
+              </label>
+              <input
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                placeholder="you@example.com"
+                autoComplete="email"
+                disabled={loading}
+                className={field("email")}
+              />
+              {errors.email && (
+                <p className="mt-1.5 text-xs font-medium text-red-600 dark:text-red-400">{errors.email}</p>
+              )}
+            </div>
 
-          <button
-            type="submit"
-            disabled={loading}
-            className="flex w-full items-center justify-center gap-2 rounded-xl bg-emerald-600 py-4 text-base font-bold text-white transition hover:bg-emerald-700 focus:outline-none focus:ring-4 focus:ring-emerald-600/20 disabled:cursor-not-allowed disabled:opacity-60"
-          >
-            {loading && (
-              <svg className="h-5 w-5 animate-spin" viewBox="0 0 24 24" fill="none">
-                <circle
-                  className="opacity-25"
-                  cx="12"
-                  cy="12"
-                  r="10"
-                  stroke="currentColor"
-                  strokeWidth="4"
+            {/* Password */}
+            <div>
+              <label className="mb-2 block text-sm font-bold text-slate-700 dark:text-slate-300">
+                Password
+              </label>
+              <div className="relative">
+                <input
+                  type={showPw ? "text" : "password"}
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  placeholder="At least 8 characters"
+                  autoComplete="new-password"
+                  disabled={loading}
+                  className={`${field("password")} pr-12`}
                 />
-                <path
-                  className="opacity-75"
-                  fill="currentColor"
-                  d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"
-                />
-              </svg>
-            )}
-            {loading ? "Creating account…" : "Create Account"}
-          </button>
-        </form>
+                <button
+                  type="button"
+                  onClick={() => setShowPw((v) => !v)}
+                  className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 transition hover:text-slate-600 dark:hover:text-slate-300"
+                  tabIndex={-1}
+                  aria-label={showPw ? "Hide password" : "Show password"}
+                >
+                  {showPw ? <EyeSlashIcon className="h-5 w-5" /> : <EyeIcon className="h-5 w-5" />}
+                </button>
+              </div>
+              {errors.password && (
+                <p className="mt-1.5 text-xs font-medium text-red-600 dark:text-red-400">{errors.password}</p>
+              )}
+            </div>
 
-        <p className="text-center text-sm text-slate-500 dark:text-slate-400">
+            {/* Confirm password */}
+            <div>
+              <label className="mb-2 block text-sm font-bold text-slate-700 dark:text-slate-300">
+                Confirm password
+              </label>
+              <div className="relative">
+                <input
+                  type={showCf ? "text" : "password"}
+                  value={confirm}
+                  onChange={(e) => setConfirm(e.target.value)}
+                  placeholder="Re-enter your password"
+                  autoComplete="new-password"
+                  disabled={loading}
+                  className={`${field("confirm")} pr-12`}
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowCf((v) => !v)}
+                  className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 transition hover:text-slate-600 dark:hover:text-slate-300"
+                  tabIndex={-1}
+                  aria-label={showCf ? "Hide password" : "Show password"}
+                >
+                  {showCf ? <EyeSlashIcon className="h-5 w-5" /> : <EyeIcon className="h-5 w-5" />}
+                </button>
+              </div>
+              {errors.confirm && (
+                <p className="mt-1.5 text-xs font-medium text-red-600 dark:text-red-400">{errors.confirm}</p>
+              )}
+            </div>
+
+            <p className="text-center text-xs leading-relaxed text-slate-500 dark:text-slate-400">
+              By creating an account you agree to Rentora&apos;s{" "}
+              <Link href="/terms" className="font-bold text-slate-700 underline underline-offset-2 hover:text-emerald-600 dark:text-slate-300 dark:hover:text-emerald-400 transition">
+                Terms of Use
+              </Link>
+              {" "}and{" "}
+              <Link href="/privacy" className="font-bold text-slate-700 underline underline-offset-2 hover:text-emerald-600 dark:text-slate-300 dark:hover:text-emerald-400 transition">
+                Privacy Policy
+              </Link>.
+            </p>
+
+            <button
+              type="submit"
+              disabled={loading}
+              className="flex w-full items-center justify-center gap-2 rounded-xl bg-emerald-600 py-4 text-base font-bold text-white transition hover:bg-emerald-700 focus:outline-none focus-visible:ring-4 focus-visible:ring-emerald-600/20 disabled:cursor-not-allowed disabled:opacity-60"
+            >
+              {loading && (
+                <svg className="h-5 w-5 animate-spin" viewBox="0 0 24 24" fill="none">
+                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
+                </svg>
+              )}
+              {loading ? "Creating account…" : "Create Account"}
+            </button>
+          </form>
+        </div>
+
+        <p className="mt-6 text-center text-sm text-slate-500 dark:text-slate-400">
           Already have an account?{" "}
           <Link
             href="/login"

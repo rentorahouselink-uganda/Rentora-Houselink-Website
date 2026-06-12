@@ -47,6 +47,19 @@ export function SocialAuthButtons({
 
   const googleClientId = process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID ?? "";
 
+  // Navigation fix: Next.js caches the GSI script after the first load, so
+  // onLoad never fires again when you navigate back to this page.
+  // Check on every mount — if the script is already there, set googleLoaded immediately.
+  useEffect(() => {
+    if (window.google?.accounts?.id) {
+      setGoogleLoaded(true);
+    }
+    return () => {
+      // Reset on unmount so the next mount re-renders the button freshly.
+      googleInitRef.current = false;
+    };
+  }, []);
+
   useEffect(() => {
     if (
       !googleLoaded ||
@@ -78,20 +91,18 @@ export function SocialAuthButtons({
       cancel_on_tap_outside: true,
     });
 
-    google.renderButton(googleContainerRef.current, {
-      theme: "outline",
-      size: "large",
-      text: mode === "login" ? "signin_with" : "signup_with",
-      shape: "rectangular",
-      logo_alignment: "left",
-      width: "100%",
+   google.renderButton(googleContainerRef.current, {
+        theme: "outline",   // ← back to white, clean on both themes
+        size: "large",
+        text: mode === "login" ? "signin_with" : "signup_with",
+        shape: "rectangular",
+        logo_alignment: "left",
+        width: googleContainerRef.current.offsetWidth,
     });
 
     googleInitRef.current = true;
   }, [googleClientId, googleLoaded, loginWithGoogle, mode, router]);
 
-  // No env var set yet — hide the whole section, login page shows
-  // just the email/password form. Nothing breaks.
   if (!googleClientId) return null;
 
   return (
@@ -105,15 +116,20 @@ export function SocialAuthButtons({
       />
 
       <div className="space-y-4">
-        <div className="relative">
-          <div className="absolute inset-x-0 top-1/2 h-px -translate-y-1/2 bg-slate-200 dark:bg-slate-800" />
-          <span className="relative mx-auto block w-fit bg-slate-50 px-3 text-xs font-semibold uppercase tracking-wider text-slate-400 dark:bg-slate-950 dark:text-slate-500">
-            Or continue with
+        {/* Flex divider — doesn't depend on knowing the background colour */}
+        <div className="flex items-center gap-3">
+          <div className="h-px flex-1 bg-slate-200 dark:bg-slate-700/70" />
+          <span className="text-[11px] font-semibold uppercase tracking-widest text-slate-400 dark:text-slate-500">
+            or continue with
           </span>
+          <div className="h-px flex-1 bg-slate-200 dark:bg-slate-700/70" />
         </div>
 
-        {/* Google renders its own branded button into this div */}
-        <div ref={googleContainerRef} className="min-h-[44px]" />
+        {/* overflow-hidden + rounded-xl clips Google's iframe to match the rest of the UI */}
+        <div
+          ref={googleContainerRef}
+          className="w-full min-h-[44px] overflow-hidden rounded-xl"
+        />
 
         {error && (
           <div className="rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm font-medium text-red-700 dark:border-red-900/50 dark:bg-red-950/30 dark:text-red-400">
