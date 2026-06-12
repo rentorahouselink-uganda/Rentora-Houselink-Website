@@ -3,6 +3,19 @@
 /* Class-based dark mode for next-themes (attribute="class") */
 @variant dark (&:where(.dark, .dark *));
 
+/* ── BRAND BLUE OVERRIDE (WITH ACCESSIBLE DARK MODE) ── */
+@theme {
+  --color-emerald-50: #eff6ff;   /* Soft blue tint for active tab backgrounds */
+  --color-emerald-100: #dbeafe;  /* Light blue accent container fill */
+  
+  /* THE FIX: Lighter, icier blue for high contrast in dark mode */
+  --color-emerald-400: #93c5fd;  
+  
+  --color-emerald-500: #3b82f6;  /* Interactive branding blue */
+  --color-emerald-600: #2563eb;  /* Core corporate primary blue (Sidebar/Logo text) */
+  --color-emerald-700: #1d4ed8;  /* Deep dark blue for hover/focus states */
+}
+
 :root {
   --background: #f8fafc;
   --foreground: #020617;

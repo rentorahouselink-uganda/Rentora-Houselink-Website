@@ -2,7 +2,13 @@
 
 import { FormEvent, useEffect, useState } from 'react';
 import Link from 'next/link';
-import { ChevronLeftIcon, MapPinIcon, EnvelopeIcon, CheckCircleIcon } from '@heroicons/react/24/outline';
+import { 
+  ChevronLeftIcon, 
+  MapPinIcon, 
+  EnvelopeIcon, 
+  CheckCircleIcon,
+  InformationCircleIcon 
+} from '@heroicons/react/24/outline';
 import { COMPANY_ADDRESS, CONTACT_EMAIL } from '@/lib/constants';
 import { inquiriesApi } from '@/lib/api/inquiries';
 import { useAuth } from '@/lib/auth/auth-context';
@@ -62,7 +68,7 @@ export default function ContactPage() {
 
   return (
     <div className="min-h-screen bg-slate-50 dark:bg-slate-950 font-sans">
-      <main className="max-w-5xl mx-auto px-4 sm:px-6 py-12 lg:py-20">
+      <main className="max-w-5xl mx-auto px-4 sm:px-6 py-12 lg:py-10">
         <Link
           href="/"
           className="inline-flex items-center gap-2 text-sm font-semibold text-slate-500 dark:text-slate-400 hover:text-emerald-600 dark:hover:text-emerald-400 transition-colors mb-12"
@@ -76,9 +82,27 @@ export default function ContactPage() {
             <h1 className="text-4xl sm:text-5xl font-extrabold text-slate-900 dark:text-white mb-6">
               Contact Us
             </h1>
-            <p className="text-lg text-slate-600 dark:text-slate-400 mb-12 leading-relaxed">
-              Have a question about a property, need help listing your home, or just want to share feedback? We&apos;re here to help.
+            
+            <p className="text-lg text-slate-600 dark:text-slate-400 mb-8 leading-relaxed">
+              Need to add your properties to Rentora, request account deletion, or have a general inquiry? We&apos;re here to help. Send us a message below.
             </p>
+
+            {/* Complaint / Report Callout */}
+            <div className="mb-12 flex items-start gap-3 rounded-2xl bg-blue-50 dark:bg-blue-950/30 border border-blue-100 dark:border-blue-900/50 p-5">
+              <InformationCircleIcon className="h-6 w-6 shrink-0 text-blue-600 dark:text-blue-500 mt-0.5" />
+              <div>
+                <h3 className="text-sm font-bold text-blue-900 dark:text-blue-400 mb-1">
+                  Have a complaint or issue?
+                </h3>
+                <p className="text-sm text-blue-800 dark:text-blue-300/90 leading-relaxed">
+                  If you have an issue regarding a specific property, an agent&apos;s conduct, or a platform bug, please submit it through our dedicated{' '}
+                  <Link href="/report" className="font-bold underline underline-offset-2 decoration-blue-400/50 hover:decoration-blue-400 transition-all">
+                    Report an Issue
+                  </Link>
+                  {' '}page so our team can resolve it effectively.
+                </p>
+              </div>
+            </div>
 
             <div className="space-y-10">
               <div className="flex items-start gap-4">

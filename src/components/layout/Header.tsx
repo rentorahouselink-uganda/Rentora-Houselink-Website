@@ -149,7 +149,9 @@ export function Header() {
                 priority
               />
               <span className="text-lg font-extrabold tracking-tight text-slate-950 dark:text-white">
-                Rentora<span className="text-emerald-600"> Houselink UG</span>
+                Rentora
+                {/* FIXED: Added dark:text-emerald-400 to use high-contrast blue in dark mode */}
+                <span className="text-emerald-600 dark:text-emerald-400"> Houselink UG</span>
               </span>
             </Link>
 
@@ -184,7 +186,8 @@ export function Header() {
                 <>
                   <Link
                     href="/notifications"
-                    className="relative flex items-center justify-center rounded-full p-1.5 text-slate-500 transition hover:bg-slate-50 hover:text-emerald-600 dark:text-slate-400 dark:hover:bg-slate-800"
+                    /* FIXED: Added dark:hover:text-emerald-400 */
+                    className="relative flex items-center justify-center rounded-full p-1.5 text-slate-500 transition hover:bg-slate-50 hover:text-emerald-600 dark:text-slate-400 dark:hover:bg-slate-800 dark:hover:text-emerald-400"
                     aria-label="View notifications"
                   >
                     <BellIcon className="h-6 w-6" />
@@ -289,7 +292,8 @@ export function Header() {
                   <>
                     <Link
                       href="/notifications"
-                      className="flex items-center text-sm font-semibold text-slate-700 hover:text-emerald-600 dark:text-slate-200"
+                      /* FIXED: Added dark:hover:text-emerald-400 */
+                      className="flex items-center text-sm font-semibold text-slate-700 hover:text-emerald-600 dark:text-slate-200 dark:hover:text-emerald-400"
                       onClick={() => setMobileOpen(false)}
                     >
                       Notifications
@@ -301,7 +305,8 @@ export function Header() {
                     </Link>
                     <Link
                       href="/account"
-                      className="text-sm font-semibold text-slate-700 hover:text-emerald-600 dark:text-slate-200"
+                      /* FIXED: Added dark:hover:text-emerald-400 */
+                      className="text-sm font-semibold text-slate-700 hover:text-emerald-600 dark:text-slate-200 dark:hover:text-emerald-400"
                       onClick={() => setMobileOpen(false)}
                     >
                       My Account
@@ -316,7 +321,8 @@ export function Header() {
                 ) : (
                   <Link
                     href="/login"
-                    className="text-sm font-semibold text-slate-700 hover:text-emerald-600 dark:text-slate-200"
+                    /* FIXED: Added dark:hover:text-emerald-400 */
+                    className="text-sm font-semibold text-slate-700 hover:text-emerald-600 dark:text-slate-200 dark:hover:text-emerald-400"
                     onClick={() => setMobileOpen(false)}
                   >
                     Sign in
