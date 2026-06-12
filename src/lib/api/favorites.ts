@@ -20,7 +20,11 @@ function extractFavoriteId(item: unknown): string | null {
   const fav = item as FavoriteRecord;
 
   const directId =
-    fav.propertyId ?? fav.property_id ?? fav.id ?? fav.property?.id ?? fav.property?._id;
+    fav.propertyId ??
+    fav.property_id ??
+    fav.id ??
+    fav.property?.id ??
+    fav.property?._id;
 
   return typeof directId === "string" && directId.trim() ? directId : null;
 }

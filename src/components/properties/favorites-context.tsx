@@ -76,6 +76,9 @@ export function FavoritesProvider({ children }: { children: ReactNode }) {
   );
 }
 
+// Backward-compatible alias so older imports do not break.
+export const PropertyFavoritesProvider = FavoritesProvider;
+
 export function useFavorites() {
   const ctx = useContext(FavoritesContext);
   if (!ctx) throw new Error("useFavorites must be used within a FavoritesProvider");
