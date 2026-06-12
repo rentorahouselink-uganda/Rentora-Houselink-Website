@@ -1,6 +1,7 @@
 "use client";
 
 import {
+  useEffect,
   useState,
   type ChangeEvent,
   type FormEvent,
@@ -24,6 +25,7 @@ import { formatMoney, formatBillingCycle, getPropertyImage, getPropertyLocation 
 import { createBooking } from "@/lib/api/bookings";
 import { upsertBooking } from "@/lib/bookings-storage";
 import { BookingSuccess } from "./BookingSuccess";
+import { useAuth } from "@/lib/auth/auth-context";
 
 type FormValues = {
   name: string; phone: string; email: string; moveInDate: string; notes: string;
@@ -93,11 +95,24 @@ function inputCn(hasError: boolean): string {
 }
 
 export function BookingForm({ property }: { property: Property }) {
+  const { user, isLoading: authLoading } = useAuth();
+
   const [values, setValues] = useState<FormValues>({ name: "", phone: "", email: "", moveInDate: "", notes: "" });
   const [errors, setErrors] = useState<FormErrors>({});
   const [loading, setLoading] = useState(false);
   const [serverError, setServerError] = useState<string | null>(null);
   const [successToken, setSuccessToken] = useState<string | null>(null);
+
+  // Auto-fill name/email from the logged-in user once auth state resolves
+  useEffect(() => {
+    if (!authLoading && user) {
+      setValues((prev) => ({
+        ...prev,
+        name: prev.name || user.name || "",
+        email: prev.email || user.email || "",
+      }));
+    }
+  }, [authLoading, user]);
 
   // ── FIX: Prioritize video thumbnails over standard images ──
   const thumbnail = property.videos?.[0]?.thumbnailUrl 

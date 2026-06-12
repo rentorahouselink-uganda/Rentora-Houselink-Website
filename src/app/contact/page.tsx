@@ -1,18 +1,29 @@
 'use client';
 
-import { FormEvent, useState } from 'react';
+import { FormEvent, useEffect, useState } from 'react';
 import Link from 'next/link';
 import { ChevronLeftIcon, MapPinIcon, EnvelopeIcon, CheckCircleIcon } from '@heroicons/react/24/outline';
 import { COMPANY_ADDRESS, CONTACT_EMAIL } from '@/lib/constants';
 import { inquiriesApi } from '@/lib/api/inquiries';
+import { useAuth } from '@/lib/auth/auth-context';
 
 export default function ContactPage() {
+  const { user, isLoading } = useAuth();
+
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [message, setMessage] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [sent, setSent] = useState(false);
+
+  // Auto-fill from the logged-in user once auth state has resolved
+  useEffect(() => {
+    if (!isLoading && user) {
+      if (user.name) setName(user.name);
+      if (user.email) setEmail(user.email);
+    }
+  }, [isLoading, user]);
 
   const inputClass =
     'w-full rounded-xl border border-slate-200 bg-white px-4 py-3.5 text-sm text-slate-900 outline-none transition placeholder:text-slate-400 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20 dark:border-slate-800 dark:bg-slate-800/60 dark:text-white dark:placeholder:text-slate-500 disabled:opacity-60 disabled:cursor-not-allowed';
@@ -125,9 +136,12 @@ export default function ContactPage() {
                 <button
                   onClick={() => {
                     setSent(false);
-                    setName('');
-                    setEmail('');
                     setMessage('');
+                    // Keep name/email if the user is logged in; clear only if guest
+                    if (!user) {
+                      setName('');
+                      setEmail('');
+                    }
                   }}
                   className="text-sm font-bold text-emerald-600 hover:text-emerald-700 dark:text-emerald-500 dark:hover:text-emerald-400 transition"
                 >
