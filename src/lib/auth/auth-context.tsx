@@ -4,14 +4,21 @@ import {
   createContext,
   useContext,
   useEffect,
+  useRef,
   useState,
-  ReactNode,
+  type ReactNode,
 } from "react";
 import { AuthUser } from "@/types/auth";
 import { authApi } from "@/lib/api/auth";
+import {
+  clearGuestBookings,
+  getGuestBookingSyncPayload,
+  hasGuestBookings,
+} from "@/lib/bookings-storage";
+import { syncGuestBookings } from "@/lib/api/bookings";
 
 const TOKEN_KEY = "rh_token";
-const USER_KEY  = "rh_user";
+const USER_KEY = "rh_user";
 
 // ── Standalone Helper ─────────────────────────────────────────────────────────
 
@@ -30,6 +37,7 @@ type AuthContextValue = {
   token: string | null;
   isLoading: boolean;
   isAuthenticated: boolean;
+  isSyncingGuestBookings: boolean;
   login: (email: string, password: string) => Promise<void>;
   register: (name: string, email: string, password: string) => Promise<void>;
   logout: () => void;
@@ -45,9 +53,11 @@ const AuthContext = createContext<AuthContextValue | null>(null);
 // ── Provider ──────────────────────────────────────────────────────────────────
 
 export function AuthProvider({ children }: { children: ReactNode }) {
-  const [user,      setUser]      = useState<AuthUser | null>(null);
-  const [token,     setToken]     = useState<string | null>(null);
+  const [user, setUser] = useState<AuthUser | null>(null);
+  const [token, setToken] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [isSyncingGuestBookings, setIsSyncingGuestBookings] = useState(false);
+  const lastSyncedTokenRef = useRef<string | null>(null);
 
   // Rehydrate from localStorage once on mount (avoids SSR mismatch)
   useEffect(() => {
@@ -65,6 +75,49 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
   }, []);
 
+  // Sync guest bookings once the user is authenticated.
+  useEffect(() => {
+    if (isLoading) return;
+
+    if (!user || !token) {
+      lastSyncedTokenRef.current = null;
+      setIsSyncingGuestBookings(false);
+      return;
+    }
+
+    if (lastSyncedTokenRef.current === token) return;
+
+    const guestBookings = getGuestBookingSyncPayload();
+
+    if (!hasGuestBookings() || guestBookings.length === 0) {
+      lastSyncedTokenRef.current = token;
+      setIsSyncingGuestBookings(false);
+      return;
+    }
+
+    let cancelled = false;
+
+    setIsSyncingGuestBookings(true);
+
+    (async () => {
+      try {
+        await syncGuestBookings(token, guestBookings);
+        clearGuestBookings();
+      } catch (error) {
+        console.error("Failed to sync guest bookings:", error);
+      } finally {
+        if (!cancelled) {
+          lastSyncedTokenRef.current = token;
+          setIsSyncingGuestBookings(false);
+        }
+      }
+    })();
+
+    return () => {
+      cancelled = true;
+    };
+  }, [isLoading, token, user]);
+
   // ── Helpers ──────────────────────────────────────────────────────────────────
 
   function persist(t: string, u: AuthUser) {
@@ -79,6 +132,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     localStorage.removeItem(USER_KEY);
     setToken(null);
     setUser(null);
+    lastSyncedTokenRef.current = null;
+    setIsSyncingGuestBookings(false);
   }
 
   // ── Auth methods ─────────────────────────────────────────────────────────────
@@ -93,7 +148,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     persist(res.accessToken, res.user);
   }
 
-  function logout() { clear(); }
+  function logout() {
+    clear();
+  }
 
   async function forgotPassword(email: string) {
     await authApi.forgotPassword(email);
@@ -124,11 +181,19 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   return (
     <AuthContext.Provider
       value={{
-        user, token, isLoading,
+        user,
+        token,
+        isLoading,
         isAuthenticated: user !== null,
-        login, register, logout,
-        forgotPassword, resetPassword,
-        updateProfile, changePassword, deleteAccount,
+        isSyncingGuestBookings,
+        login,
+        register,
+        logout,
+        forgotPassword,
+        resetPassword,
+        updateProfile,
+        changePassword,
+        deleteAccount,
       }}
     >
       {children}

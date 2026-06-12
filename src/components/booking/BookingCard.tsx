@@ -6,6 +6,7 @@ import {
   MapPinIcon,
   CalendarDaysIcon,
   AcademicCapIcon,
+  HomeModernIcon,
 } from "@heroicons/react/24/outline";
 import { BookingStatusBadge } from "./BookingStatusBadge";
 import type { SavedBooking } from "@/types/booking";
@@ -27,7 +28,7 @@ export function BookingCard({ booking, onCancel }: Props) {
     : "Unknown date";
 
   return (
-    <div className="group flex overflow-hidden rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 transition hover:border-emerald-400 dark:hover:border-emerald-600">
+    <div className="group flex overflow-hidden rounded-2xl border border-slate-200 bg-white transition hover:border-emerald-400 dark:border-slate-800 dark:bg-slate-900 dark:hover:border-emerald-600">
       {/* Thumbnail — hidden on the smallest screens */}
       <div className="relative hidden w-44 shrink-0 sm:block">
         {booking.thumbnailUrl ? (
@@ -39,8 +40,8 @@ export function BookingCard({ booking, onCancel }: Props) {
             sizes="176px"
           />
         ) : (
-          <div className="flex h-full w-full items-center justify-center bg-slate-100 dark:bg-slate-800 text-3xl">
-            🏠
+          <div className="flex h-full w-full items-center justify-center bg-slate-100 dark:bg-slate-800">
+            <HomeModernIcon className="h-10 w-10 text-slate-300 dark:text-slate-600" strokeWidth={1.5} />
           </div>
         )}
       </div>
@@ -79,7 +80,7 @@ export function BookingCard({ booking, onCancel }: Props) {
         </div>
 
         {/* Footer: price + actions */}
-        <div className="mt-4 flex items-center justify-between border-t border-slate-100 dark:border-slate-800 pt-4">
+        <div className="mt-4 flex items-center justify-between border-t border-slate-100 pt-4 dark:border-slate-800">
           {booking.price > 0 ? (
             <p className="text-sm font-bold text-slate-900 dark:text-white">
               {formatMoney(booking.price)}
@@ -97,14 +98,14 @@ export function BookingCard({ booking, onCancel }: Props) {
             {!booking.isCancelled && (
               <button
                 onClick={() => onCancel(booking)}
-                className="rounded-lg px-3 py-1.5 text-xs font-semibold text-red-600 dark:text-red-400 transition hover:bg-red-50 dark:hover:bg-red-900/20"
+                className="rounded-lg px-3 py-1.5 text-xs font-semibold text-red-600 transition hover:bg-red-50 dark:text-red-400 dark:hover:bg-red-900/20"
               >
                 Cancel
               </button>
             )}
             <Link
               href={`/bookings/${booking.id}`}
-              className="rounded-lg bg-slate-900 dark:bg-slate-800 px-3 py-1.5 text-xs font-semibold text-white transition hover:bg-slate-700 dark:hover:bg-slate-700"
+              className="rounded-lg bg-slate-900 px-3 py-1.5 text-xs font-semibold text-white transition hover:bg-slate-700 dark:bg-slate-800 dark:hover:bg-slate-700"
             >
               View Details →
             </Link>
