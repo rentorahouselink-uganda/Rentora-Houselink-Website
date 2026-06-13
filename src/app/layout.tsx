@@ -19,20 +19,85 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
+// ── REAL-WORLD SEO OPTIMIZATION ─────────────────────────────────────────────
 export const metadata: Metadata = {
-  title: "Rentora Houselink",
-  description: "Discover your perfect home with Rentora Houselink - your trusted partner in finding the best rental properties. Explore our extensive listings, connect with landlords, and experience a seamless rental journey. Your dream home is just a click away with Rentora Houselink.",
+  // Use metadataBase so Next.js can correctly resolve relative OG images
+  metadataBase: new URL(
+    process.env.NEXT_PUBLIC_APP_URL || "https://rentorahouselink.com"
+  ),
+  title: {
+    default: "Rentora Houselink Uganda | Exclusive Real Estate & Rentals",
+    template: "%s | Rentora Houselink Uganda",
+  },
+  description:
+    "Discover your perfect home with Rentora Houselink Uganda. Explore exclusive property listings, connect with verified landlords, and experience a seamless rental journey across Uganda.",
+  keywords: [
+    "real estate Uganda",
+    "apartments for rent Kampala",
+    "buy house Uganda",
+    "rentals in Uganda",
+    "apartments for sale Uganda",
+    "houses for sale Uganda",
+    "houses for rent Uganda",
+    "property listings",
+    "hostels in Uganda",
+    "commercial spaces",
+    "Rentora Houselink",
+  ],
+  authors: [{ name: "Rentora Houselink Uganda" }],
+  creator: "Rentora Houselink Uganda",
+  publisher: "Rentora Houselink Uganda",
+  formatDetection: {
+    email: false,
+    address: false,
+    telephone: false,
+  },
+  openGraph: {
+    title: "Rentora Houselink Uganda | Exclusive Real Estate & Rentals",
+    description:
+      "Discover your perfect home with Rentora Houselink Uganda. Explore exclusive property listings and connect with verified landlords.",
+    url: "/",
+    siteName: "Rentora Houselink Uganda",
+    locale: "en_UG",
+    type: "website",
+    // Make sure to add a highly visual, architectural image to your public folder named 'og-image.jpg'
+    images: [
+      {
+        url: "/og-image.jpg", 
+        width: 1200,
+        height: 630,
+        alt: "Rentora Houselink Uganda - Real Estate Platform",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Rentora Houselink Uganda | Exclusive Real Estate & Rentals",
+    description:
+      "Discover your perfect home with Rentora Houselink Uganda. Explore exclusive property listings and connect with verified landlords.",
+    images: ["/og-image.jpg"],
+  },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      "max-video-preview": -1,
+      "max-image-preview": "large",
+      "max-snippet": -1,
+    },
+  },
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en" suppressHydrationWarning>
-      {/* Added suppressHydrationWarning here and updated legacy slate to pure zinc */}
       <body 
         suppressHydrationWarning 
-        className="antialiased bg-zinc-50 text-zinc-900 dark:bg-zinc-950 dark:text-white [overflow-anchor:none]"
+        className={`${geistSans.variable} ${geistMono.variable} antialiased bg-zinc-50 text-zinc-900 dark:bg-zinc-950 dark:text-white [overflow-anchor:none]`}
       >
-        {/* Updated loader from legacy blue to the Emerald brand color */}
+        {/* Fixed loader hex code to Emerald-500 (#10b981) for architectural brand consistency */}
         <NextTopLoader 
           color="#2563eb"
           initialPosition={0.08} 
