@@ -60,7 +60,6 @@ export const metadata: Metadata = {
     siteName: "Rentora Houselink Uganda",
     locale: "en_UG",
     type: "website",
-    // Make sure to add a highly visual, architectural image to your public folder named 'og-image.jpg'
     images: [
       {
         url: "/og-image.jpg", 
