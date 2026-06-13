@@ -1,5 +1,6 @@
 const API_BASE_URL =
-  process.env.NEXT_PUBLIC_API_BASE_URL ?? "https://rentora-api.duckdns.org/api/v1";
+  process.env.NEXT_PUBLIC_API_URL ??
+  "https://api.rentorahouselink.com/api/v1";
 
 export type CreateComplaintRequest = {
   submitterName: string;

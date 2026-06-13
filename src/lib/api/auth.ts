@@ -1,8 +1,8 @@
 import { AuthResponse, AuthUser } from "@/types/auth";
 
-const API =
-  process.env.NEXT_PUBLIC_API_BASE_URL ??
-  "https://rentora-api.duckdns.org/api/v1";
+const API_BASE_URL =
+  process.env.NEXT_PUBLIC_API_URL ??
+  "https://api.rentorahouselink.com/api/v1";
 
 type FetchOpts = Omit<RequestInit, "headers"> & {
   token?: string;
@@ -11,7 +11,7 @@ type FetchOpts = Omit<RequestInit, "headers"> & {
 
 async function apiFetch<T>(path: string, opts: FetchOpts = {}): Promise<T> {
   const { token, headers, ...rest } = opts;
-  const res = await fetch(`${API}${path}`, {
+  const res = await fetch(`${API_BASE_URL}${path}`, {
     ...rest,
     headers: {
       "Content-Type": "application/json",

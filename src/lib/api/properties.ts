@@ -1,7 +1,9 @@
 import { PaginatedResponse, PaginationMeta } from "@/types/pagination";
 import { Property, PropertyQuery } from "@/types/property";
 
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL ?? "https://rentora-api.duckdns.org/api/v1";
+const API_BASE_URL =
+  process.env.NEXT_PUBLIC_API_URL ??
+  "https://api.rentorahouselink.com/api/v1";
 
 type RawPropertyResponse = {
   data?: Property[];

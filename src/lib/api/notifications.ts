@@ -1,6 +1,8 @@
 import { PaginatedResponse } from "@/types/pagination";
 
-const API = process.env.NEXT_PUBLIC_API_BASE_URL ?? "https://rentora-api.duckdns.org/api/v1";
+const API_BASE_URL =
+  process.env.NEXT_PUBLIC_API_URL ??
+  "https://api.rentorahouselink.com/api/v1";
 
 export type AppNotification = {
   id: string;
@@ -25,27 +27,27 @@ const getHeaders = () => {
 
 export const notificationsApi = {
   getNotifications: async (page = 1, limit = 20): Promise<PaginatedResponse<AppNotification>> => {
-    const res = await fetch(`${API}/notifications?page=${page}&limit=${limit}`, { headers: getHeaders() });
+    const res = await fetch(`${API_BASE_URL}/notifications?page=${page}&limit=${limit}`, { headers: getHeaders() });
     if (!res.ok) throw new Error("Failed to load notifications");
     return res.json();
   },
 
   getUnreadCount: async (): Promise<number> => {
-    const res = await fetch(`${API}/notifications/unread-count`, { headers: getHeaders() });
+    const res = await fetch(`${API_BASE_URL}/notifications/unread-count`, { headers: getHeaders() });
     if (!res.ok) return 0;
     const data = await res.json();
     return Number(data.count) || 0;
   },
 
   markAsRead: async (id: string): Promise<void> => {
-    await fetch(`${API}/notifications/${id}/read`, { method: "PATCH", headers: getHeaders() });
+    await fetch(`${API_BASE_URL}/notifications/${id}/read`, { method: "PATCH", headers: getHeaders() });
   },
 
   markAllAsRead: async (): Promise<void> => {
-    await fetch(`${API}/notifications/read-all`, { method: "PATCH", headers: getHeaders() });
+    await fetch(`${API_BASE_URL}/notifications/read-all`, { method: "PATCH", headers: getHeaders() });
   },
 
   deleteNotification: async (id: string): Promise<void> => {
-    await fetch(`${API}/notifications/${id}`, { method: "DELETE", headers: getHeaders() });
+    await fetch(`${API_BASE_URL}/notifications/${id}`, { method: "DELETE", headers: getHeaders() });
   },
 };

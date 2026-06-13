@@ -1,5 +1,6 @@
-const API =
-  process.env.NEXT_PUBLIC_API_BASE_URL ?? 'https://rentora-api.duckdns.org/api/v1';
+const API_BASE_URL =
+  process.env.NEXT_PUBLIC_API_URL ??
+  "https://api.rentorahouselink.com/api/v1";
 
 export type CreateInquiryPayload = {
   name: string;
@@ -9,7 +10,7 @@ export type CreateInquiryPayload = {
 
 export const inquiriesApi = {
   create: async (payload: CreateInquiryPayload): Promise<void> => {
-    const res = await fetch(`${API}/inquiries`, {
+    const res = await fetch(`${API_BASE_URL}/inquiries`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(payload),
