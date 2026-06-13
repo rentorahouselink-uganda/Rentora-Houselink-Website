@@ -92,12 +92,13 @@ export function SocialAuthButtons({
     });
 
    google.renderButton(googleContainerRef.current, {
-        theme: "outline",   // ← back to white, clean on both themes
+        theme: "outline",
         size: "large",
         text: mode === "login" ? "signin_with" : "signup_with",
         shape: "rectangular",
         logo_alignment: "left",
-        width: googleContainerRef.current.offsetWidth,
+        // Max width for Google button is 400px to prevent visual misalignment
+        width: Math.min(googleContainerRef.current.offsetWidth, 400),
     });
 
     googleInitRef.current = true;
@@ -116,7 +117,6 @@ export function SocialAuthButtons({
       />
 
       <div className="space-y-5">
-        {/* Flex divider — doesn't depend on knowing the background colour */}
         <div className="flex items-center gap-3">
           <div className="h-px flex-1 bg-zinc-200 dark:bg-zinc-800" />
           <span className="text-[10px] font-bold uppercase tracking-widest text-zinc-400 dark:text-zinc-500">
@@ -125,10 +125,10 @@ export function SocialAuthButtons({
           <div className="h-px flex-1 bg-zinc-200 dark:bg-zinc-800" />
         </div>
 
-        {/* overflow-hidden clips Google's iframe to match the rest of the UI */}
+        {/* Added flex justify-center so it behaves if its parent stretches beyond 400px */}
         <div
           ref={googleContainerRef}
-          className="w-full min-h-[44px] overflow-hidden"
+          className="flex w-full justify-center min-h-[44px] overflow-hidden"
         />
 
         {error && (

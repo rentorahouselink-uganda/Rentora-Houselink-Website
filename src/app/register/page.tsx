@@ -82,7 +82,8 @@ export default function RegisterPage() {
           </p>
         </div>
 
-        <div className="border-t border-zinc-200 dark:border-zinc-800 pt-10">
+        {/* Removed border-t classes here to eliminate the top line */}
+        <div className="pt-6"> 
 
           <SocialAuthButtons mode="register" />
 
