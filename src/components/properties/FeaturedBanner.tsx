@@ -113,7 +113,7 @@ export function FeaturedBanner({ properties }: { properties: Property[] }) {
   return (
     <section
       aria-label="Featured properties"
-      className="relative h-[440px] lg:h-[500px] xl:max-h-[600px] select-none overflow-hidden bg-slate-900"
+      className="relative h-[440px] lg:h-[500px] xl:max-h-[600px] select-none overflow-hidden bg-zinc-950"
       onMouseEnter={() => setPaused(true)}
       onMouseLeave={() => setPaused(false)}
     >
@@ -145,11 +145,11 @@ export function FeaturedBanner({ properties }: { properties: Property[] }) {
           />
 
           {showVideoLoader && (
-            <div className="absolute inset-0 z-10 flex flex-col items-center justify-center gap-3">
-              <div className="relative flex h-14 w-14 items-center justify-center">
-                <div className="absolute h-14 w-14 rounded-full border-2 border-white/10" />
-                <div className="absolute h-14 w-14 animate-spin rounded-full border-2 border-transparent border-t-emerald-400" />
-                <PlayIcon className="h-5 w-5 text-white/80" />
+            <div className="absolute inset-0 z-10 flex flex-col items-center justify-center gap-3 bg-zinc-950/50 backdrop-blur-[1px]">
+              <div className="relative flex h-12 w-12 items-center justify-center">
+                <div className="absolute h-12 w-12 border-b border-t border-zinc-400/30 rounded-sm" />
+                <div className="absolute h-12 w-12 animate-spin border-b border-t border-emerald-500 rounded-sm" />
+                <PlayIcon className="h-4 w-4 text-zinc-200" />
               </div>
             </div>
           )}
@@ -162,19 +162,18 @@ export function FeaturedBanner({ properties }: { properties: Property[] }) {
         />
       )}
 
-      <div className="pointer-events-none absolute inset-0 bg-black/60" />
-      <div className="pointer-events-none absolute inset-0 bg-black/40" />
+      <div className="absolute inset-0 bg-gradient-to-t from-zinc-950 via-zinc-950/40 to-transparent" />
 
-      <div className="absolute inset-0 flex flex-col px-8 py-8 lg:px-12 lg:py-10">
+      <div className="absolute inset-0 flex flex-col px-6 py-6 lg:px-10 lg:py-8">
         <div className="flex items-center gap-2">
-          <span className="inline-flex items-center gap-1.5 rounded-full bg-amber-400 px-3 py-1.5 text-xs font-bold text-slate-950">
-            <StarIcon className="h-3 w-3" strokeWidth={2.5} />
-            Recommended
+          <span className="inline-flex items-center gap-1.5 border border-zinc-600 bg-zinc-950/60 px-2.5 py-1 text-[11px] font-semibold tracking-wide text-zinc-300 backdrop-blur-sm rounded-sm">
+            <StarIcon className="h-3 w-3 stroke-emerald-500" strokeWidth={2} />
+            RECOMMENDED
           </span>
           {hasVideo && (
-            <span className="inline-flex items-center gap-1 rounded-full bg-white/15 px-2.5 py-1.5 text-xs font-semibold text-white backdrop-blur-sm">
+            <span className="inline-flex items-center gap-1 border border-zinc-700 bg-zinc-950/40 px-2.5 py-1 text-[11px] font-semibold tracking-wide text-zinc-300 backdrop-blur-sm rounded-sm">
               <PlayIcon className="h-2.5 w-2.5" />
-              Video Tour
+              VIDEO TOUR
             </span>
           )}
         </div>
@@ -182,40 +181,40 @@ export function FeaturedBanner({ properties }: { properties: Property[] }) {
         <div className="flex-1" />
 
         <div className="max-w-xl">
-          <p className="text-xs font-bold uppercase tracking-widest text-emerald-400">
-            {property.listingPurpose === "SALE" ? "For Sale" : "For Rent"}
+          <p className="text-[11px] font-semibold tracking-[0.2em] text-emerald-500">
+            {property.listingPurpose === "SALE" ? "FOR SALE" : "FOR RENT"}
           </p>
-          <h2 className="mt-2 line-clamp-2 text-2xl font-extrabold leading-snug text-white sm:text-3xl">
+          <h2 className="mt-3 line-clamp-2 text-2xl font-light leading-tight tracking-tight text-white sm:text-3xl lg:text-4xl">
             {property.title}
           </h2>
           {location && (
-            <p className="mt-2 flex items-center gap-1.5 text-sm text-white/75">
-              <MapPinIcon className="h-4 w-4 shrink-0" />
+            <p className="mt-3 flex items-center gap-1.5 text-sm font-light text-zinc-300">
+              <MapPinIcon className="h-3.5 w-3.5 shrink-0" strokeWidth={1.5} />
               {location}
             </p>
           )}
-          <div className="mt-4 flex flex-wrap items-center gap-4">
-            <p className="text-2xl font-extrabold text-white">
+          <div className="mt-5 flex flex-wrap items-center gap-5">
+            <p className="text-2xl font-light tracking-tight text-white">
               {formatMoney(property.price)}
               {property.listingPurpose !== "SALE" && (
-                <span className="ml-1 text-sm font-medium text-white/65">
+                <span className="ml-1 text-sm font-light text-zinc-400">
                   {formatBillingCycle(property.billingCycle)}
                 </span>
               )}
             </p>
             <Link
               href={`/properties/${property.id}`}
-              className="inline-flex items-center gap-1.5 rounded-xl bg-emerald-600 px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-emerald-500 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-400"
+              className="group inline-flex items-center gap-2 border border-white/20 bg-transparent px-5 py-2 text-sm font-medium tracking-wide text-white transition-all hover:border-emerald-500 hover:text-emerald-400 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-emerald-500 rounded-sm"
             >
-              View Property
-              <ChevronRightIcon className="h-4 w-4" strokeWidth={2.5} />
+              VIEW PROPERTY
+              <ChevronRightIcon className="h-3.5 w-3.5 transition-transform group-hover:translate-x-0.5" strokeWidth={2} />
             </Link>
           </div>
         </div>
 
         {!isSingle && (
-          <div className="mt-6 flex items-center justify-between">
-            <div className="flex items-center gap-2">
+          <div className="mt-8 flex items-center justify-between border-t border-zinc-800/60 pt-4">
+            <div className="flex items-center gap-1">
               {slides.map((_, i) => (
                 <button
                   key={i}
@@ -223,16 +222,16 @@ export function FeaturedBanner({ properties }: { properties: Property[] }) {
                   aria-label={`Go to featured property ${i + 1}`}
                   onClick={() => goTo(i)}
                   className={[
-                    "h-1.5 rounded-full transition-all duration-300 focus-visible:outline-none",
+                    "h-px transition-all duration-300 focus-visible:outline-none focus-visible:bg-emerald-500 rounded-sm",
                     i === current
-                      ? "w-7 bg-emerald-400"
-                      : "w-2 bg-white/35 hover:bg-white/60",
+                      ? "w-6 bg-emerald-500"
+                      : "w-3 bg-zinc-600 hover:bg-zinc-400",
                   ].join(" ")}
                 />
               ))}
             </div>
-            <p className="text-xs font-semibold tabular-nums text-white/40">
-              {current + 1} / {count}
+            <p className="text-[11px] font-medium tabular-nums tracking-wide text-zinc-500">
+              {String(current + 1).padStart(2, "0")} / {String(count).padStart(2, "0")}
             </p>
           </div>
         )}
@@ -244,17 +243,17 @@ export function FeaturedBanner({ properties }: { properties: Property[] }) {
             type="button"
             aria-label="Previous featured property"
             onClick={() => goTo(current - 1)}
-            className="absolute left-4 top-1/2 flex h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full bg-black/35 text-white backdrop-blur-sm transition hover:bg-black/55 focus-visible:outline-none"
+            className="absolute left-5 top-1/2 flex h-10 w-10 -translate-y-1/2 items-center justify-center border border-zinc-700 bg-zinc-950/40 text-zinc-300 backdrop-blur-sm transition hover:border-zinc-500 hover:text-white focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-emerald-500 rounded-sm"
           >
-            <ChevronLeftIcon className="h-5 w-5" strokeWidth={2.5} />
+            <ChevronLeftIcon className="h-4 w-4" strokeWidth={1.5} />
           </button>
           <button
             type="button"
             aria-label="Next featured property"
             onClick={() => goTo(current + 1)}
-            className="absolute right-4 top-1/2 flex h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full bg-black/35 text-white backdrop-blur-sm transition hover:bg-black/55 focus-visible:outline-none"
+            className="absolute right-5 top-1/2 flex h-10 w-10 -translate-y-1/2 items-center justify-center border border-zinc-700 bg-zinc-950/40 text-zinc-300 backdrop-blur-sm transition hover:border-zinc-500 hover:text-white focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-emerald-500 rounded-sm"
           >
-            <ChevronRightIcon className="h-5 w-5" strokeWidth={2.5} />
+            <ChevronRightIcon className="h-4 w-4" strokeWidth={1.5} />
           </button>
         </>
       )}

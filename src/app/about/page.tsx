@@ -11,7 +11,7 @@ export const metadata: Metadata = {
 export default function AboutPage() {
   return (
     <div className="min-h-screen bg-zinc-50 dark:bg-zinc-950 font-sans selection:bg-emerald-100 selection:text-emerald-900 dark:selection:bg-emerald-500/30 dark:selection:text-emerald-100">
-      <main className="max-w-4xl mx-auto px-4 sm:px-6 py-12 lg:py-16 space-y-20">
+      <main className="max-w-4xl mx-auto px-4 sm:px-6 py-12 lg:py-10 space-y-20">
         
         <Link
           href="/"

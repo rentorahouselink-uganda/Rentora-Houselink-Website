@@ -33,7 +33,7 @@ const steps = [
 export default function HowItWorksPage() {
   return (
     <div className="min-h-screen bg-zinc-50 dark:bg-zinc-950 font-sans selection:bg-emerald-100 selection:text-emerald-900 dark:selection:bg-emerald-500/30 dark:selection:text-emerald-100">
-      <main className="max-w-5xl mx-auto px-4 sm:px-6 py-12 lg:py-16 space-y-20">
+      <main className="max-w-5xl mx-auto px-4 sm:px-6 py-12 lg:py-10 space-y-20">
 
         <div>
           <Link href="/" className="group mb-12 inline-flex items-center gap-3 text-sm font-medium tracking-wide text-zinc-500 hover:text-emerald-600 dark:text-zinc-400 dark:hover:text-emerald-400 transition-colors">
