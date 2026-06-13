@@ -20,53 +20,53 @@ export function StickyActionCard({ property }: { property: Property }) {
 
   return (
     <>
-      <div className="sticky top-24 rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-6 shadow-sm">
+      <div className="sticky top-24 border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 p-6">
         {/* Price */}
         <div className="mb-6">
-          <p className="text-sm font-semibold text-slate-500 dark:text-slate-400">
+          <p className="text-[10px] font-bold uppercase tracking-widest text-zinc-400 dark:text-zinc-500">
             {property.listingPurpose === "SALE" ? "Purchase Price" : "Rental Price"}
           </p>
-          <div className="mt-1 flex items-baseline gap-2">
-            <span className="text-3xl font-extrabold text-slate-900 dark:text-white">
+          <div className="mt-2 flex items-baseline gap-2">
+            <span className="text-3xl font-bold tracking-tight text-zinc-900 dark:text-white">
               {formatMoney(property.price)}
             </span>
             {property.listingPurpose !== "SALE" && property.billingCycle && (
-              <span className="text-base font-medium text-slate-500 dark:text-slate-400">
+              <span className="text-sm font-medium text-zinc-500 dark:text-zinc-400">
                 {formatBillingCycle(property.billingCycle)}
               </span>
             )}
           </div>
         </div>
 
-        {/* Minimal Stats */}
-        <div className="mb-6 grid grid-cols-2 gap-4 rounded-xl border border-slate-100 dark:border-slate-800 bg-slate-50 dark:bg-slate-950 p-4">
+        {/* Minimal stats */}
+        <div className="mb-6 grid grid-cols-2 gap-4 border border-zinc-100 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-950 p-4">
           <div>
-            <p className="text-xs font-medium text-slate-500 dark:text-slate-400">Rooms</p>
-            <p className="mt-1 font-semibold text-slate-900 dark:text-white">
+            <p className="text-[10px] font-bold uppercase tracking-widest text-zinc-400 dark:text-zinc-500">Rooms</p>
+            <p className="mt-1 text-sm font-semibold text-zinc-900 dark:text-white">
               {property.numberOfRooms ?? "N/A"}
             </p>
           </div>
           <div>
-            <p className="text-xs font-medium text-slate-500 dark:text-slate-400">Status</p>
+            <p className="text-[10px] font-bold uppercase tracking-widest text-zinc-400 dark:text-zinc-500">Status</p>
             <p
-              className={`mt-1 font-semibold ${
+              className={`mt-1 text-sm font-semibold ${
                 property.status === "AVAILABLE"
                   ? "text-emerald-600 dark:text-emerald-500"
-                  : "text-slate-900 dark:text-white"
+                  : "text-zinc-900 dark:text-white"
               }`}
             >
               {property.status === "AVAILABLE" ? "Available" : formatLabel(property.status)}
             </p>
           </div>
           <div>
-            <p className="text-xs font-medium text-slate-500 dark:text-slate-400">Parking</p>
-            <p className="mt-1 font-semibold text-slate-900 dark:text-white">
+            <p className="text-[10px] font-bold uppercase tracking-widest text-zinc-400 dark:text-zinc-500">Parking</p>
+            <p className="mt-1 text-sm font-semibold text-zinc-900 dark:text-white">
               {property.parkingAvailable ? "Yes" : "None"}
             </p>
           </div>
           <div>
-            <p className="text-xs font-medium text-slate-500 dark:text-slate-400">Views</p>
-            <p className="mt-1 font-semibold text-slate-900 dark:text-white">
+            <p className="text-[10px] font-bold uppercase tracking-widest text-zinc-400 dark:text-zinc-500">Views</p>
+            <p className="mt-1 text-sm font-semibold text-zinc-900 dark:text-white">
               {(property.viewCount ?? 0).toLocaleString()}
             </p>
           </div>
@@ -76,13 +76,13 @@ export function StickyActionCard({ property }: { property: Property }) {
         <div className="flex flex-col gap-3">
           <Link
             href={bookPath}
-            className="block w-full rounded-xl bg-emerald-600 px-6 py-4 text-center text-base font-bold text-white transition hover:bg-emerald-700"
+            className="block w-full bg-emerald-600 px-6 py-4 text-center text-sm font-bold uppercase tracking-widest text-white transition hover:bg-emerald-700 dark:bg-emerald-500 dark:hover:bg-emerald-400"
           >
             {bookLabel}
           </Link>
           <button
             onClick={() => setShowEnquire(true)}
-            className="w-full rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 px-6 py-4 text-base font-bold text-slate-900 dark:text-white transition hover:bg-slate-50 dark:hover:bg-slate-800"
+            className="w-full border border-zinc-300 dark:border-zinc-700 bg-white dark:bg-zinc-900 px-6 py-4 text-sm font-bold uppercase tracking-widest text-zinc-900 dark:text-white transition hover:bg-zinc-50 dark:hover:bg-zinc-800"
           >
             Enquire via WhatsApp
           </button>
@@ -90,8 +90,8 @@ export function StickyActionCard({ property }: { property: Property }) {
 
         {/* Available from date */}
         {property.availableFrom && (
-          <p className="mt-5 flex items-center justify-center gap-2 text-sm text-slate-500 dark:text-slate-400">
-            <CalendarDaysIcon className="h-4 w-4" />
+          <p className="mt-5 flex items-center justify-center gap-2 text-xs text-zinc-400 dark:text-zinc-500">
+            <CalendarDaysIcon className="h-4 w-4" strokeWidth={1.5} />
             Available from{" "}
             {new Date(property.availableFrom).toLocaleDateString("en-UG", {
               day: "numeric", month: "short", year: "numeric",

@@ -23,14 +23,14 @@ export function ResetPasswordForm() {
 
   if (!email) {
     return (
-      <main className="min-h-[calc(100vh-64px)] flex items-center justify-center bg-slate-50 dark:bg-slate-950 py-12 px-4">
+      <main className="min-h-[calc(100vh-64px)] flex items-center justify-center bg-zinc-50 dark:bg-zinc-950 py-12 px-4 font-sans">
         <div className="text-center w-full max-w-md">
-          <p className="mb-6 text-base text-slate-500 dark:text-slate-400">
+          <p className="mb-8 text-base text-zinc-500 dark:text-zinc-400">
             No email found. Please start the password reset again.
           </p>
           <Link
             href="/forgot-password"
-            className="inline-flex rounded-xl bg-emerald-600 px-6 py-3 text-sm font-bold text-white hover:bg-emerald-700 transition"
+            className="inline-flex bg-emerald-600 px-8 py-4 text-xs font-bold uppercase tracking-widest text-white hover:bg-emerald-700 transition-colors"
           >
             Go back
           </Link>
@@ -64,75 +64,78 @@ export function ResetPasswordForm() {
     }
   }
 
-  const inputClass = "w-full rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 px-4 py-3.5 text-sm text-slate-900 dark:text-white outline-none transition placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20 disabled:opacity-60 disabled:cursor-not-allowed";
-  const inputClassError = "w-full rounded-xl border border-red-300 dark:border-red-900 bg-red-50 dark:bg-red-950/30 px-4 py-3.5 text-sm text-slate-900 dark:text-white outline-none transition placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:border-red-400 focus:ring-2 focus:ring-red-500/20 disabled:opacity-60 disabled:cursor-not-allowed";
+  const inputClass = "w-full bg-transparent border-0 border-b py-4 pl-0 pr-10 text-base text-zinc-900 dark:text-white outline-none transition-colors placeholder:text-zinc-400 focus:ring-0 disabled:opacity-50 disabled:cursor-not-allowed rounded-none";
+  const inputNormal = `${inputClass} border-zinc-300 dark:border-zinc-800 focus:border-emerald-600 dark:focus:border-emerald-500`;
+  const inputErrorCls = `${inputClass} border-red-400 dark:border-red-600 focus:border-red-500`;
 
   return (
-    <main className="min-h-[calc(100vh-64px)] flex items-center justify-center bg-slate-50 dark:bg-slate-950 py-12 px-4 sm:px-6 lg:px-8">
-      <div className="w-full max-w-md space-y-8">
-        
+    <main className="min-h-[calc(100vh-64px)] flex items-center justify-center bg-zinc-50 dark:bg-zinc-950 py-12 px-4 sm:px-6 lg:px-8 font-sans selection:bg-emerald-100 selection:text-emerald-900 dark:selection:bg-emerald-500/30 dark:selection:text-emerald-100">
+      <div className="w-full max-w-md">
+
         <Link
           href="/forgot-password"
-          className="inline-flex items-center gap-2 text-sm font-semibold text-slate-500 dark:text-slate-400 hover:text-emerald-600 dark:hover:text-emerald-400 transition"
+          className="group inline-flex items-center gap-2 text-sm font-medium text-zinc-500 dark:text-zinc-400 hover:text-emerald-600 dark:hover:text-emerald-400 transition-colors mb-12"
         >
-          <ArrowLeftIcon className="h-4 w-4" />
+          <ArrowLeftIcon className="h-4 w-4 transition-transform group-hover:-translate-x-1" />
           Back
         </Link>
 
-        <div>
-          <h1 className="text-3xl font-extrabold tracking-tight text-slate-900 dark:text-white">
-            Create new password
+        <div className="mb-10">
+          <h1 className="text-4xl font-light tracking-tight text-zinc-900 dark:text-white">
+            Create new <span className="font-semibold">password.</span>
           </h1>
-          <p className="mt-2 text-base text-slate-500 dark:text-slate-400">
+          <p className="mt-3 text-base text-zinc-500 dark:text-zinc-400">
             Enter the 6-digit code sent to{" "}
-            <span className="font-bold text-slate-700 dark:text-slate-300">{email}</span>.
+            <span className="font-bold text-zinc-700 dark:text-zinc-300">{email}</span>.
           </p>
         </div>
 
         {apiError && (
-          <div className="rounded-xl border border-red-200 dark:border-red-900/50 bg-red-50 dark:bg-red-950/30 px-4 py-3 text-sm font-medium text-red-700 dark:text-red-400">
+          <div className="mb-6 text-sm font-medium text-red-600 dark:text-red-400">
             {apiError}
           </div>
         )}
 
-        <form onSubmit={handleSubmit} noValidate className="space-y-5">
-          <div>
-            <label className="mb-2 block text-sm font-bold text-slate-700 dark:text-slate-300">Reset code</label>
-            <input type="text" inputMode="numeric" value={otp} onChange={(e) => setOtp(e.target.value)} placeholder="6-digit code" maxLength={6} autoComplete="one-time-code" disabled={loading} autoFocus className={errors.otp ? inputClassError : inputClass} />
+        <form onSubmit={handleSubmit} noValidate className="space-y-7">
+          <div className="relative group">
+            <label className="block text-xs font-bold uppercase tracking-widest text-zinc-500 dark:text-zinc-400 mb-1">Reset code</label>
+            <input type="text" inputMode="numeric" value={otp} onChange={(e) => setOtp(e.target.value)} placeholder="6-digit code" maxLength={6} autoComplete="one-time-code" disabled={loading} autoFocus className={errors.otp ? inputErrorCls : inputNormal} />
             {errors.otp && <p className="mt-1.5 text-xs font-medium text-red-600 dark:text-red-400">{errors.otp}</p>}
           </div>
 
-          <div>
-            <label className="mb-2 block text-sm font-bold text-slate-700 dark:text-slate-300">New password</label>
+          <div className="relative group">
+            <label className="block text-xs font-bold uppercase tracking-widest text-zinc-500 dark:text-zinc-400 mb-1">New password</label>
             <div className="relative">
-              <input type={showPw ? "text" : "password"} value={password} onChange={(e) => setPassword(e.target.value)} placeholder="At least 8 characters" autoComplete="new-password" disabled={loading} className={`${errors.password ? inputClassError : inputClass} pr-12`} />
-              <button type="button" onClick={() => setShowPw((v) => !v)} className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 dark:hover:text-slate-300 transition" tabIndex={-1}>
+              <input type={showPw ? "text" : "password"} value={password} onChange={(e) => setPassword(e.target.value)} placeholder="At least 8 characters" autoComplete="new-password" disabled={loading} className={errors.password ? inputErrorCls : inputNormal} />
+              <button type="button" onClick={() => setShowPw((v) => !v)} className="absolute right-0 bottom-4 text-zinc-400 hover:text-zinc-900 dark:hover:text-white transition-colors" tabIndex={-1}>
                 {showPw ? <EyeSlashIcon className="h-5 w-5" /> : <EyeIcon className="h-5 w-5" />}
               </button>
             </div>
             {errors.password && <p className="mt-1.5 text-xs font-medium text-red-600 dark:text-red-400">{errors.password}</p>}
           </div>
 
-          <div>
-            <label className="mb-2 block text-sm font-bold text-slate-700 dark:text-slate-300">Confirm new password</label>
+          <div className="relative group">
+            <label className="block text-xs font-bold uppercase tracking-widest text-zinc-500 dark:text-zinc-400 mb-1">Confirm new password</label>
             <div className="relative">
-              <input type={showCf ? "text" : "password"} value={confirm} onChange={(e) => setConfirm(e.target.value)} placeholder="Re-enter your password" autoComplete="new-password" disabled={loading} className={`${errors.confirm ? inputClassError : inputClass} pr-12`} />
-              <button type="button" onClick={() => setShowCf((v) => !v)} className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 dark:hover:text-slate-300 transition" tabIndex={-1}>
+              <input type={showCf ? "text" : "password"} value={confirm} onChange={(e) => setConfirm(e.target.value)} placeholder="Re-enter your password" autoComplete="new-password" disabled={loading} className={errors.confirm ? inputErrorCls : inputNormal} />
+              <button type="button" onClick={() => setShowCf((v) => !v)} className="absolute right-0 bottom-4 text-zinc-400 hover:text-zinc-900 dark:hover:text-white transition-colors" tabIndex={-1}>
                 {showCf ? <EyeSlashIcon className="h-5 w-5" /> : <EyeIcon className="h-5 w-5" />}
               </button>
             </div>
             {errors.confirm && <p className="mt-1.5 text-xs font-medium text-red-600 dark:text-red-400">{errors.confirm}</p>}
           </div>
 
-          <button type="submit" disabled={loading} className="flex w-full items-center justify-center gap-2 rounded-xl bg-emerald-600 py-4 text-base font-bold text-white transition hover:bg-emerald-700 focus:outline-none focus:ring-4 focus:ring-emerald-600/20 disabled:opacity-60 disabled:cursor-not-allowed">
-            {loading && (
-              <svg className="h-5 w-5 animate-spin" viewBox="0 0 24 24" fill="none">
-                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
-                <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
-              </svg>
-            )}
-            {loading ? "Resetting…" : "Reset Password"}
-          </button>
+          <div className="pt-2">
+            <button type="submit" disabled={loading} className="flex w-full items-center justify-center gap-3 bg-emerald-600 text-white py-5 text-sm font-bold tracking-widest uppercase hover:bg-emerald-700 dark:bg-emerald-500 dark:hover:bg-emerald-400 transition-colors focus:outline-none disabled:opacity-50 disabled:cursor-not-allowed">
+              {loading && (
+                <svg className="h-4 w-4 animate-spin" viewBox="0 0 24 24" fill="none">
+                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
+                </svg>
+              )}
+              {loading ? "Resetting…" : "Reset Password"}
+            </button>
+          </div>
         </form>
       </div>
     </main>

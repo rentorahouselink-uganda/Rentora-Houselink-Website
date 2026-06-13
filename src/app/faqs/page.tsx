@@ -42,33 +42,33 @@ const faqs = [
 
 export default function FaqsPage() {
   return (
-    <div className="min-h-screen bg-slate-50 dark:bg-slate-950 font-sans">
-      <main className="max-w-3xl mx-auto px-4 sm:px-6 py-12 lg:py-10">
+    <div className="min-h-screen bg-zinc-50 dark:bg-zinc-950 font-sans selection:bg-emerald-100 selection:text-emerald-900 dark:selection:bg-emerald-500/30 dark:selection:text-emerald-100">
+      <main className="max-w-3xl mx-auto px-4 sm:px-6 py-12 lg:py-16">
         
-        <Link href="/" className="inline-flex items-center gap-2 text-sm font-semibold text-slate-500 dark:text-slate-400 hover:text-emerald-600 dark:hover:text-emerald-400 transition-colors mb-12">
-          <ChevronLeftIcon className="h-4 w-4" /> Back to Home
+        <Link href="/" className="group inline-flex items-center gap-3 text-sm font-medium tracking-wide text-zinc-500 hover:text-emerald-600 dark:text-zinc-400 dark:hover:text-emerald-400 transition-colors mb-16">
+          <ChevronLeftIcon className="h-4 w-4 transition-transform group-hover:-translate-x-1" /> RETURN HOME
         </Link>
 
-        <div className="mb-12">
-          <h1 className="text-4xl sm:text-5xl font-extrabold text-slate-900 dark:text-white tracking-tight mb-4">
-            Frequently Asked Questions
+        <div className="mb-16">
+          <h1 className="text-5xl sm:text-6xl font-light tracking-tight text-zinc-900 dark:text-white mb-6">
+            Frequently <span className="font-semibold">Asked.</span>
           </h1>
-          <p className="text-lg text-slate-600 dark:text-slate-400">
+          <p className="text-lg text-zinc-500 dark:text-zinc-400">
             Everything you need to know about {COMPANY_NAME}.
           </p>
         </div>
 
         {/* Sleek Accordion List */}
-        <div className="border-t border-slate-200 dark:border-slate-800">
+        <div className="border-t border-zinc-200 dark:border-zinc-800">
           {faqs.map((faq, i) => (
-            <details key={i} className="group border-b border-slate-200 dark:border-slate-800">
-              <summary className="flex cursor-pointer items-center justify-between py-6 text-lg font-bold text-slate-900 dark:text-white focus:outline-none hover:text-emerald-600 dark:hover:text-emerald-400 transition-colors list-none [&::-webkit-details-marker]:hidden">
+            <details key={i} className="group border-b border-zinc-200 dark:border-zinc-800">
+              <summary className="flex cursor-pointer items-center justify-between py-6 text-lg font-bold text-zinc-900 dark:text-white focus:outline-none hover:text-emerald-600 dark:hover:text-emerald-400 transition-colors list-none [&::-webkit-details-marker]:hidden">
                 {faq.q}
-                <span className="ml-4 shrink-0 text-2xl font-light text-slate-400 dark:text-slate-500 transition-transform duration-300 group-open:rotate-45">
+                <span className="ml-4 shrink-0 text-2xl font-light text-zinc-400 dark:text-zinc-500 transition-transform duration-300 group-open:rotate-45">
                   +
                 </span>
               </summary>
-              <div className="pb-6 pr-12 text-base text-slate-600 dark:text-slate-400 leading-relaxed">
+              <div className="pb-6 pr-12 text-base text-zinc-600 dark:text-zinc-400 leading-relaxed">
                 <p>{faq.a}</p>
               </div>
             </details>

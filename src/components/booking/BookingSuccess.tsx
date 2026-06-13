@@ -16,23 +16,25 @@ type BookingSuccessProps = {
 
 export function BookingSuccess({ property, cancellationToken }: BookingSuccessProps) {
   return (
-    <div className="py-8 text-center">
+    <div className="py-8 animate-in fade-in slide-in-from-bottom-4 duration-700">
       {/* Icon */}
-      <div className="mx-auto mb-6 flex h-20 w-20 items-center justify-center rounded-full bg-emerald-50 dark:bg-emerald-900/30">
-        <CheckCircleIcon className="h-10 w-10 text-emerald-600 dark:text-emerald-500" />
-      </div>
+      <CheckCircleIcon className="h-16 w-16 text-emerald-600 dark:text-emerald-500 mb-6" strokeWidth={1} />
 
-      <h1 className="text-2xl font-extrabold text-slate-900 dark:text-white">Request Submitted!</h1>
-      <p className="mt-3 text-slate-600 dark:text-slate-400 leading-relaxed">
+      <h1 className="text-4xl font-light tracking-tight text-zinc-900 dark:text-white">
+        Request Submitted.
+      </h1>
+      <p className="mt-4 text-base leading-relaxed text-zinc-500 dark:text-zinc-400 max-w-md">
         Your booking request for{" "}
-        <strong className="text-slate-900 dark:text-white">{property.title}</strong> has been
+        <span className="font-semibold text-zinc-900 dark:text-white">{property.title}</span> has been
         sent. The property contact will reach out to you shortly.
       </p>
 
       {/* What happens next */}
-      <div className="mt-8 rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-6 text-left">
-        <h2 className="mb-5 font-bold text-slate-900 dark:text-white">What happens next?</h2>
-        <div className="space-y-4">
+      <div className="mt-10 border-t border-zinc-200 dark:border-zinc-800">
+        <h2 className="mt-8 mb-4 text-[10px] font-bold uppercase tracking-widest text-zinc-400 dark:text-zinc-500">
+          What happens next
+        </h2>
+        <div className="divide-y divide-zinc-100 dark:divide-zinc-800 border-b border-zinc-100 dark:border-zinc-800">
           {[
             {
               Icon: PhoneIcon,
@@ -47,13 +49,9 @@ export function BookingSuccess({ property, cancellationToken }: BookingSuccessPr
               text: "Use your cancellation token below if you ever need to cancel this request.",
             },
           ].map(({ Icon, text }, i) => (
-            <div key={i} className="flex gap-3">
-              <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-slate-100 dark:bg-slate-800">
-                <Icon className="h-4 w-4 text-slate-600 dark:text-slate-400" />
-              </div>
-              <p className="pt-1.5 text-sm leading-relaxed text-slate-600 dark:text-slate-300">
-                {text}
-              </p>
+            <div key={i} className="flex items-start gap-4 py-5">
+              <Icon className="mt-0.5 h-4 w-4 shrink-0 text-zinc-400 dark:text-zinc-500" strokeWidth={1.5} />
+              <p className="text-sm leading-relaxed text-zinc-600 dark:text-zinc-300">{text}</p>
             </div>
           ))}
         </div>
@@ -61,27 +59,27 @@ export function BookingSuccess({ property, cancellationToken }: BookingSuccessPr
 
       {/* Cancellation token */}
       {cancellationToken && (
-        <div className="mt-4 rounded-xl border border-amber-200 dark:border-amber-900/50 bg-amber-50 dark:bg-amber-950/30 p-4 text-left">
-          <p className="mb-1 text-xs font-bold uppercase tracking-wide text-amber-700 dark:text-amber-500">
+        <div className="mt-6 border-l-2 border-amber-500 dark:border-amber-600 pl-4 py-2">
+          <p className="text-[10px] font-bold uppercase tracking-widest text-amber-700 dark:text-amber-500 mb-2">
             Cancellation Token — save this
           </p>
-          <p className="break-all font-mono text-sm font-semibold text-amber-900 dark:text-amber-300">
+          <p className="break-all font-mono text-sm font-semibold text-zinc-900 dark:text-white">
             {cancellationToken}
           </p>
         </div>
       )}
 
       {/* Navigation */}
-      <div className="mt-8 flex flex-col gap-3">
+      <div className="mt-10 flex flex-col gap-3">
         <Link
           href="/explore"
-          className="block w-full rounded-xl bg-emerald-600 px-6 py-3.5 text-center text-sm font-bold text-white transition hover:bg-emerald-700"
+          className="block w-full bg-emerald-600 px-6 py-4 text-center text-sm font-bold uppercase tracking-widest text-white transition hover:bg-emerald-700 dark:bg-emerald-500 dark:hover:bg-emerald-400"
         >
           Continue Exploring
         </Link>
         <Link
           href={`/properties/${property.id}`}
-          className="block w-full rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 px-6 py-3.5 text-center text-sm font-bold text-slate-900 dark:text-white transition hover:bg-slate-50 dark:hover:bg-slate-800"
+          className="block w-full border border-zinc-300 dark:border-zinc-700 bg-white dark:bg-zinc-900 px-6 py-4 text-center text-sm font-bold uppercase tracking-widest text-zinc-900 dark:text-white transition hover:bg-zinc-50 dark:hover:bg-zinc-800"
         >
           Back to listing
         </Link>

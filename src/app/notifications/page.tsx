@@ -10,15 +10,15 @@ import { BellSlashIcon } from "@heroicons/react/24/outline";
 // Shimmer skeleton that matches the NotificationTile shape exactly
 function NotificationSkeleton() {
   return (
-    <div className="flex items-start gap-5 border-b border-slate-200 dark:border-slate-800/60 py-5 px-4 -mx-4 animate-pulse">
-      <div className="h-12 w-12 shrink-0 rounded-full bg-slate-200 dark:bg-slate-800" />
+    <div className="flex items-start gap-5 border-b border-zinc-200 dark:border-zinc-800 py-5 pl-5 pr-12 animate-pulse">
+      <div className="h-10 w-10 shrink-0 border border-zinc-200 dark:border-zinc-800 bg-zinc-100 dark:bg-zinc-900" />
       <div className="flex-1 space-y-2.5 pt-0.5">
         <div className="flex items-center justify-between gap-8">
-          <div className="h-4 w-44 rounded-md bg-slate-200 dark:bg-slate-800" />
-          <div className="h-3 w-24 rounded-md bg-slate-200 dark:bg-slate-800" />
+          <div className="h-4 w-44 bg-zinc-100 dark:bg-zinc-900" />
+          <div className="h-3 w-24 bg-zinc-100 dark:bg-zinc-900" />
         </div>
-        <div className="h-3 w-full rounded-md bg-slate-200 dark:bg-slate-800" />
-        <div className="h-3 w-2/3 rounded-md bg-slate-200 dark:bg-slate-800" />
+        <div className="h-3 w-full bg-zinc-100 dark:bg-zinc-900" />
+        <div className="h-3 w-2/3 bg-zinc-100 dark:bg-zinc-900" />
       </div>
     </div>
   );
@@ -90,17 +90,17 @@ export default function NotificationsPage() {
   };
 
   return (
-    <div className="min-h-screen bg-slate-50 dark:bg-slate-950">
-      <div className="mx-auto max-w-3xl px-4 py-10 sm:px-6 lg:px-8">
+    <div className="min-h-screen bg-zinc-50 dark:bg-zinc-950 font-sans selection:bg-emerald-100 selection:text-emerald-900 dark:selection:bg-emerald-500/30 dark:selection:text-emerald-100">
+      <div className="mx-auto max-w-3xl px-4 py-12 sm:px-6 lg:px-8">
 
         {/* Header */}
-        <div className="mb-4 flex items-end justify-between border-b border-slate-200 dark:border-slate-800 pb-5">
+        <div className="mb-4 flex items-end justify-between border-b border-zinc-200 dark:border-zinc-800 pb-6">
           <div>
-            <h1 className="text-3xl font-extrabold tracking-tight text-slate-900 dark:text-white">
-              Notifications
+            <h1 className="text-4xl font-light tracking-tight text-zinc-900 dark:text-white">
+              Notifications<span className="text-emerald-600 dark:text-emerald-500">.</span>
             </h1>
             {unreadCount > 0 && (
-              <p className="mt-2 text-sm font-bold text-emerald-600 dark:text-emerald-500 uppercase tracking-wider">
+              <p className="mt-2 text-xs font-bold text-emerald-600 dark:text-emerald-500 uppercase tracking-widest">
                 {unreadCount} unread
               </p>
             )}
@@ -108,9 +108,9 @@ export default function NotificationsPage() {
           {unreadCount > 0 && (
             <button
               onClick={handleMarkAllRead}
-              className="text-sm font-bold text-emerald-600 hover:text-emerald-700 dark:text-emerald-500 dark:hover:text-emerald-400 transition"
+              className="text-xs font-bold uppercase tracking-widest text-zinc-900 dark:text-white border-b border-zinc-900 dark:border-white pb-1 hover:opacity-60 transition-opacity"
             >
-              Mark all as read
+              Mark all read
             </button>
           )}
         </div>
@@ -124,12 +124,10 @@ export default function NotificationsPage() {
             ))}
           </div>
         ) : notifications.length === 0 ? (
-          <div className="flex flex-col items-center justify-center py-20 text-center">
-            <div className="flex h-20 w-20 items-center justify-center rounded-2xl bg-slate-100 dark:bg-slate-900 mb-6">
-              <BellSlashIcon className="h-10 w-10 text-slate-400 dark:text-slate-600" />
-            </div>
-            <h3 className="text-xl font-bold text-slate-900 dark:text-white">All caught up!</h3>
-            <p className="mt-2 text-base text-slate-500 dark:text-slate-400 max-w-sm">
+          <div className="flex flex-col items-center justify-center py-24 text-center">
+            <BellSlashIcon className="h-12 w-12 text-zinc-300 dark:text-zinc-700" strokeWidth={1} />
+            <h3 className="mt-6 text-2xl font-light tracking-tight text-zinc-900 dark:text-white">All caught up.</h3>
+            <p className="mt-2 text-base text-zinc-500 dark:text-zinc-400 max-w-sm">
               When you get messages, updates or alerts, they will appear right here.
             </p>
           </div>
@@ -152,10 +150,10 @@ export default function NotificationsPage() {
                     <NotificationSkeleton key={i} />
                   ))
                 ) : (
-                  <div className="py-4 text-center">
+                  <div className="py-8 text-center">
                     <button
                       onClick={handleLoadMore}
-                      className="rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 px-6 py-3 text-sm font-bold text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 transition"
+                      className="text-xs font-bold uppercase tracking-widest text-emerald-600 dark:text-emerald-500 border-b border-emerald-600 dark:border-emerald-500 pb-1 hover:opacity-60 transition-opacity"
                     >
                       Load older notifications
                     </button>

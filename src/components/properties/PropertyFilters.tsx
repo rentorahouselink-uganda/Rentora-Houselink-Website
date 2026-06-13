@@ -33,13 +33,10 @@ export function PropertyFilters({ isCompact = false }: PropertyFiltersProps) {
   const [search, setSearch] = useState(searchParams.get("search") ?? "");
   const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
-  // Keep the input in sync if the URL changes from outside this component
-  // (browser back/forward, category pill clicks elsewhere, etc).
   useEffect(() => {
     setSearch(searchParams.get("search") ?? "");
   }, [searchParams]);
 
-  // Clean up any pending debounce on unmount.
   useEffect(() => {
     return () => {
       if (debounceRef.current) clearTimeout(debounceRef.current);
@@ -83,17 +80,21 @@ export function PropertyFilters({ isCompact = false }: PropertyFiltersProps) {
   const activeType    = searchParams.get("type") ?? "";
   const activePurpose = searchParams.get("listingPurpose") ?? "";
 
+  const inputFlushClass =
+    "bg-transparent border-0 border-b border-zinc-300 dark:border-zinc-800 text-sm text-zinc-900 dark:text-white outline-none transition-colors focus:border-emerald-600 dark:focus:border-emerald-500 focus:ring-0 rounded-none w-full";
+
   return (
     <div>
-      {/* Search + Sort + Filters row */}
-      <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
+      <div className="flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
+        
+        {/* Search Input */}
         <form
           onSubmit={submitSearch}
-          className="flex h-11 w-full items-center gap-2 rounded-lg border border-slate-200 bg-white px-3 transition-colors focus-within:border-emerald-500 focus-within:ring-1 focus-within:ring-emerald-500 dark:border-slate-700 dark:bg-slate-800 lg:max-w-md"
+          className="relative flex w-full items-center group lg:max-w-md"
         >
           {isPending ? (
             <svg
-              className="h-5 w-5 shrink-0 animate-spin text-emerald-500"
+              className="absolute left-0 h-5 w-5 animate-spin text-emerald-600"
               viewBox="0 0 24 24"
               fill="none"
               aria-hidden="true"
@@ -102,34 +103,34 @@ export function PropertyFilters({ isCompact = false }: PropertyFiltersProps) {
               <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 0 1 8-8v4a4 4 0 0 0-4 4H4z" />
             </svg>
           ) : (
-            <MagnifyingGlassIcon className="h-5 w-5 shrink-0 text-slate-400" />
+            <MagnifyingGlassIcon className="absolute left-0 h-5 w-5 text-zinc-400" strokeWidth={1.5} />
           )}
           <input
             value={search}
             onChange={(e) => handleSearchChange(e.target.value)}
             placeholder="Search by area, district..."
-            className="h-full w-full bg-transparent text-sm text-slate-900 outline-none placeholder:text-slate-400 dark:text-slate-100"
+            className={`${inputFlushClass} py-3 pl-8 pr-8 placeholder:text-zinc-400`}
           />
           {search && (
             <button
               type="button"
               onClick={clearSearch}
-              aria-label="Clear search"
-              className="shrink-0 rounded-full p-0.5 text-slate-400 transition hover:bg-slate-100 hover:text-slate-600 dark:hover:bg-slate-700 dark:hover:text-slate-200"
+              className="absolute right-0 p-1 text-zinc-400 hover:text-zinc-900 dark:hover:text-white transition-colors"
             >
               <XMarkIcon className="h-4 w-4" />
             </button>
           )}
         </form>
 
-        <div className="flex items-center gap-3">
+        {/* Sort & Filters Toggle */}
+        <div className="flex items-center gap-6 pb-1">
           <select
             value={`${searchParams.get("sortBy") ?? ""}:${searchParams.get("sortOrder") ?? ""}`}
             onChange={(e) => {
               const [sortBy, sortOrder] = e.target.value.split(":");
               updateParams({ sortBy: sortBy || null, sortOrder: sortOrder || null });
             }}
-            className="h-11 rounded-lg border border-slate-200 bg-white px-3 text-sm font-medium text-slate-700 outline-none transition focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-200"
+            className="bg-transparent border-0 border-b border-zinc-300 dark:border-zinc-800 py-2 pl-0 pr-6 text-xs font-bold uppercase tracking-widest text-zinc-500 dark:text-zinc-400 outline-none transition-colors focus:border-emerald-600 focus:text-zinc-900 dark:focus:border-emerald-500 dark:focus:text-white focus:ring-0 rounded-none cursor-pointer"
           >
             <option value=":">Recommended</option>
             <option value="createdAt:DESC">Newest first</option>
@@ -139,7 +140,7 @@ export function PropertyFilters({ isCompact = false }: PropertyFiltersProps) {
 
           <button
             type="button"
-            className="inline-flex h-11 items-center gap-2 rounded-lg border border-slate-200 bg-white px-4 text-sm font-semibold text-slate-700 transition hover:bg-slate-50 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-200 dark:hover:bg-slate-700"
+            className="flex items-center gap-2 border-b border-zinc-900 dark:border-white py-2 text-xs font-bold uppercase tracking-widest text-zinc-900 dark:text-white hover:opacity-60 transition-opacity"
           >
             <AdjustmentsHorizontalIcon className="h-4 w-4" />
             Filters
@@ -147,14 +148,14 @@ export function PropertyFilters({ isCompact = false }: PropertyFiltersProps) {
         </div>
       </div>
 
-      {/* Category pills — collapse in compact mode */}
+      {/* Category Selection */}
       <div
         className={[
           "no-scrollbar overflow-hidden transition-all duration-300 ease-in-out",
-          isCompact ? "max-h-0 opacity-0" : "max-h-16 opacity-100 mt-4",
+          isCompact ? "max-h-0 opacity-0" : "max-h-20 opacity-100 mt-8",
         ].join(" ")}
       >
-        <div className="flex gap-2 overflow-x-auto pb-1">
+        <div className="flex gap-3 overflow-x-auto pb-2">
           {categories.map((cat) => {
             const isActive =
               activeType === cat.type && activePurpose === cat.listingPurpose;
@@ -169,10 +170,10 @@ export function PropertyFilters({ isCompact = false }: PropertyFiltersProps) {
                   })
                 }
                 className={[
-                  "shrink-0 rounded-full px-4 py-1.5 text-[13px] font-semibold transition-colors duration-200",
+                  "shrink-0 rounded-none border px-5 py-2.5 text-xs font-bold uppercase tracking-widest transition-all duration-200",
                   isActive
-                    ? "bg-slate-900 text-white dark:bg-white dark:text-slate-900"
-                    : "bg-slate-100 text-slate-600 hover:bg-slate-200 hover:text-slate-900 dark:bg-slate-700 dark:text-slate-300 dark:hover:bg-slate-600 dark:hover:text-white",
+                    ? "border-zinc-900 bg-zinc-900 text-white dark:border-white dark:bg-white dark:text-zinc-950"
+                    : "border-zinc-200 text-zinc-500 hover:border-zinc-900 hover:text-zinc-900 dark:border-zinc-800 dark:text-zinc-400 dark:hover:border-white dark:hover:text-white",
                 ].join(" ")}
               >
                 {cat.label}

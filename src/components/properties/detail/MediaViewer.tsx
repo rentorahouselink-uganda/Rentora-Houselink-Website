@@ -43,12 +43,12 @@ export function MediaViewer({ property }: { property: Property }) {
 
   return (
     <>
-      <div className="overflow-hidden rounded-2xl bg-slate-100 dark:bg-slate-900">
+      <div className="overflow-hidden bg-zinc-100 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800">
         {/* Cinematic wide aspect ratio */}
         <div className="relative aspect-video sm:aspect-[21/9] w-full bg-black">
           {activeMedia?.type === "video" ? (
             <video
-              key={activeMedia.url} 
+              key={activeMedia.url}
               ref={videoRef}
               src={activeMedia.url}
               controls
@@ -58,35 +58,34 @@ export function MediaViewer({ property }: { property: Property }) {
             />
           ) : activeMedia?.type === "image" ? (
             <div className="group relative h-full w-full">
-              {/* ── Changed object-cover to object-contain so portrait images aren't cropped ── */}
               <img
                 src={activeMedia.url}
                 alt={property.title}
                 className="h-full w-full object-contain bg-black"
               />
-              {/* ── Maximize Button (Shows on hover) ── */}
+              {/* ── Maximize Button ── */}
               <button
                 onClick={() => setIsFullscreen(true)}
                 aria-label="View fullscreen"
-                className="absolute right-4 top-4 flex h-10 w-10 items-center justify-center rounded-full bg-black/50 text-white opacity-0 backdrop-blur-sm transition-all duration-200 hover:bg-black/80 hover:scale-110 group-hover:opacity-100"
+                className="absolute right-4 top-4 flex h-10 w-10 items-center justify-center bg-black/50 text-white opacity-0 backdrop-blur-sm transition-all duration-200 hover:bg-black/80 group-hover:opacity-100"
               >
                 <ArrowsPointingOutIcon className="h-5 w-5" />
               </button>
             </div>
           ) : (
-            <div className="grid h-full w-full place-items-center bg-slate-100 dark:bg-slate-800">
-              <HomeModernIcon className="h-16 w-16 text-slate-300 dark:text-slate-600" />
+            <div className="grid h-full w-full place-items-center bg-zinc-100 dark:bg-zinc-800">
+              <HomeModernIcon className="h-16 w-16 text-zinc-300 dark:text-zinc-600" strokeWidth={1} />
             </div>
           )}
-          
+
           <div className="absolute left-4 top-4 flex gap-2 pointer-events-none">
             {property.isFeatured && (
-              <span className="rounded-md bg-emerald-600 px-3 py-1.5 text-xs font-bold uppercase tracking-wider text-white shadow-md">
+              <span className="bg-emerald-600 px-3 py-1.5 text-[10px] font-bold uppercase tracking-widest text-white">
                 Featured
               </span>
             )}
             {property.type === "HOSTEL" && (
-              <span className="rounded-md bg-amber-400 px-3 py-1.5 text-xs font-bold uppercase tracking-wider text-slate-900 shadow-md">
+              <span className="bg-zinc-900 px-3 py-1.5 text-[10px] font-bold uppercase tracking-widest text-white">
                 Hostel
               </span>
             )}
@@ -95,15 +94,15 @@ export function MediaViewer({ property }: { property: Property }) {
 
         {/* ── Thumbnails ── */}
         {mediaItems.length > 1 && (
-          <div className="no-scrollbar flex gap-2 overflow-x-auto bg-slate-900 p-3">
+          <div className="no-scrollbar flex gap-2 overflow-x-auto bg-zinc-950 p-3">
             {mediaItems.map((item, idx) => (
               <button
                 key={idx}
                 onClick={() => setActiveIndex(idx)}
-                className={`relative h-16 w-24 shrink-0 overflow-hidden rounded-lg transition-all ${
+                className={`relative h-16 w-24 shrink-0 overflow-hidden transition-all ${
                   activeIndex === idx
-                    ? "ring-2 ring-emerald-500 ring-offset-2 ring-offset-slate-900 opacity-100"
-                    : "opacity-50 hover:opacity-100"
+                    ? "ring-2 ring-emerald-500 ring-offset-2 ring-offset-zinc-950 opacity-100"
+                    : "opacity-40 hover:opacity-80"
                 }`}
               >
                 <img
@@ -112,7 +111,7 @@ export function MediaViewer({ property }: { property: Property }) {
                   className="h-full w-full object-cover"
                 />
                 {item.type === "video" && (
-                  <div className="absolute inset-0 flex items-center justify-center bg-black/30">
+                  <div className="absolute inset-0 flex items-center justify-center bg-black/40">
                     <PlayIcon className="h-6 w-6 text-white drop-shadow-md" />
                   </div>
                 )}
@@ -124,23 +123,21 @@ export function MediaViewer({ property }: { property: Property }) {
 
       {/* ── Fullscreen Image Modal ── */}
       {isFullscreen && activeMedia?.type === "image" && (
-        <div 
+        <div
           className="fixed inset-0 z-[100] flex flex-col items-center justify-center bg-black/95 backdrop-blur-sm p-4 cursor-zoom-out"
           onClick={() => setIsFullscreen(false)}
         >
-          <button 
-            onClick={() => setIsFullscreen(false)} 
-            aria-label="Close fullscreen" 
-            className="absolute right-6 top-6 z-10 flex h-12 w-12 items-center justify-center rounded-full bg-white/10 text-white transition hover:bg-white/20 hover:scale-105"
+          <button
+            onClick={() => setIsFullscreen(false)}
+            aria-label="Close fullscreen"
+            className="absolute right-6 top-6 z-10 flex h-12 w-12 items-center justify-center bg-white/10 text-white transition hover:bg-white/20"
           >
             <XMarkIcon className="h-6 w-6" />
           </button>
-          
-          {/* object-contain ensures it fits the screen perfectly without cutting anything */}
-          <img 
-            src={activeMedia.url} 
-            alt="Fullscreen view" 
-            className="max-h-full max-w-full object-contain shadow-2xl" 
+          <img
+            src={activeMedia.url}
+            alt="Fullscreen view"
+            className="max-h-full max-w-full object-contain shadow-2xl"
           />
         </div>
       )}

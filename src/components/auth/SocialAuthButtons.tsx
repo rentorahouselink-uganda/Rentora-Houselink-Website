@@ -115,24 +115,24 @@ export function SocialAuthButtons({
         onError={() => setError("Google sign-in could not be loaded.")}
       />
 
-      <div className="space-y-4">
+      <div className="space-y-5">
         {/* Flex divider — doesn't depend on knowing the background colour */}
         <div className="flex items-center gap-3">
-          <div className="h-px flex-1 bg-slate-200 dark:bg-slate-700/70" />
-          <span className="text-[11px] font-semibold uppercase tracking-widest text-slate-400 dark:text-slate-500">
+          <div className="h-px flex-1 bg-zinc-200 dark:bg-zinc-800" />
+          <span className="text-[10px] font-bold uppercase tracking-widest text-zinc-400 dark:text-zinc-500">
             or continue with
           </span>
-          <div className="h-px flex-1 bg-slate-200 dark:bg-slate-700/70" />
+          <div className="h-px flex-1 bg-zinc-200 dark:bg-zinc-800" />
         </div>
 
-        {/* overflow-hidden + rounded-xl clips Google's iframe to match the rest of the UI */}
+        {/* overflow-hidden clips Google's iframe to match the rest of the UI */}
         <div
           ref={googleContainerRef}
-          className="w-full min-h-[44px] overflow-hidden rounded-xl"
+          className="w-full min-h-[44px] overflow-hidden"
         />
 
         {error && (
-          <div className="rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm font-medium text-red-700 dark:border-red-900/50 dark:bg-red-950/30 dark:text-red-400">
+          <div className="text-sm font-medium text-red-600 dark:text-red-400">
             {error}
           </div>
         )}

@@ -93,7 +93,7 @@ function FavoritesPageContent() {
 
   if (isLoading || !user) {
     return (
-      <div className="flex min-h-[calc(100vh-64px)] items-center justify-center bg-slate-50 dark:bg-slate-950">
+      <div className="flex min-h-[calc(100vh-64px)] items-center justify-center bg-zinc-50 dark:bg-zinc-950">
         <div className="h-6 w-6 animate-spin rounded-full border-2 border-emerald-600 border-t-transparent" />
       </div>
     );
@@ -102,87 +102,85 @@ function FavoritesPageContent() {
   const total = favoriteIdList.length;
 
   return (
-    <main className="min-h-[calc(100vh-64px)] bg-slate-50 pb-16 dark:bg-slate-950">
+    <main className="min-h-[calc(100vh-64px)] bg-zinc-50 pb-16 font-sans dark:bg-zinc-950 selection:bg-emerald-100 selection:text-emerald-900 dark:selection:bg-emerald-500/30 dark:selection:text-emerald-100">
       <div className="mx-auto max-w-7xl px-4 pt-10 sm:px-6 lg:px-8">
         
         {/* ── Top Nav Row ── */}
-        <div className="mb-8 flex items-center justify-between gap-4">
+        <div className="mb-12 flex items-center justify-between gap-4">
           <Link
             href="/account"
-            className="inline-flex items-center gap-2 text-sm font-bold text-slate-500 transition hover:text-emerald-600 dark:text-slate-400 dark:hover:text-emerald-400"
+            className="inline-flex items-center gap-2 text-sm font-medium text-zinc-500 transition-colors hover:text-emerald-600 dark:text-zinc-400 dark:hover:text-emerald-400"
           >
             <ArrowLeftIcon className="h-4 w-4" strokeWidth={2} />
             Back to account
           </Link>
 
-          <span className="inline-flex items-center gap-1.5 rounded-full bg-rose-50 dark:bg-rose-500/10 px-3.5 py-1.5 text-xs font-bold uppercase tracking-wider text-rose-600 dark:text-rose-400">
-            <HeartIcon className="h-4 w-4" strokeWidth={2} />
+          <span className="inline-flex items-center gap-1.5 border-b border-emerald-600 px-1 py-1 text-xs font-bold uppercase tracking-widest text-emerald-600 dark:border-emerald-500 dark:text-emerald-500">
+            <HeartIcon className="h-4 w-4" strokeWidth={1.5} />
             {total.toLocaleString()} saved
           </span>
         </div>
 
         {/* ── Flat Typography Header ── */}
-        <div className="mb-10">
-          <h1 className="text-3xl font-extrabold tracking-tight text-slate-900 dark:text-white sm:text-4xl">
-            Saved Properties
+        <div className="mb-12">
+          <h1 className="text-4xl sm:text-5xl font-light tracking-tight text-zinc-900 dark:text-white">
+            Saved <span className="font-semibold">Properties.</span>
           </h1>
-          <p className="mt-3 max-w-2xl text-base text-slate-600 dark:text-slate-400 leading-relaxed">
+          <p className="mt-4 max-w-2xl text-base text-zinc-500 dark:text-zinc-400 leading-relaxed">
             All the properties you have saved appear here. Remove them anytime
             from this page or open the detail page to review them again.
           </p>
         </div>
 
         {error ? (
-          <div className="rounded-2xl border border-red-200 bg-red-50 px-6 py-16 text-center dark:border-red-900/50 dark:bg-red-950/30">
-            <ExclamationTriangleIcon className="mx-auto mb-4 h-12 w-12 text-red-500 dark:text-red-400" strokeWidth={1.5} />
-            <h2 className="text-xl font-bold text-red-800 dark:text-red-400">
+          <div className="border border-red-200 px-6 py-20 text-center dark:border-red-900/50">
+            <ExclamationTriangleIcon className="mx-auto mb-6 h-12 w-12 text-zinc-300 dark:text-zinc-700" strokeWidth={1} />
+            <h2 className="text-2xl font-light tracking-tight text-zinc-900 dark:text-white">
               Could not load favorites
             </h2>
-            <p className="mt-2 text-base text-red-600 dark:text-red-300">
+            <p className="mt-2 text-base text-zinc-500 dark:text-zinc-400">
               {error}
             </p>
             <button
               type="button"
               onClick={() => setReloadKey((v) => v + 1)}
-              className="mt-8 inline-flex items-center gap-2 rounded-xl bg-red-600 px-6 py-3 text-sm font-bold text-white transition hover:bg-red-700"
+              className="mt-8 inline-flex items-center gap-2 text-xs font-bold uppercase tracking-widest text-emerald-600 dark:text-emerald-500 border-b border-emerald-600 dark:border-emerald-500 pb-1 hover:opacity-60 transition-opacity"
             >
-              <ArrowPathIcon className="h-5 w-5" />
+              <ArrowPathIcon className="h-4 w-4" />
               Retry
             </button>
           </div>
         ) : loadingProperties ? (
           <div className="flex items-center justify-center py-20">
-            <div className="h-8 w-8 animate-spin rounded-full border-4 border-emerald-600 border-t-transparent" />
+            <div className="h-8 w-8 animate-spin rounded-full border-2 border-emerald-600 border-t-transparent" />
           </div>
         ) : properties.length > 0 ? (
           <>
-            <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+            <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
               {properties.map((property) => (
                 <PropertyCard key={property.id} property={property} />
               ))}
             </div>
 
-            <div className="mt-10 border-t border-slate-200 dark:border-slate-800 pt-6">
-              <p className="text-sm font-medium text-slate-500 dark:text-slate-400">
+            <div className="mt-12 border-t border-zinc-200 dark:border-zinc-800 pt-6">
+              <p className="text-sm text-zinc-500 dark:text-zinc-400">
                 {properties.length.toLocaleString()}{" "}
                 {properties.length === 1 ? "property" : "properties"} shown.
               </p>
             </div>
           </>
         ) : (
-          <div className="rounded-3xl border border-dashed border-slate-300 bg-transparent px-6 py-24 text-center dark:border-slate-800">
-            <div className="mx-auto flex h-20 w-20 items-center justify-center rounded-2xl bg-slate-100 dark:bg-slate-900">
-              <HeartIcon className="h-10 w-10 text-slate-400 dark:text-slate-500" strokeWidth={1.5} />
-            </div>
-            <h2 className="mt-6 text-xl font-bold text-slate-900 dark:text-white">
+          <div className="border border-dashed border-zinc-300 bg-transparent px-6 py-24 text-center dark:border-zinc-800">
+            <HeartIcon className="mx-auto h-12 w-12 text-zinc-300 dark:text-zinc-700" strokeWidth={1} />
+            <h2 className="mt-6 text-2xl font-light tracking-tight text-zinc-900 dark:text-white">
               No saved properties yet
             </h2>
-            <p className="mt-2 text-base text-slate-500 dark:text-slate-400 max-w-sm mx-auto">
+            <p className="mt-2 text-base text-zinc-500 dark:text-zinc-400 max-w-sm mx-auto">
               When you favorite a property, it will show up here.
             </p>
             <Link
               href="/explore"
-              className="mt-8 inline-flex items-center justify-center rounded-xl bg-emerald-600 px-8 py-3.5 text-sm font-bold text-white transition hover:bg-emerald-700 focus:outline-none focus:ring-4 focus:ring-emerald-600/20"
+              className="mt-8 inline-flex items-center justify-center bg-emerald-600 px-8 py-3.5 text-xs font-bold uppercase tracking-widest text-white transition-colors hover:bg-emerald-700"
             >
               Browse properties
             </Link>

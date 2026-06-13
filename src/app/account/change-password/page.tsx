@@ -79,50 +79,52 @@ export default function ChangePasswordPage() {
 
   if (authLoading || !user) {
     return (
-      <div className="flex min-h-[calc(100vh-64px)] items-center justify-center bg-slate-50 dark:bg-slate-950">
+      <div className="flex min-h-[calc(100vh-64px)] items-center justify-center bg-zinc-50 dark:bg-zinc-950">
         <div className="h-6 w-6 animate-spin rounded-full border-2 border-emerald-600 border-t-transparent" />
       </div>
     );
   }
 
-  const inputClass = "w-full rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 px-4 py-3.5 text-sm text-slate-900 dark:text-white outline-none transition placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20 disabled:opacity-60 disabled:cursor-not-allowed";
-  const inputClassError = "w-full rounded-xl border border-red-300 dark:border-red-900 bg-red-50 dark:bg-red-950/30 px-4 py-3.5 text-sm text-slate-900 dark:text-white outline-none transition placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:border-red-400 focus:ring-2 focus:ring-red-500/20 disabled:opacity-60 disabled:cursor-not-allowed";
+  const inputClass = "w-full bg-transparent border-0 border-b border-zinc-300 dark:border-zinc-800 py-4 pl-0 pr-12 text-base text-zinc-900 dark:text-white outline-none transition-colors placeholder:text-zinc-400 focus:border-emerald-600 dark:focus:border-emerald-500 focus:ring-0 disabled:opacity-50 disabled:cursor-not-allowed rounded-none";
+  const inputClassError = "w-full bg-transparent border-0 border-b border-red-400 dark:border-red-600 py-4 pl-0 pr-12 text-base text-zinc-900 dark:text-white outline-none transition-colors placeholder:text-zinc-400 focus:border-red-500 focus:ring-0 disabled:opacity-50 disabled:cursor-not-allowed rounded-none";
 
   return (
-    <main className="min-h-[calc(100vh-64px)] bg-slate-50 dark:bg-slate-950 py-10 lg:py-16">
+    <main className="min-h-[calc(100vh-64px)] bg-zinc-50 dark:bg-zinc-950 py-12 lg:py-20 font-sans selection:bg-emerald-100 selection:text-emerald-900 dark:selection:bg-emerald-500/30 dark:selection:text-emerald-100">
       <div className="mx-auto max-w-lg px-4 sm:px-6">
 
         <Link
           href="/account"
-          className="mb-8 inline-flex items-center gap-2 text-sm font-semibold text-slate-500 dark:text-slate-400 hover:text-emerald-600 dark:hover:text-emerald-400 transition"
+          className="mb-12 inline-flex items-center gap-2 text-sm font-medium text-zinc-500 dark:text-zinc-400 hover:text-emerald-600 dark:hover:text-emerald-400 transition-colors"
         >
           <ArrowLeftIcon className="h-4 w-4" />
           Back to account
         </Link>
 
-        <div className="mb-8">
-          <h1 className="text-3xl font-extrabold tracking-tight text-slate-900 dark:text-white">Change Password</h1>
-          <p className="mt-2 text-base text-slate-600 dark:text-slate-400">Choose a strong password to keep your account secure.</p>
+        <div className="mb-12">
+          <h1 className="text-4xl font-light tracking-tight text-zinc-900 dark:text-white">
+            Change <span className="font-semibold">Password.</span>
+          </h1>
+          <p className="mt-3 text-base text-zinc-500 dark:text-zinc-400">Choose a strong password to keep your account secure.</p>
         </div>
 
-        <div className="rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-8">
+        <div className="border-t border-zinc-200 dark:border-zinc-800 pt-8">
           {apiError && (
-            <div className="mb-6 rounded-xl border border-red-200 dark:border-red-900/50 bg-red-50 dark:bg-red-950/30 px-4 py-3 text-sm font-medium text-red-700 dark:text-red-400">
+            <div className="mb-8 text-sm font-medium text-red-600 dark:text-red-400">
               {apiError}
             </div>
           )}
           {success && (
-            <div className="mb-6 flex items-center gap-3 rounded-xl border border-emerald-200 dark:border-emerald-900/50 bg-emerald-50 dark:bg-emerald-900/20 px-4 py-3 text-sm font-bold text-emerald-700 dark:text-emerald-400">
+            <div className="mb-8 flex items-center gap-3 text-sm font-bold text-emerald-700 dark:text-emerald-400">
               <CheckCircleIcon className="h-5 w-5 shrink-0" />
               Password changed successfully!
             </div>
           )}
 
-          <form onSubmit={handleSubmit} noValidate className="space-y-6">
+          <form onSubmit={handleSubmit} noValidate className="space-y-8">
             
             {/* Current Password */}
-            <div>
-              <label className="mb-2 block text-sm font-bold text-slate-700 dark:text-slate-300">
+            <div className="relative group">
+              <label className="block text-xs font-bold uppercase tracking-widest text-zinc-500 dark:text-zinc-400 mb-1">
                 Current password
               </label>
               <div className="relative">
@@ -134,9 +136,9 @@ export default function ChangePasswordPage() {
                   autoComplete="current-password"
                   disabled={loading}
                   autoFocus
-                  className={`${errors.current ? inputClassError : inputClass} pr-12`}
+                  className={errors.current ? inputClassError : inputClass}
                 />
-                <button type="button" onClick={() => setShowCur((v) => !v)} className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 dark:hover:text-slate-300 transition" tabIndex={-1}>
+                <button type="button" onClick={() => setShowCur((v) => !v)} className="absolute right-0 bottom-4 text-zinc-400 hover:text-zinc-900 dark:hover:text-white transition-colors" tabIndex={-1}>
                   {showCur ? <EyeSlashIcon className="h-5 w-5" /> : <EyeIcon className="h-5 w-5" />}
                 </button>
               </div>
@@ -144,8 +146,8 @@ export default function ChangePasswordPage() {
             </div>
 
             {/* New Password */}
-            <div>
-              <label className="mb-2 block text-sm font-bold text-slate-700 dark:text-slate-300">
+            <div className="relative group pt-2">
+              <label className="block text-xs font-bold uppercase tracking-widest text-zinc-500 dark:text-zinc-400 mb-1">
                 New password
               </label>
               <div className="relative">
@@ -156,9 +158,9 @@ export default function ChangePasswordPage() {
                   placeholder="At least 8 characters"
                   autoComplete="new-password"
                   disabled={loading}
-                  className={`${errors.next ? inputClassError : inputClass} pr-12`}
+                  className={errors.next ? inputClassError : inputClass}
                 />
-                <button type="button" onClick={() => setShowNext((v) => !v)} className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 dark:hover:text-slate-300 transition" tabIndex={-1}>
+                <button type="button" onClick={() => setShowNext((v) => !v)} className="absolute right-0 bottom-4 text-zinc-400 hover:text-zinc-900 dark:hover:text-white transition-colors" tabIndex={-1}>
                   {showNext ? <EyeSlashIcon className="h-5 w-5" /> : <EyeIcon className="h-5 w-5" />}
                 </button>
               </div>
@@ -171,13 +173,13 @@ export default function ChangePasswordPage() {
                     {[0, 1, 2, 3].map((i) => (
                       <div
                         key={i}
-                        className={`h-1.5 flex-1 rounded-full transition-colors duration-300 ${
-                          i < strength.score ? strength.color : "bg-slate-100 dark:bg-slate-800"
+                        className={`h-0.5 flex-1 transition-colors duration-300 ${
+                          i < strength.score ? strength.color : "bg-zinc-200 dark:bg-zinc-800"
                         }`}
                       />
                     ))}
                   </div>
-                  <p className={`text-xs font-bold tracking-wide uppercase ${
+                  <p className={`text-xs font-bold tracking-widest uppercase ${
                     strength.score >= 4 ? "text-emerald-600 dark:text-emerald-500"
                     : strength.score >= 3 ? "text-yellow-600 dark:text-yellow-500"
                     : "text-red-500 dark:text-red-400"
@@ -189,8 +191,8 @@ export default function ChangePasswordPage() {
             </div>
 
             {/* Confirm New Password */}
-            <div>
-              <label className="mb-2 block text-sm font-bold text-slate-700 dark:text-slate-300">
+            <div className="relative group pt-2">
+              <label className="block text-xs font-bold uppercase tracking-widest text-zinc-500 dark:text-zinc-400 mb-1">
                 Confirm new password
               </label>
               <div className="relative">
@@ -201,28 +203,30 @@ export default function ChangePasswordPage() {
                   placeholder="Re-enter your new password"
                   autoComplete="new-password"
                   disabled={loading}
-                  className={`${errors.confirm ? inputClassError : inputClass} pr-12`}
+                  className={errors.confirm ? inputClassError : inputClass}
                 />
-                <button type="button" onClick={() => setShowConf((v) => !v)} className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 dark:hover:text-slate-300 transition" tabIndex={-1}>
+                <button type="button" onClick={() => setShowConf((v) => !v)} className="absolute right-0 bottom-4 text-zinc-400 hover:text-zinc-900 dark:hover:text-white transition-colors" tabIndex={-1}>
                   {showConf ? <EyeSlashIcon className="h-5 w-5" /> : <EyeIcon className="h-5 w-5" />}
                 </button>
               </div>
               {errors.confirm && <p className="mt-1.5 text-xs font-medium text-red-600 dark:text-red-400">{errors.confirm}</p>}
             </div>
 
-            <button
-              type="submit"
-              disabled={loading}
-              className="mt-4 flex w-full items-center justify-center gap-2 rounded-xl bg-emerald-600 py-4 text-base font-bold text-white transition hover:bg-emerald-700 focus:outline-none focus:ring-4 focus:ring-emerald-600/20 disabled:opacity-60 disabled:cursor-not-allowed"
-            >
-              {loading && (
-                <svg className="h-5 w-5 animate-spin" viewBox="0 0 24 24" fill="none">
-                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
-                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
-                </svg>
-              )}
-              {loading ? "Updating…" : "Update Password"}
-            </button>
+            <div className="pt-8">
+              <button
+                type="submit"
+                disabled={loading}
+                className="flex w-full items-center justify-center gap-3 bg-emerald-600 text-white py-5 text-sm font-bold tracking-widest uppercase hover:bg-emerald-700 dark:bg-emerald-500 dark:hover:bg-emerald-400 transition-colors focus:outline-none disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                {loading && (
+                  <svg className="h-4 w-4 animate-spin" viewBox="0 0 24 24" fill="none">
+                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
+                  </svg>
+                )}
+                {loading ? "Updating…" : "Update Password"}
+              </button>
+            </div>
           </form>
         </div>
       </div>

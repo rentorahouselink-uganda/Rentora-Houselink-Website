@@ -6,7 +6,7 @@ import { ArrowRightIcon } from "@heroicons/react/24/outline";
 import { Property } from "@/types/property";
 import { getProperties } from "@/lib/api/properties";
 import { formatLabel } from "@/lib/utils";
-import { PropertyCard } from "@/components/properties/PropertyCard"; // ── Reusing your main card!
+import { PropertyCard } from "@/components/properties/PropertyCard";
 
 type Props = { property: Property };
 
@@ -71,26 +71,25 @@ export function SimilarProperties({ property }: Props) {
 
   return (
     <div>
-      <div className="mb-6 flex items-end justify-between">
+      <div className="mb-8 flex items-end justify-between">
         <div>
-          <h2 className="text-2xl font-bold text-slate-900 dark:text-white">
+          <h2 className="text-4xl font-light tracking-tight text-zinc-900 dark:text-white">
             Similar Properties
           </h2>
-          <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">
+          <p className="mt-2 text-sm text-zinc-500 dark:text-zinc-400">
             More {formatLabel(property.type).toLowerCase()} listings near{" "}
             {property.district.name}
           </p>
         </div>
         <Link
           href={`/explore?type=${property.type}&districtId=${property.district.id}`}
-          className="hidden transition hover:text-emerald-700 dark:text-emerald-500 dark:hover:text-emerald-400 sm:inline-flex items-center gap-1.5 text-sm font-semibold text-emerald-600"
+          className="hidden sm:inline-flex items-center gap-2 text-xs font-bold uppercase tracking-widest text-emerald-600 dark:text-emerald-500 hover:opacity-70 transition-opacity"
         >
-          View all <ArrowRightIcon className="h-4 w-4" />
+          View all <ArrowRightIcon className="h-3.5 w-3.5" />
         </Link>
       </div>
 
-      {/* ── Now using the main PropertyCard with all video functionality ── */}
-      <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 xl:grid-cols-4 lg:grid-cols-3">
+      <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
         {properties.map((p) => (
           <PropertyCard key={p.id} property={p} />
         ))}
@@ -99,9 +98,9 @@ export function SimilarProperties({ property }: Props) {
       <div className="mt-6 sm:hidden">
         <Link
           href={`/explore?type=${property.type}&districtId=${property.district.id}`}
-          className="inline-flex items-center gap-1.5 text-sm font-semibold text-emerald-600 transition hover:text-emerald-700"
+          className="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-widest text-emerald-600 dark:text-emerald-500 hover:opacity-70 transition-opacity"
         >
-          View all similar listings <ArrowRightIcon className="h-4 w-4" />
+          View all similar listings <ArrowRightIcon className="h-3.5 w-3.5" />
         </Link>
       </div>
     </div>
@@ -111,21 +110,18 @@ export function SimilarProperties({ property }: Props) {
 function SimilarSkeleton() {
   return (
     <div>
-      <div className="mb-6 space-y-2">
-        <div className="h-7 w-52 animate-pulse rounded-lg bg-slate-200 dark:bg-slate-800" />
-        <div className="h-4 w-72 animate-pulse rounded bg-slate-100 dark:bg-slate-900" />
+      <div className="mb-8 space-y-2">
+        <div className="h-7 w-52 animate-pulse bg-zinc-200 dark:bg-zinc-800" />
+        <div className="h-4 w-72 animate-pulse bg-zinc-100 dark:bg-zinc-900" />
       </div>
       <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
         {Array.from({ length: 4 }).map((_, i) => (
-          <div
-            key={i}
-            className="overflow-hidden rounded-2xl border border-slate-100 dark:border-slate-800"
-          >
-            <div className="aspect-[4/3] animate-pulse bg-slate-200 dark:bg-slate-800" />
-            <div className="space-y-2 bg-white p-4 dark:bg-slate-900">
-              <div className="h-4 animate-pulse rounded bg-slate-200 dark:bg-slate-800" />
-              <div className="h-3 w-2/3 animate-pulse rounded bg-slate-100 dark:bg-slate-800" />
-              <div className="mt-3 h-5 w-1/2 animate-pulse rounded bg-slate-200 dark:bg-slate-800" />
+          <div key={i} className="overflow-hidden border border-zinc-100 dark:border-zinc-800">
+            <div className="aspect-[4/3] animate-pulse bg-zinc-200 dark:bg-zinc-800" />
+            <div className="space-y-2 bg-white dark:bg-zinc-900 p-5">
+              <div className="h-3 w-1/3 animate-pulse bg-zinc-100 dark:bg-zinc-800" />
+              <div className="h-5 w-full animate-pulse bg-zinc-200 dark:bg-zinc-800" />
+              <div className="h-3 w-2/3 animate-pulse bg-zinc-100 dark:bg-zinc-800" />
             </div>
           </div>
         ))}

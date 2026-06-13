@@ -36,9 +36,9 @@ type NavItem = {
 
 function SectionCard({ title, items }: { title: string; items: NavItem[] }) {
   return (
-    <div className="overflow-hidden rounded-2xl border border-slate-200 bg-white dark:border-slate-800 dark:bg-slate-900">
-      <div className="border-b border-slate-200 px-5 py-4 dark:border-slate-800">
-        <h2 className="text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">
+    <div className="border border-zinc-200 dark:border-zinc-800">
+      <div className="border-b border-zinc-200 px-5 py-3 dark:border-zinc-800">
+        <h2 className="text-[10px] font-bold uppercase tracking-widest text-zinc-400 dark:text-zinc-500">
           {title}
         </h2>
       </div>
@@ -46,27 +46,27 @@ function SectionCard({ title, items }: { title: string; items: NavItem[] }) {
         {items.map((item, i) => (
           <li
             key={item.href}
-            className={i !== 0 ? "border-t border-slate-100 dark:border-slate-800" : ""}
+            className={i !== 0 ? "border-t border-zinc-100 dark:border-zinc-800/50" : ""}
           >
             <Link
               href={item.href}
-              className="group flex items-center gap-4 px-5 py-4 transition hover:bg-slate-50 dark:hover:bg-slate-800/50"
+              className="group flex items-center gap-4 px-5 py-4 transition-colors hover:bg-zinc-50 dark:hover:bg-zinc-900"
             >
-              <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-slate-100 transition-colors group-hover:bg-white dark:bg-slate-800 dark:group-hover:bg-slate-700">
+              <span className="flex h-10 w-10 shrink-0 items-center justify-center border border-zinc-200 dark:border-zinc-800 transition-colors group-hover:border-emerald-600 dark:group-hover:border-emerald-500">
                 <item.icon
-                  className="h-5 w-5 text-slate-600 dark:text-slate-400"
-                  strokeWidth={1.75}
+                  className="h-5 w-5 text-zinc-500 transition-colors group-hover:text-emerald-600 dark:text-zinc-400 dark:group-hover:text-emerald-400"
+                  strokeWidth={1.5}
                 />
               </span>
               <div className="min-w-0 flex-1">
-                <p className="text-sm font-bold text-slate-800 transition-colors group-hover:text-emerald-600 dark:text-slate-200 dark:group-hover:text-emerald-400">
+                <p className="text-sm font-bold text-zinc-900 transition-colors group-hover:text-emerald-600 dark:text-white dark:group-hover:text-emerald-400">
                   {item.label}
                 </p>
-                <p className="mt-0.5 truncate text-xs text-slate-500 dark:text-slate-400">
+                <p className="mt-0.5 truncate text-xs text-zinc-500 dark:text-zinc-400">
                   {item.description}
                 </p>
               </div>
-              <ArrowRightIcon className="h-4 w-4 shrink-0 text-slate-300 transition-colors group-hover:text-emerald-600 dark:text-slate-600 dark:group-hover:text-emerald-400" />
+              <ArrowRightIcon className="h-4 w-4 shrink-0 text-zinc-300 transition-all group-hover:translate-x-1 group-hover:text-emerald-600 dark:text-zinc-700 dark:group-hover:text-emerald-400" />
             </Link>
           </li>
         ))}
@@ -115,7 +115,7 @@ export default function AccountPage() {
 
   if (isLoading || !user) {
     return (
-      <div className="flex min-h-[calc(100vh-64px)] items-center justify-center bg-slate-50 dark:bg-slate-950">
+      <div className="flex min-h-[calc(100vh-64px)] items-center justify-center bg-zinc-50 dark:bg-zinc-950">
         <div className="h-6 w-6 animate-spin rounded-full border-2 border-emerald-600 border-t-transparent" />
       </div>
     );
@@ -195,7 +195,7 @@ export default function AccountPage() {
         title="Delete account?"
         description="This will permanently delete your account. Your bookings and data will be removed. This action cannot be undone."
         confirmText="Delete Account"
-        icon={<TrashIcon className="h-6 w-6" strokeWidth={1.75} />}
+        icon={<TrashIcon className="h-6 w-6" strokeWidth={1.5} />}
         isLoading={deleteLoading}
         isDanger={true}
       />
@@ -209,33 +209,33 @@ export default function AccountPage() {
         description="You will be signed out of your account. You can always sign back in anytime."
         confirmText="Sign Out"
         icon={
-          <ArrowRightStartOnRectangleIcon className="h-6 w-6" strokeWidth={1.75} />
+          <ArrowRightStartOnRectangleIcon className="h-6 w-6" strokeWidth={1.5} />
         }
       />
 
-      <main className="min-h-[calc(100vh-64px)] bg-slate-50 pb-16 dark:bg-slate-950">
-        <div className="mx-auto max-w-2xl px-4 pt-8 sm:px-6">
+      <main className="min-h-[calc(100vh-64px)] bg-zinc-50 pb-16 font-sans dark:bg-zinc-950 selection:bg-emerald-100 selection:text-emerald-900 dark:selection:bg-emerald-500/30 dark:selection:text-emerald-100">
+        <div className="mx-auto max-w-2xl px-4 pt-10 sm:px-6">
           {/* ── Profile card ── */}
-          <div className="mb-8 overflow-hidden rounded-2xl border border-slate-200 bg-white dark:border-slate-800 dark:bg-slate-900">
-            <div className="h-24 bg-gradient-to-r from-emerald-600 to-emerald-800 dark:from-emerald-700 dark:to-emerald-900" />
+          <div className="mb-12 border border-zinc-200 dark:border-zinc-800">
+            <div className="h-20 bg-zinc-900 dark:bg-zinc-900" />
             <div className="relative px-6 pb-6">
-              <div className="-mt-10 mb-4 flex h-20 w-20 items-center justify-center rounded-2xl border-4 border-white bg-emerald-600 text-2xl font-extrabold text-white dark:border-slate-900">
+              <div className="-mt-8 mb-4 flex h-16 w-16 items-center justify-center border-4 border-zinc-50 bg-emerald-600 text-xl font-bold text-white dark:border-zinc-950">
                 {getInitials(user.name)}
               </div>
               <div className="flex flex-col justify-between gap-4 sm:flex-row sm:items-start">
                 <div>
-                  <h1 className="text-xl font-extrabold text-slate-900 dark:text-white">
+                  <h1 className="text-2xl font-light tracking-tight text-zinc-900 dark:text-white">
                     {user.name}
                   </h1>
-                  <p className="text-sm font-medium text-slate-500 dark:text-slate-400">
+                  <p className="text-sm text-zinc-500 dark:text-zinc-400">
                     {user.email}
                   </p>
-                  <div className="mt-3 flex flex-wrap gap-2">
-                    <span className="inline-flex items-center rounded-full bg-emerald-50 px-3 py-1 text-xs font-bold uppercase tracking-wider text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400">
+                  <div className="mt-3 flex flex-wrap gap-3">
+                    <span className="inline-flex items-center border border-emerald-600 px-2.5 py-1 text-[10px] font-bold uppercase tracking-widest text-emerald-700 dark:border-emerald-500 dark:text-emerald-400">
                       {user.role}
                     </span>
                     {user.provider !== "LOCAL" && (
-                      <span className="inline-flex items-center rounded-full bg-slate-100 px-3 py-1 text-xs font-bold uppercase tracking-wider text-slate-600 dark:bg-slate-800 dark:text-slate-300">
+                      <span className="inline-flex items-center border border-zinc-300 px-2.5 py-1 text-[10px] font-bold uppercase tracking-widest text-zinc-500 dark:border-zinc-700 dark:text-zinc-400">
                         {user.provider} account
                       </span>
                     )}
@@ -243,17 +243,17 @@ export default function AccountPage() {
                 </div>
                 <Link
                   href="/account/edit-profile"
-                  className="flex items-center justify-center gap-2 rounded-xl border border-slate-200 px-4 py-2 text-sm font-bold text-slate-700 transition hover:bg-slate-50 dark:border-slate-700 dark:text-slate-300 dark:hover:bg-slate-800"
+                  className="flex items-center justify-center gap-2 border border-zinc-200 px-4 py-2.5 text-xs font-bold uppercase tracking-widest text-zinc-700 transition-colors hover:border-emerald-600 hover:text-emerald-600 dark:border-zinc-700 dark:text-zinc-300 dark:hover:border-emerald-500 dark:hover:text-emerald-400"
                 >
                   <PencilSquareIcon className="h-4 w-4" />
-                  Edit Profile
+                  Edit
                 </Link>
               </div>
             </div>
           </div>
 
           {/* ── Navigation sections ── */}
-          <div className="space-y-6">
+          <div className="space-y-8">
             <SectionCard title="Account Settings" items={accountItems} />
             <SectionCard title="Activity" items={activityItems} />
             <SectionCard title="Support" items={supportItems} />
@@ -263,16 +263,16 @@ export default function AccountPage() {
           {/* ── Sign out ── */}
           <button
             onClick={handleLogoutClick}
-            className="mt-8 flex w-full items-center justify-center gap-2 rounded-2xl border border-slate-200 bg-white py-4 text-sm font-bold text-slate-700 transition hover:bg-slate-50 hover:text-emerald-600 dark:border-slate-800 dark:bg-slate-900 dark:text-slate-300 dark:hover:bg-slate-800 dark:hover:text-emerald-400"
+            className="mt-8 flex w-full items-center justify-center gap-2 border border-zinc-200 bg-transparent py-4 text-xs font-bold uppercase tracking-widest text-zinc-700 transition-colors hover:border-emerald-600 hover:text-emerald-600 dark:border-zinc-800 dark:text-zinc-300 dark:hover:border-emerald-500 dark:hover:text-emerald-400"
           >
-            <ArrowRightStartOnRectangleIcon className="h-5 w-5" />
+            <ArrowRightStartOnRectangleIcon className="h-4 w-4" />
             Sign Out
           </button>
 
           {/* ── Danger zone ── */}
-          <div className="mt-8 overflow-hidden rounded-2xl border border-red-200 bg-white dark:border-red-900/50 dark:bg-slate-900">
-            <div className="border-b border-red-100 bg-red-50/50 px-5 py-4 dark:border-red-900/30 dark:bg-red-950/20">
-              <h2 className="text-xs font-bold uppercase tracking-wider text-red-500 dark:text-red-400">
+          <div className="mt-12 border border-red-200 dark:border-red-900/50">
+            <div className="border-b border-red-100 px-5 py-3 dark:border-red-900/30">
+              <h2 className="text-[10px] font-bold uppercase tracking-widest text-red-500 dark:text-red-400">
                 Danger Zone
               </h2>
             </div>
@@ -283,26 +283,26 @@ export default function AccountPage() {
             )}
             <button
               onClick={() => setShowDeleteModal(true)}
-              className="group flex w-full items-center gap-4 px-5 py-4 text-left transition hover:bg-red-50 dark:hover:bg-red-950/30"
+              className="group flex w-full items-center gap-4 px-5 py-4 text-left transition-colors hover:bg-red-50 dark:hover:bg-red-950/20"
             >
-              <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-red-50 transition-colors group-hover:bg-red-100 dark:bg-red-900/20 dark:group-hover:bg-red-900/40">
+              <span className="flex h-10 w-10 shrink-0 items-center justify-center border border-red-200 transition-colors group-hover:border-red-400 dark:border-red-900/50">
                 <TrashIcon
                   className="h-5 w-5 text-red-500 dark:text-red-400"
-                  strokeWidth={1.75}
+                  strokeWidth={1.5}
                 />
               </span>
               <div>
                 <p className="text-sm font-bold text-red-600 dark:text-red-400">
                   Delete Account
                 </p>
-                <p className="mt-0.5 text-xs font-medium text-slate-500 dark:text-slate-400">
+                <p className="mt-0.5 text-xs text-zinc-500 dark:text-zinc-400">
                   Permanently remove your account and all data
                 </p>
               </div>
             </button>
           </div>
 
-          <p className="mt-8 text-center text-xs font-medium uppercase tracking-widest text-slate-400 dark:text-slate-600">
+          <p className="mt-10 text-center text-[10px] font-bold uppercase tracking-widest text-zinc-400 dark:text-zinc-600">
             Account ID: {user.id.slice(0, 8)}…
           </p>
         </div>

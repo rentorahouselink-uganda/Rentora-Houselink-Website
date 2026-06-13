@@ -43,7 +43,7 @@ function ThemeToggle() {
   }, []);
 
   if (!mounted) {
-    return <div className="h-9 w-9 rounded-lg" aria-hidden />;
+    return <div className="h-9 w-9" aria-hidden />;
   }
 
   const themes = ["system", "light", "dark"] as const;
@@ -56,24 +56,17 @@ function ThemeToggle() {
   }
 
   const icons: Record<Theme, React.ReactNode> = {
-    system: <ComputerDesktopIcon className="h-5 w-5" />,
-    light:  <SunIcon className="h-5 w-5" />,
-    dark:   <MoonIcon className="h-5 w-5" />,
-  };
-
-  const labels: Record<Theme, string> = {
-    system: "System",
-    light:  "Light",
-    dark:   "Dark",
+    system: <ComputerDesktopIcon className="h-5 w-5" strokeWidth={1.5} />,
+    light:  <SunIcon className="h-5 w-5" strokeWidth={1.5} />,
+    dark:   <MoonIcon className="h-5 w-5" strokeWidth={1.5} />,
   };
 
   return (
     <button
       type="button"
       onClick={cycle}
-      title={`Theme: ${labels[current]} — click to cycle`}
-      aria-label={`Current theme: ${labels[current]}. Click to cycle.`}
-      className="grid h-9 w-9 place-items-center rounded-lg text-slate-500 transition hover:bg-slate-100 dark:text-slate-400 dark:hover:bg-slate-800"
+      className="grid h-9 w-9 place-items-center text-zinc-400 hover:text-emerald-600 dark:hover:text-emerald-400 transition-colors"
+      aria-label="Toggle theme"
     >
       {icons[current]}
     </button>
@@ -81,11 +74,11 @@ function ThemeToggle() {
 }
 
 export function Header() {
-  const [mobileOpen, setMobileOpen]   = useState(false);
+  const [mobileOpen, setMobileOpen] = useState(false);
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [showLogoutModal, setShowLogoutModal] = useState(false);
-  const pathname  = usePathname();
-  const router    = useRouter();
+  const pathname = usePathname();
+  const router = useRouter();
   const { user, isAuthenticated, isLoading, logout } = useAuth();
   const { unreadCount } = useNotifications();
   const dropdownRef = useRef<HTMLDivElement>(null);
@@ -124,39 +117,38 @@ export function Header() {
         description="Are you sure you want to sign out? You will need to sign back in to manage your bookings and account."
         confirmText="Sign Out"
         isDanger={true}
-        icon={<ArrowRightStartOnRectangleIcon className="h-6 w-6" strokeWidth={2} />}
+        icon={<ArrowRightStartOnRectangleIcon className="h-6 w-6" strokeWidth={1.5} />}
       />
 
       <header
         className={[
-          "sticky top-0 z-50 border-b bg-white/95 backdrop-blur-md transition-colors duration-300 dark:bg-slate-900/95",
+          "sticky top-0 z-50 bg-white/80 backdrop-blur-xl transition-all duration-300 dark:bg-zinc-950/80",
           isHeaderCompact
-            ? "border-transparent"
-            : "border-slate-200 dark:border-slate-700",
+            ? "border-b-0"
+            : "border-b border-zinc-200 dark:border-zinc-800/50",
         ].join(" ")}
       >
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <div className="flex h-16 items-center justify-between gap-4">
+        <div className="mx-auto max-w-7xl px-6 sm:px-12">
+          <div className="flex h-20 items-center justify-between gap-8">
 
             {/* ── Logo ── */}
-            <Link href="/" className="flex shrink-0 items-center gap-3 rounded-md">
+            <Link href="/" className="flex shrink-0 items-center gap-3 group">
               <Image
                 src="/logo_no_bg.png"
                 alt="Rentora Houselink logo"
-                width={40}
-                height={40}
-                className="h-10 w-10 object-contain dark:invert dark:brightness-0"
+                width={32}
+                height={32}
+                className="h-8 w-8 object-contain dark:invert dark:brightness-0 transition-transform group-hover:scale-105"
                 priority
               />
-              <span className="text-lg font-extrabold tracking-tight text-slate-950 dark:text-white">
+              <span className="text-xl font-bold tracking-tight text-zinc-900 dark:text-white">
                 Rentora
-                {/* FIXED: Added dark:text-emerald-400 to use high-contrast blue in dark mode */}
-                <span className="text-emerald-600 dark:text-emerald-400"> Houselink UG</span>
+                <span className="font-medium text-emerald-600 dark:text-emerald-500 ml-1.5">Houselink UG</span>
               </span>
             </Link>
 
             {/* ── Desktop nav ── */}
-            <nav className="hidden items-center gap-0.5 md:flex" aria-label="Main navigation">
+            <nav className="hidden md:flex items-center gap-8" aria-label="Main navigation">
               {navLinks.map((link) => {
                 const isActive = pathname === link.href;
                 return (
@@ -164,10 +156,10 @@ export function Header() {
                     key={link.href}
                     href={link.href}
                     className={[
-                      "rounded-md px-3.5 py-2 text-sm font-medium transition",
+                      "text-base tracking-wide transition-colors duration-300",
                       isActive
-                        ? "bg-emerald-50 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400"
-                        : "text-slate-600 hover:bg-slate-50 hover:text-slate-900 dark:text-slate-300 dark:hover:bg-slate-800 dark:hover:text-white",
+                        ? "font-bold text-emerald-600 dark:text-emerald-400"
+                        : "font-medium text-zinc-500 hover:text-emerald-600 dark:text-zinc-400 dark:hover:text-emerald-400",
                     ].join(" ")}
                   >
                     {link.label}
@@ -177,22 +169,21 @@ export function Header() {
             </nav>
 
             {/* ── Desktop right side ── */}
-            <div className="hidden items-center gap-2 md:flex">
+            <div className="hidden items-center gap-6 md:flex">
               <ThemeToggle />
 
               {isLoading ? (
-                <div className="h-8 w-28 animate-pulse rounded-lg bg-slate-100 dark:bg-slate-700" />
+                <div className="h-6 w-24 animate-pulse bg-zinc-200 dark:bg-zinc-800" />
               ) : isAuthenticated && user ? (
-                <>
+                <div className="flex items-center gap-6">
                   <Link
                     href="/notifications"
-                    /* FIXED: Added dark:hover:text-emerald-400 */
-                    className="relative flex items-center justify-center rounded-full p-1.5 text-slate-500 transition hover:bg-slate-50 hover:text-emerald-600 dark:text-slate-400 dark:hover:bg-slate-800 dark:hover:text-emerald-400"
+                    className="relative text-zinc-400 hover:text-emerald-600 dark:hover:text-emerald-400 transition-colors"
                     aria-label="View notifications"
                   >
-                    <BellIcon className="h-6 w-6" />
+                    <BellIcon className="h-5 w-5" strokeWidth={1.5} />
                     {unreadCount > 0 && (
-                      <span className="absolute right-0.5 top-0.5 flex h-4 w-4 items-center justify-center rounded-full bg-red-500 text-[10px] font-bold text-white ring-2 ring-white dark:ring-slate-900">
+                      <span className="absolute -top-1.5 -right-1.5 flex h-4 w-4 items-center justify-center rounded-full bg-emerald-600 dark:bg-emerald-500 text-[9px] font-bold text-white ring-2 ring-white dark:ring-zinc-950">
                         {unreadCount > 9 ? "9+" : unreadCount}
                       </span>
                     )}
@@ -201,119 +192,128 @@ export function Header() {
                   <div className="relative" ref={dropdownRef}>
                     <button
                       onClick={() => setDropdownOpen((v) => !v)}
-                      className="flex items-center gap-2 rounded-lg px-2.5 py-1.5 text-sm font-medium text-slate-700 transition hover:bg-slate-50 dark:text-slate-200 dark:hover:bg-slate-800"
+                      className="flex items-center gap-3 text-base font-medium text-zinc-700 dark:text-zinc-300 hover:opacity-80 transition-opacity"
                     >
-                      <span className="flex h-7 w-7 items-center justify-center rounded-full bg-emerald-600 text-[11px] font-bold text-white select-none">
+                      <span className="flex h-8 w-8 items-center justify-center rounded-sm bg-emerald-600 text-[11px] font-bold tracking-widest text-white select-none shadow-sm shadow-emerald-600/20">
                         {getInitials(user.name)}
                       </span>
-                      <span className="hidden max-w-[96px] truncate lg:block">
+                      <span className="hidden max-w-[120px] truncate lg:block font-semibold">
                         {user.name.split(" ")[0]}
                       </span>
                       <ChevronDownIcon
-                        className={`h-3.5 w-3.5 text-slate-400 transition-transform ${dropdownOpen ? "rotate-180" : ""}`}
+                        className={`h-4 w-4 text-zinc-400 transition-transform duration-300 ${dropdownOpen ? "rotate-180" : ""}`}
+                        strokeWidth={2}
                       />
                     </button>
 
                     {dropdownOpen && (
-                      <div className="absolute right-0 top-full mt-2 w-56 rounded-xl border border-slate-100 bg-white py-1.5 shadow-lg dark:border-slate-700 dark:bg-slate-800">
-                        <div className="border-b border-slate-100 px-4 pb-2.5 pt-1.5 dark:border-slate-700">
-                          <p className="truncate text-sm font-semibold text-slate-900 dark:text-white">
+                      <div className="absolute right-0 top-full mt-4 w-64 border border-zinc-200 bg-white p-2 shadow-2xl dark:border-zinc-800 dark:bg-zinc-900 animate-in fade-in slide-in-from-top-2 duration-200">
+                        <div className="px-4 py-4 mb-2">
+                          <p className="truncate text-base font-bold text-zinc-900 dark:text-white">
                             {user.name}
                           </p>
-                          <p className="truncate text-xs text-slate-400">{user.email}</p>
+                          <p className="truncate text-sm text-zinc-500 mt-0.5">{user.email}</p>
                         </div>
-                        <Link
-                          href="/account"
-                          onClick={() => setDropdownOpen(false)}
-                          className="flex items-center px-4 py-2.5 text-sm text-slate-700 transition hover:bg-slate-50 dark:text-slate-200 dark:hover:bg-slate-700"
-                        >
-                          My Account
-                        </Link>
-                        <Link
-                          href="/bookings"
-                          onClick={() => setDropdownOpen(false)}
-                          className="flex items-center px-4 py-2.5 text-sm text-slate-700 transition hover:bg-slate-50 dark:text-slate-200 dark:hover:bg-slate-700"
-                        >
-                          My Bookings
-                        </Link>
-                        <div className="mt-1 border-t border-slate-100 pt-1 dark:border-slate-700">
-                          <button
-                            onClick={handleLogoutClick}
-                            className="flex w-full items-center px-4 py-2.5 text-sm text-rose-600 transition hover:bg-rose-50 dark:hover:bg-rose-900/20"
+                        <div className="flex flex-col gap-1">
+                          <Link
+                            href="/account"
+                            onClick={() => setDropdownOpen(false)}
+                            className="px-4 py-2 text-base font-medium text-zinc-600 hover:text-emerald-700 hover:bg-emerald-50 dark:text-zinc-400 dark:hover:text-emerald-400 dark:hover:bg-zinc-800/50 transition-colors"
                           >
-                            Sign Out
-                          </button>
+                            Account Settings
+                          </Link>
+                          <Link
+                            href="/bookings"
+                            onClick={() => setDropdownOpen(false)}
+                            className="px-4 py-2 text-base font-medium text-zinc-600 hover:text-emerald-700 hover:bg-emerald-50 dark:text-zinc-400 dark:hover:text-emerald-400 dark:hover:bg-zinc-800/50 transition-colors"
+                          >
+                            Manage Bookings
+                          </Link>
+                          <div className="mt-2 pt-2 border-t border-zinc-100 dark:border-zinc-800/50">
+                            <button
+                              onClick={handleLogoutClick}
+                              className="flex w-full text-left px-4 py-2 text-base font-bold text-red-600 hover:text-red-700 dark:text-red-500 dark:hover:text-red-400 transition-colors"
+                            >
+                              Sign Out
+                            </button>
+                          </div>
                         </div>
                       </div>
                     )}
                   </div>
-                </>
+                </div>
               ) : (
                 <Link
                   href="/login"
-                  className="text-sm font-semibold text-slate-700 transition hover:text-emerald-600 dark:text-slate-200 dark:hover:text-emerald-400"
+                  className="rounded-none bg-emerald-600 px-6 py-2.5 text-base font-bold tracking-wider text-white shadow-sm shadow-emerald-600/20 transition-all hover:bg-emerald-700 dark:bg-emerald-500 dark:hover:bg-emerald-400"
                 >
-                  Sign in
+                  SIGN IN
                 </Link>
               )}
             </div>
 
             {/* ── Mobile: theme toggle + hamburger ── */}
-            <div className="flex items-center gap-1 md:hidden">
+            <div className="flex items-center gap-4 md:hidden">
               <ThemeToggle />
               <button
                 type="button"
-                className="rounded-lg p-2 text-slate-600 transition hover:bg-slate-100 dark:text-slate-300 dark:hover:bg-slate-800"
+                className="text-zinc-600 hover:text-emerald-600 dark:text-zinc-400 dark:hover:text-emerald-400 transition-colors"
                 aria-label={mobileOpen ? "Close menu" : "Open menu"}
                 onClick={() => setMobileOpen((o) => !o)}
               >
-                {mobileOpen ? <XMarkIcon className="h-5 w-5" /> : <Bars3Icon className="h-5 w-5" />}
+                {mobileOpen ? <XMarkIcon className="h-6 w-6" strokeWidth={1.5} /> : <Bars3Icon className="h-6 w-6" strokeWidth={1.5} />}
               </button>
             </div>
           </div>
 
           {/* ── Mobile menu ── */}
           {mobileOpen && (
-            <div className="border-t border-slate-100 py-3 dark:border-slate-700 md:hidden">
-              <nav className="flex flex-col gap-0.5">
-                {navLinks.map((link) => (
-                  <Link
-                    key={link.href}
-                    href={link.href}
-                    className="rounded-md px-3 py-2.5 text-sm font-medium text-slate-700 transition hover:bg-slate-50 dark:text-slate-200 dark:hover:bg-slate-800"
-                    onClick={() => setMobileOpen(false)}
-                  >
-                    {link.label}
-                  </Link>
-                ))}
+            <div className="border-t border-zinc-200 py-6 dark:border-zinc-800/50 md:hidden animate-in fade-in slide-in-from-top-4 duration-300">
+              <nav className="flex flex-col gap-4">
+                {navLinks.map((link) => {
+                  const isActive = pathname === link.href;
+                  return (
+                    <Link
+                      key={link.href}
+                      href={link.href}
+                      className={[
+                        "text-3xl transition-colors",
+                        isActive
+                          ? "font-bold text-emerald-600 dark:text-emerald-400"
+                          : "font-light text-zinc-900 dark:text-white"
+                      ].join(" ")}
+                      onClick={() => setMobileOpen(false)}
+                    >
+                      {link.label}
+                    </Link>
+                  );
+                })}
               </nav>
-              <div className="mt-3 flex flex-wrap items-center gap-4 border-t border-slate-100 px-3 pt-4 dark:border-slate-700">
+              <div className="mt-10 flex flex-col gap-6 border-t border-zinc-200 pt-8 dark:border-zinc-800/50">
                 {isAuthenticated ? (
                   <>
                     <Link
                       href="/notifications"
-                      /* FIXED: Added dark:hover:text-emerald-400 */
-                      className="flex items-center text-sm font-semibold text-slate-700 hover:text-emerald-600 dark:text-slate-200 dark:hover:text-emerald-400"
+                      className="flex items-center text-base font-bold uppercase tracking-widest text-zinc-500 hover:text-emerald-600 dark:hover:text-emerald-400 transition-colors"
                       onClick={() => setMobileOpen(false)}
                     >
                       Notifications
                       {unreadCount > 0 && (
-                        <span className="ml-1.5 flex h-4 min-w-[16px] items-center justify-center rounded-full bg-red-500 px-1 text-[10px] font-bold text-white">
+                        <span className="ml-3 flex h-5 min-w-[20px] items-center justify-center rounded-full bg-emerald-600 dark:bg-emerald-500 px-1.5 text-[10px] font-bold text-white">
                           {unreadCount > 9 ? "9+" : unreadCount}
                         </span>
                       )}
                     </Link>
                     <Link
                       href="/account"
-                      /* FIXED: Added dark:hover:text-emerald-400 */
-                      className="text-sm font-semibold text-slate-700 hover:text-emerald-600 dark:text-slate-200 dark:hover:text-emerald-400"
+                      className="text-base font-bold uppercase tracking-widest text-zinc-500 hover:text-emerald-600 dark:hover:text-emerald-400 transition-colors"
                       onClick={() => setMobileOpen(false)}
                     >
-                      My Account
+                      Account Settings
                     </Link>
                     <button
                       onClick={handleLogoutClick}
-                      className="text-sm font-semibold text-rose-600 dark:text-rose-400"
+                      className="text-left text-base font-bold uppercase tracking-widest text-red-600 dark:text-red-500 transition-colors"
                     >
                       Sign Out
                     </button>
@@ -321,8 +321,7 @@ export function Header() {
                 ) : (
                   <Link
                     href="/login"
-                    /* FIXED: Added dark:hover:text-emerald-400 */
-                    className="text-sm font-semibold text-slate-700 hover:text-emerald-600 dark:text-slate-200 dark:hover:text-emerald-400"
+                    className="text-base font-bold uppercase tracking-widest text-emerald-600 dark:text-emerald-400 transition-colors"
                     onClick={() => setMobileOpen(false)}
                   >
                     Sign in

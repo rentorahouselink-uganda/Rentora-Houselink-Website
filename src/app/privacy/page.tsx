@@ -1,6 +1,6 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
-import { ArrowLeft } from 'lucide-react';
+import { ChevronLeftIcon } from '@heroicons/react/24/outline';
 import { COMPANY_NAME, COMPANY_ADDRESS, CONTACT_EMAIL } from '@/lib/constants';
 import LegalSection from '@/components/shared/legal-section';
 
@@ -13,27 +13,30 @@ const EFFECTIVE_DATE = 'May 2026';
 
 export default function PrivacyPage() {
   return (
-    <div className="min-h-screen bg-background font-sans transition-colors duration-200">
-      <main className="max-w-3xl mx-auto px-4 sm:px-6 py-10 space-y-8">
+    <div className="min-h-screen bg-zinc-50 dark:bg-zinc-950 font-sans selection:bg-emerald-100 selection:text-emerald-900 dark:selection:bg-emerald-500/30 dark:selection:text-emerald-100">
+      <main className="max-w-3xl mx-auto px-4 sm:px-6 py-12 lg:py-16 space-y-12">
         <Link
           href="/"
-          className="inline-flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground transition-colors"
+          className="group inline-flex items-center gap-3 text-sm font-medium tracking-wide text-zinc-500 hover:text-emerald-600 dark:text-zinc-400 dark:hover:text-emerald-400 transition-colors"
         >
-          <ArrowLeft className="h-4 w-4" />
-          Back
+          <ChevronLeftIcon className="h-4 w-4 transition-transform group-hover:-translate-x-1" />
+          RETURN HOME
         </Link>
         
         <div>
-          <h1 className="text-3xl font-extrabold text-foreground">Privacy Policy</h1>
-          <p className="mt-2 text-sm text-muted-foreground">Effective date: {EFFECTIVE_DATE}</p>
+          <h1 className="text-5xl sm:text-6xl font-light tracking-tight text-zinc-900 dark:text-white">
+            Privacy <span className="font-semibold">Policy.</span>
+          </h1>
+          <p className="mt-4 text-sm text-zinc-500 dark:text-zinc-400">Effective date: {EFFECTIVE_DATE}</p>
         </div>
 
-        <div className="bg-blue-50 dark:bg-blue-500/10 border border-blue-200 dark:border-blue-500/20 rounded-xl px-5 py-4 text-sm text-blue-700 dark:text-blue-400 leading-relaxed">
+        <div className="border-l-2 border-emerald-600 dark:border-emerald-500 pl-5 py-1 text-sm text-zinc-600 dark:text-zinc-400 leading-relaxed">
           Your privacy matters to us. This policy explains what data we collect,
           why we collect it, and how we protect it — in plain language, in
           compliance with Uganda&apos;s Data Protection and Privacy Act, 2019.
         </div>
 
+        <div className="space-y-10">
         <LegalSection title="1. Who We Are">
           <p>
             {COMPANY_NAME} is a digital property listing platform based at {COMPANY_ADDRESS}. We are responsible
@@ -130,7 +133,7 @@ export default function PrivacyPage() {
           <p>
             Despite our best efforts, no system is completely secure. If you suspect your account
             has been compromised, please contact us immediately at{' '}
-            <a href={`mailto:${CONTACT_EMAIL}`} className="text-primary hover:underline">
+            <a href={`mailto:${CONTACT_EMAIL}`} className="text-emerald-600 dark:text-emerald-500 hover:underline">
               {CONTACT_EMAIL}
             </a>.
           </p>
@@ -159,7 +162,7 @@ export default function PrivacyPage() {
           </ul>
           <p>
             To exercise any of these rights, email us at{' '}
-            <a href={`mailto:${CONTACT_EMAIL}`} className="text-primary hover:underline">
+            <a href={`mailto:${CONTACT_EMAIL}`} className="text-emerald-600 dark:text-emerald-500 hover:underline">
               {CONTACT_EMAIL}
             </a>. We will respond within 21 days.
           </p>
@@ -193,14 +196,15 @@ export default function PrivacyPage() {
 
         <LegalSection title="12. Contact Us">
           <p>If you have any questions, concerns, or requests regarding your personal data, please reach out:</p>
-          <div className="bg-muted/50 rounded-xl border border-border p-4 text-sm space-y-1 not-prose">
-            <p className="font-semibold text-foreground">{COMPANY_NAME}</p>
-            <p className="text-muted-foreground">{COMPANY_ADDRESS}</p>
-            <a href={`mailto:${CONTACT_EMAIL}`} className="text-primary hover:underline block">
+          <div className="not-prose border border-zinc-200 dark:border-zinc-800 p-5 text-sm space-y-1">
+            <p className="font-bold text-zinc-900 dark:text-white">{COMPANY_NAME}</p>
+            <p className="text-zinc-500 dark:text-zinc-400">{COMPANY_ADDRESS}</p>
+            <a href={`mailto:${CONTACT_EMAIL}`} className="text-emerald-600 dark:text-emerald-500 hover:underline block">
               {CONTACT_EMAIL}
             </a>
           </div>
         </LegalSection>
+        </div>
       </main>
     </div>
   );

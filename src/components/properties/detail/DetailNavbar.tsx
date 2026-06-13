@@ -69,7 +69,7 @@ export function DetailNavbar({ propertyId }: Props) {
       duration: 3000,
       position: "top-center",
       style: {
-        borderRadius: "12px",
+        borderRadius: "0px",
         fontSize: "13px",
         fontWeight: "600",
       },
@@ -94,36 +94,37 @@ export function DetailNavbar({ propertyId }: Props) {
       <div className="flex items-center justify-between py-2">
         <button
           onClick={() => router.back()}
-          className="inline-flex items-center gap-2 text-sm font-semibold text-slate-700 transition-colors hover:text-emerald-600 dark:text-slate-300 dark:hover:text-emerald-400"
+          className="group inline-flex items-center gap-2 text-sm font-medium tracking-wide text-zinc-500 hover:text-emerald-600 dark:text-zinc-400 dark:hover:text-emerald-400 transition-colors"
         >
-          <ChevronLeftIcon className="h-5 w-5" /> Back to Explore
+          <ChevronLeftIcon className="h-4 w-4 transition-transform group-hover:-translate-x-1" />
+          Back to Explore
         </button>
 
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-1">
           <button
             onClick={handleFavoriteClick}
             disabled={!ready || isToggling}
             aria-label={isSaved ? "Remove from saved" : "Save property"}
-            className="flex h-10 w-10 items-center justify-center rounded-full text-slate-700 transition hover:bg-slate-100 disabled:opacity-60 dark:text-slate-300 dark:hover:bg-slate-800"
+            className="flex h-10 w-10 items-center justify-center text-zinc-500 transition hover:text-emerald-600 dark:text-zinc-400 dark:hover:text-emerald-400 disabled:opacity-50"
           >
             {isSaved ? (
               <HeartIconSolid className="h-5 w-5 fill-rose-500 text-rose-500" />
             ) : (
-              <HeartIcon className="h-5 w-5" />
+              <HeartIcon className="h-5 w-5" strokeWidth={1.5} />
             )}
           </button>
 
           <button
             onClick={handleShare}
             aria-label="Copy link to property"
-            className="flex h-10 w-10 items-center justify-center rounded-full text-slate-700 transition hover:bg-slate-100 dark:text-slate-300 dark:hover:bg-slate-800"
+            className="flex h-10 w-10 items-center justify-center text-zinc-500 transition hover:text-emerald-600 dark:text-zinc-400 dark:hover:text-emerald-400"
           >
             {copied ? (
-              <span className="text-[10px] font-bold text-emerald-600 dark:text-emerald-400">
+              <span className="text-[10px] font-bold uppercase tracking-widest text-emerald-600 dark:text-emerald-400">
                 Copied!
               </span>
             ) : (
-              <ShareIcon className="h-5 w-5" />
+              <ShareIcon className="h-5 w-5" strokeWidth={1.5} />
             )}
           </button>
         </div>

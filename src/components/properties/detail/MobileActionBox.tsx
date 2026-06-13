@@ -22,30 +22,30 @@ export function MobileActionBox({ property }: { property: Property }) {
 
   return (
     <>
-      <div className="fixed bottom-0 left-0 right-0 z-40 border-t border-slate-200 dark:border-slate-800 bg-white/95 dark:bg-slate-950/95 backdrop-blur-xl lg:hidden">
+      <div className="fixed bottom-0 left-0 right-0 z-40 border-t border-zinc-200 dark:border-zinc-800 bg-white/95 dark:bg-zinc-950/95 backdrop-blur-xl lg:hidden">
         <div className="mx-auto flex max-w-lg items-center gap-3 px-4 py-3">
           <div className="min-w-0 flex-1">
-            <p className="truncate text-base font-extrabold text-slate-900 dark:text-white">
+            <p className="truncate text-base font-bold tracking-tight text-zinc-900 dark:text-white">
               {formatMoney(property.price)}
             </p>
-            <p className="text-xs text-slate-500 dark:text-slate-400">
+            <p className="text-[10px] font-bold uppercase tracking-widest text-zinc-400 dark:text-zinc-500">
               {property.listingPurpose === "SALE" ? "Purchase price" : "Rental price"}
             </p>
           </div>
 
           <button
             onClick={() => setShowEnquire(true)}
-            className="flex shrink-0 items-center gap-2 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 px-4 py-3 text-sm font-bold text-slate-900 dark:text-white transition hover:bg-slate-50 dark:hover:bg-slate-800"
+            className="flex shrink-0 items-center gap-2 border border-zinc-300 dark:border-zinc-700 bg-white dark:bg-zinc-900 px-4 py-3 text-sm font-bold text-zinc-900 dark:text-white transition hover:bg-zinc-50 dark:hover:bg-zinc-800"
           >
-            <ChatBubbleOvalLeftEllipsisIcon className="h-4 w-4" />
+            <ChatBubbleOvalLeftEllipsisIcon className="h-4 w-4" strokeWidth={1.5} />
             Enquire
           </button>
 
           <Link
             href={bookPath}
-            className="flex shrink-0 items-center gap-2 rounded-xl bg-emerald-600 px-5 py-3 text-sm font-bold text-white transition hover:bg-emerald-700"
+            className="flex shrink-0 items-center gap-2 bg-emerald-600 px-5 py-3 text-sm font-bold text-white transition hover:bg-emerald-700"
           >
-            <CalendarDaysIcon className="h-4 w-4" />
+            <CalendarDaysIcon className="h-4 w-4" strokeWidth={1.5} />
             {bookLabel}
           </Link>
         </div>

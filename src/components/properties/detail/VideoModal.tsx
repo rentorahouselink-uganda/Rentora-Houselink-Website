@@ -16,16 +16,33 @@ export function VideoModal({ url, title, onClose }: Props) {
   }, [onClose]);
 
   return (
-    <div className="fixed inset-0 z-[100] flex flex-col items-center justify-center bg-black/95 backdrop-blur-sm p-4" onClick={(e) => e.target === e.currentTarget && onClose()}>
+    <div
+      className="fixed inset-0 z-[100] flex flex-col items-center justify-center bg-black/95 backdrop-blur-sm p-4"
+      onClick={(e) => e.target === e.currentTarget && onClose()}
+    >
       <div className="w-full max-w-5xl">
         <div className="mb-4 flex items-center justify-between">
-          {title && <span className="text-base font-medium text-white/80">{title}</span>}
-          <button onClick={onClose} aria-label="Close video" className="ml-auto flex h-10 w-10 items-center justify-center rounded-full bg-white/10 text-white transition hover:bg-white/20">
-            <XMarkIcon className="h-6 w-6" />
+          {title && (
+            <span className="text-xs font-bold uppercase tracking-widest text-white/60">
+              {title}
+            </span>
+          )}
+          <button
+            onClick={onClose}
+            aria-label="Close video"
+            className="ml-auto flex h-10 w-10 items-center justify-center bg-white/10 text-white transition hover:bg-white/20"
+          >
+            <XMarkIcon className="h-5 w-5" />
           </button>
         </div>
-        <div className="relative aspect-video w-full overflow-hidden rounded-2xl bg-black shadow-2xl">
-          <video ref={videoRef} src={url} controls autoPlay className="h-full w-full object-contain" />
+        <div className="relative aspect-video w-full overflow-hidden bg-black shadow-2xl">
+          <video
+            ref={videoRef}
+            src={url}
+            controls
+            autoPlay
+            className="h-full w-full object-contain"
+          />
         </div>
       </div>
     </div>

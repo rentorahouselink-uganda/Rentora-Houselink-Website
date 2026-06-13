@@ -8,49 +8,26 @@ type PropertyPaginationProps = {
   searchParams: Record<string, string | string[] | undefined>;
 };
 
-function getPageHref(
-  searchParams: Record<string, string | string[] | undefined>,
-  page: number,
-) {
+function getPageHref(searchParams: Record<string, string | string[] | undefined>, page: number) {
   const params = new URLSearchParams();
-
-  Object.entries(searchParams).forEach(([key, value]) => {
-    if (typeof value === "string" && value) {
-      params.set(key, value);
-    }
-  });
-
+  Object.entries(searchParams).forEach(([key, value]) => { if (typeof value === "string" && value) params.set(key, value); });
   params.set("page", String(page));
   return `/explore?${params.toString()}`;
 }
 
-export function PropertyPagination({
-  meta,
-  searchParams,
-}: PropertyPaginationProps) {
+export function PropertyPagination({ meta, searchParams }: PropertyPaginationProps) {
   if (meta.totalPages <= 1) return null;
 
   return (
-    <div className="mt-10 flex items-center justify-center gap-3">
+    <div className="flex items-center justify-center gap-6 pt-8 border-t border-zinc-200 dark:border-zinc-800">
       {meta.hasPreviousPage && (
-        <Link
-          href={getPageHref(searchParams, meta.page - 1)}
-          className="rounded-md border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 px-4 py-2 text-sm font-semibold text-slate-700 dark:text-slate-300 hover:border-emerald-300 dark:hover:border-emerald-500 transition-colors"
-        >
+        <Link href={getPageHref(searchParams, meta.page - 1)} className="text-xs font-bold uppercase tracking-widest text-zinc-900 hover:text-emerald-600 dark:text-white dark:hover:text-emerald-500 transition-colors">
           Previous
         </Link>
       )}
-
-      <span className="text-sm font-medium text-slate-500 dark:text-slate-400">
-        Page {meta.page} of {meta.totalPages}
-      </span>
-
+      <span className="text-xs font-medium text-zinc-400">Page {meta.page} of {meta.totalPages}</span>
       {meta.hasNextPage && (
-        <Link
-          href={getPageHref(searchParams, meta.page + 1)}
-          scroll={false}
-          className="rounded-md border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 px-4 py-2 text-sm font-semibold text-slate-700 dark:text-slate-300 hover:border-emerald-300 dark:hover:border-emerald-500 transition-colors"
-        >
+        <Link href={getPageHref(searchParams, meta.page + 1)} scroll={false} className="text-xs font-bold uppercase tracking-widest text-zinc-900 hover:text-emerald-600 dark:text-white dark:hover:text-emerald-500 transition-colors">
           Next
         </Link>
       )}

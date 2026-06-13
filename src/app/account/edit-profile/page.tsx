@@ -52,58 +52,60 @@ export default function EditProfilePage() {
 
   if (authLoading || !user) {
     return (
-      <div className="flex min-h-[calc(100vh-64px)] items-center justify-center bg-slate-50 dark:bg-slate-950">
+      <div className="flex min-h-[calc(100vh-64px)] items-center justify-center bg-zinc-50 dark:bg-zinc-950">
         <div className="h-6 w-6 animate-spin rounded-full border-2 border-emerald-600 border-t-transparent" />
       </div>
     );
   }
 
-  const inputClass = "w-full rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 px-4 py-3.5 text-sm text-slate-900 dark:text-white outline-none transition placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20 disabled:opacity-60 disabled:cursor-not-allowed";
+  const inputClass = "w-full bg-transparent border-0 border-b border-zinc-300 dark:border-zinc-800 py-4 pl-0 pr-4 text-base text-zinc-900 dark:text-white outline-none transition-colors placeholder:text-zinc-400 focus:border-emerald-600 dark:focus:border-emerald-500 focus:ring-0 disabled:opacity-50 disabled:cursor-not-allowed rounded-none";
 
   return (
-    <main className="min-h-[calc(100vh-64px)] bg-slate-50 dark:bg-slate-950 py-10 lg:py-16">
+    <main className="min-h-[calc(100vh-64px)] bg-zinc-50 dark:bg-zinc-950 py-12 lg:py-20 font-sans selection:bg-emerald-100 selection:text-emerald-900 dark:selection:bg-emerald-500/30 dark:selection:text-emerald-100">
       <div className="mx-auto max-w-lg px-4 sm:px-6">
 
         <Link
           href="/account"
-          className="mb-8 inline-flex items-center gap-2 text-sm font-semibold text-slate-500 dark:text-slate-400 hover:text-emerald-600 dark:hover:text-emerald-400 transition"
+          className="mb-12 inline-flex items-center gap-2 text-sm font-medium text-zinc-500 dark:text-zinc-400 hover:text-emerald-600 dark:hover:text-emerald-400 transition-colors"
         >
           <ArrowLeftIcon className="h-4 w-4" />
           Back to account
         </Link>
 
-        <div className="mb-8">
-          <h1 className="text-3xl font-extrabold tracking-tight text-slate-900 dark:text-white">Edit Profile</h1>
-          <p className="mt-2 text-base text-slate-600 dark:text-slate-400">Update your display name.</p>
+        <div className="mb-12">
+          <h1 className="text-4xl font-light tracking-tight text-zinc-900 dark:text-white">
+            Edit <span className="font-semibold">Profile.</span>
+          </h1>
+          <p className="mt-3 text-base text-zinc-500 dark:text-zinc-400">Update your display name.</p>
         </div>
 
-        <div className="rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-8">
-          <div className="mb-8 flex items-center gap-5">
-            <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-emerald-600 text-xl font-extrabold text-white shadow-inner">
+        <div className="border-t border-zinc-200 dark:border-zinc-800 pt-8">
+          <div className="mb-10 flex items-center gap-5">
+            <div className="flex h-16 w-16 items-center justify-center bg-emerald-600 text-xl font-bold text-white">
               {getInitials(name || user.name)}
             </div>
             <div>
-              <p className="text-lg font-bold text-slate-900 dark:text-white">{name || user.name}</p>
-              <p className="text-sm font-medium text-slate-500 dark:text-slate-400 mt-1">Your initials update as you type</p>
+              <p className="text-lg font-medium text-zinc-900 dark:text-white">{name || user.name}</p>
+              <p className="text-sm text-zinc-500 dark:text-zinc-400 mt-1">Your initials update as you type</p>
             </div>
           </div>
 
           {error && (
-            <div className="mb-6 rounded-xl border border-red-200 dark:border-red-900/50 bg-red-50 dark:bg-red-950/30 px-4 py-3 text-sm font-medium text-red-700 dark:text-red-400">
+            <div className="mb-8 text-sm font-medium text-red-600 dark:text-red-400">
               {error}
             </div>
           )}
 
           {success && (
-            <div className="mb-6 flex items-center gap-3 rounded-xl border border-emerald-200 dark:border-emerald-900/50 bg-emerald-50 dark:bg-emerald-900/20 px-4 py-3 text-sm font-bold text-emerald-700 dark:text-emerald-400">
+            <div className="mb-8 flex items-center gap-3 text-sm font-bold text-emerald-700 dark:text-emerald-400">
               <CheckCircleIcon className="h-5 w-5 shrink-0" />
               Profile updated successfully!
             </div>
           )}
 
-          <form onSubmit={handleSubmit} noValidate className="space-y-6">
-            <div>
-              <label className="mb-2 block text-sm font-bold text-slate-700 dark:text-slate-300">
+          <form onSubmit={handleSubmit} noValidate className="space-y-8">
+            <div className="relative group">
+              <label className="block text-xs font-bold uppercase tracking-widest text-zinc-500 dark:text-zinc-400 mb-1">
                 Full name
               </label>
               <input
@@ -118,8 +120,8 @@ export default function EditProfilePage() {
               />
             </div>
 
-            <div>
-              <label className="mb-2 block text-sm font-bold text-slate-700 dark:text-slate-300">
+            <div className="relative group">
+              <label className="block text-xs font-bold uppercase tracking-widest text-zinc-500 dark:text-zinc-400 mb-1">
                 Email address
               </label>
               <input
@@ -127,26 +129,28 @@ export default function EditProfilePage() {
                 value={user.email}
                 readOnly
                 disabled
-                className="w-full cursor-not-allowed rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950 px-4 py-3.5 text-sm font-medium text-slate-500 dark:text-slate-500"
+                className={`${inputClass} cursor-not-allowed opacity-60`}
               />
-              <p className="mt-2 text-xs font-medium text-slate-400 dark:text-slate-500">
+              <p className="mt-2 text-xs text-zinc-400 dark:text-zinc-500">
                 Email changes are not available at this time.
               </p>
             </div>
 
-            <button
-              type="submit"
-              disabled={loading || name.trim() === user.name}
-              className="flex w-full items-center justify-center gap-2 rounded-xl bg-emerald-600 py-4 text-base font-bold text-white transition hover:bg-emerald-700 focus:outline-none focus:ring-4 focus:ring-emerald-600/20 disabled:opacity-60 disabled:cursor-not-allowed mt-4"
-            >
-              {loading && (
-                <svg className="h-5 w-5 animate-spin" viewBox="0 0 24 24" fill="none">
-                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
-                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
-                </svg>
-              )}
-              {loading ? "Saving…" : "Save Changes"}
-            </button>
+            <div className="pt-8">
+              <button
+                type="submit"
+                disabled={loading || name.trim() === user.name}
+                className="flex w-full items-center justify-center gap-3 bg-emerald-600 text-white py-5 text-sm font-bold tracking-widest uppercase hover:bg-emerald-700 dark:bg-emerald-500 dark:hover:bg-emerald-400 transition-colors focus:outline-none disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                {loading && (
+                  <svg className="h-4 w-4 animate-spin" viewBox="0 0 24 24" fill="none">
+                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
+                  </svg>
+                )}
+                {loading ? "Saving…" : "Save Changes"}
+              </button>
+            </div>
           </form>
         </div>
       </div>

@@ -28,11 +28,11 @@ type Props = {
 
 export function CategoryGrid({ selected, onSelect, disabled }: Props) {
   return (
-    <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+    <div className="grid grid-cols-1 gap-px sm:grid-cols-2 lg:grid-cols-3 border border-zinc-200 dark:border-zinc-800 bg-zinc-200 dark:bg-zinc-800">
       {CATEGORIES.map((cat) => {
         const isSelected = selected === cat.value;
         const { Icon } = cat;
-        
+
         return (
           <button
             key={cat.value}
@@ -40,27 +40,32 @@ export function CategoryGrid({ selected, onSelect, disabled }: Props) {
             disabled={disabled}
             onClick={() => onSelect(cat.value)}
             className={[
-              "group flex items-start gap-3 rounded-xl p-4 text-left transition-all border",
+              "group flex items-start gap-3 p-5 text-left transition-colors",
               isSelected
-                ? "border-emerald-600 bg-emerald-50 dark:bg-emerald-900/20"
-                : "border-slate-200 dark:border-slate-800 bg-transparent hover:border-slate-300 dark:hover:border-slate-600",
+                ? "bg-emerald-50 dark:bg-emerald-950/30"
+                : "bg-white dark:bg-zinc-950 hover:bg-zinc-50 dark:hover:bg-zinc-900",
               disabled ? "cursor-not-allowed opacity-50" : "cursor-pointer",
             ].join(" ")}
           >
-            <div className={`mt-0.5 shrink-0 ${isSelected ? "text-emerald-600 dark:text-emerald-500" : "text-slate-400 dark:text-slate-500 group-hover:text-slate-600 dark:group-hover:text-slate-300"}`}>
-              <Icon className="h-6 w-6" />
-            </div>
+            <Icon
+              className={`mt-0.5 h-6 w-6 shrink-0 transition-colors ${
+                isSelected
+                  ? "text-emerald-600 dark:text-emerald-500"
+                  : "text-zinc-400 dark:text-zinc-500 group-hover:text-zinc-600 dark:group-hover:text-zinc-300"
+              }`}
+              strokeWidth={1.5}
+            />
             <div className="min-w-0 flex-1">
-              <p className={["text-sm font-bold", isSelected ? "text-emerald-900 dark:text-emerald-400" : "text-slate-900 dark:text-white"].join(" ")}>
+              <p className={["text-sm font-bold", isSelected ? "text-emerald-900 dark:text-emerald-400" : "text-zinc-900 dark:text-white"].join(" ")}>
                 {cat.label}
               </p>
-              <p className={["mt-0.5 text-xs leading-snug", isSelected ? "text-emerald-700 dark:text-emerald-500" : "text-slate-500 dark:text-slate-400"].join(" ")}>
+              <p className={["mt-0.5 text-xs leading-snug", isSelected ? "text-emerald-700 dark:text-emerald-500" : "text-zinc-500 dark:text-zinc-400"].join(" ")}>
                 {cat.description}
               </p>
             </div>
-            <div className={`shrink-0 flex h-5 w-5 items-center justify-center rounded-full border ${isSelected ? "border-emerald-600 bg-emerald-600" : "border-slate-300 dark:border-slate-700"}`}>
-              {isSelected && <span className="text-[10px] font-bold text-white">✓</span>}
-            </div>
+            {isSelected && (
+              <span className="shrink-0 text-emerald-600 dark:text-emerald-500 text-xs font-bold">✓</span>
+            )}
           </button>
         );
       })}

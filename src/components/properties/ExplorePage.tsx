@@ -47,21 +47,13 @@ function isFiltered(
 const COMPACT_THRESHOLD = 60;
 const SCROLL_DELTA = 20;
 
-// Use a layout effect only on the client so we can read the restored scroll
-// position before paint, without triggering a server-side warning.
 const useIsomorphicLayoutEffect =
   typeof window !== "undefined" ? useLayoutEffect : useEffect;
-
-// ---------------------------------------------------------------------------
-// Root export — provider tree
-// ---------------------------------------------------------------------------
 
 export function ExplorePage(props: ExplorePageProps) {
   return (
     <ExplorePendingProvider>
       <FavoritesProvider>
-        {/* VideoPlaybackProvider coordinates "one video at a time" across
-            all PropertyCard instances rendered in this explore grid. */}
         <VideoPlaybackProvider>
           <ExplorePageContent {...props} />
         </VideoPlaybackProvider>
@@ -70,10 +62,6 @@ export function ExplorePage(props: ExplorePageProps) {
   );
 }
 
-// ---------------------------------------------------------------------------
-// Inner content (consumes all providers above)
-// ---------------------------------------------------------------------------
-
 function ExplorePageContent({
   properties,
   meta,
@@ -81,11 +69,7 @@ function ExplorePageContent({
   featuredProperties,
   error,
 }: ExplorePageProps) {
-  // Start from a deterministic SSR-safe value, then sync to the real scroll
-  // position immediately after mount. This avoids hydration mismatch when the
-  // browser restores scroll position on back/forward navigation.
   const [isCompact, setIsCompact] = useState(false);
-
   const lastScrollY = useRef(0);
   const tickingRef = useRef(false);
 
@@ -98,9 +82,6 @@ function ExplorePageContent({
     setIsCompact(y > COMPACT_THRESHOLD);
   }, []);
 
-  // Mirror this page's compact state up to the global Header so its
-  // bottom border can fade out and the two bars read as one piece.
-  // Reset on unmount so navigating away restores the header's normal border.
   useEffect(() => {
     setIsHeaderCompact(isCompact);
     return () => setIsHeaderCompact(false);
@@ -113,14 +94,10 @@ function ExplorePageContent({
 
       requestAnimationFrame(() => {
         const y = window.scrollY;
-
-        // 1. Mobile rubber-banding protection
         if (y <= 0) {
           tickingRef.current = false;
           return;
         }
-
-        // 2. Safety net: always snap open near the very top
         if (y < COMPACT_THRESHOLD) {
           setIsCompact((prev) => (prev ? false : prev));
           lastScrollY.current = y;
@@ -129,8 +106,6 @@ function ExplorePageContent({
         }
 
         const diff = y - lastScrollY.current;
-
-        // 3. Deliberate scrolling thresholds
         if (diff > SCROLL_DELTA) {
           setIsCompact((prev) => (prev ? prev : true));
           lastScrollY.current = y;
@@ -138,54 +113,47 @@ function ExplorePageContent({
           setIsCompact((prev) => (prev ? false : prev));
           lastScrollY.current = y;
         }
-
         tickingRef.current = false;
       });
     };
 
     window.addEventListener("scroll", handleScroll, { passive: true });
     return () => window.removeEventListener("scroll", handleScroll);
-    // Intentionally no deps: handler must stay stable across isCompact
-    // changes, otherwise every toggle re-anchors lastScrollY against a
-    // scroll position the browser may have just shifted via scroll
-    // anchoring, causing the toggle to immediately flip back.
   }, []);
 
   const filtered = isFiltered(searchParams);
   const showBadge = !error && filtered;
 
   return (
-    <main className="min-h-screen bg-slate-50 pb-12 dark:bg-slate-950 [overflow-anchor:none]">
-      {/* ── 1. Featured Banner ── */}
+    <main className="min-h-screen bg-zinc-50 pb-12 dark:bg-zinc-950 font-sans selection:bg-emerald-100 selection:text-emerald-900 dark:selection:bg-emerald-500/30 dark:selection:text-emerald-100 [overflow-anchor:none]">
       {featuredProperties.length > 0 && !error && (
         <FeaturedBanner properties={featuredProperties} />
       )}
 
-      {/* ── 2. Sticky header + filters ── */}
+      {/* ── Sticky header + filters ── */}
       <div
         className={[
-          "sticky top-16 z-40 border-b bg-white/95 backdrop-blur-md transition-colors duration-300 dark:bg-slate-900/95",
+          "sticky top-16 z-40 bg-zinc-50/95 backdrop-blur-md transition-colors duration-300 dark:bg-zinc-950/95",
           isCompact
             ? "border-transparent shadow-none"
-            : "border-slate-200 shadow-sm dark:border-slate-700",
+            : "border-b border-zinc-200 dark:border-zinc-800",
         ].join(" ")}
       >
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          {/* Title section — collapses on scroll-down */}
           <div
             className={[
               "overflow-hidden transition-all duration-300 ease-in-out",
               isCompact
                 ? "max-h-0 opacity-0"
-                : "max-h-[160px] opacity-100 pt-6 pb-4",
+                : "max-h-[160px] opacity-100 pt-8 pb-6",
             ].join(" ")}
           >
-            <div className="flex flex-col gap-2 md:flex-row md:items-end md:justify-between">
+            <div className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
               <div>
-                <h1 className="text-2xl font-extrabold tracking-tight text-slate-900 sm:text-3xl dark:text-white">
+                <h1 className="text-4xl sm:text-5xl font-light tracking-tight text-zinc-900 dark:text-white">
                   Explore properties
                 </h1>
-                <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">
+                <p className="mt-3 text-lg text-zinc-500 dark:text-zinc-400">
                   {filtered
                     ? `${meta.total.toLocaleString()} ${
                         meta.total === 1 ? "property" : "properties"
@@ -194,18 +162,17 @@ function ExplorePageContent({
                 </p>
               </div>
               {showBadge && (
-                <div className="inline-flex items-center self-start rounded-full border border-emerald-200 px-3 py-1 text-sm font-semibold text-emerald-700 dark:border-emerald-800 dark:text-emerald-400">
+                <div className="inline-flex items-center self-start md:self-end border-b border-emerald-600 px-1 py-1 text-xs font-bold uppercase tracking-widest text-emerald-600 dark:border-emerald-500 dark:text-emerald-500">
                   {meta.total.toLocaleString()} results
                 </div>
               )}
             </div>
           </div>
 
-          {/* Filters — always visible, padding shrinks in compact mode */}
           <div
             className={[
               "transition-all duration-300",
-              isCompact ? "py-3" : "pb-5",
+              isCompact ? "py-4" : "pb-6",
             ].join(" ")}
           >
             <PropertyFilters isCompact={isCompact} />
@@ -213,51 +180,51 @@ function ExplorePageContent({
         </div>
       </div>
 
-      {/* ── 3. Property grid ── */}
+      {/* ── Property grid ── */}
       <section
         aria-busy={isPending}
         className={[
-          "mx-auto mt-8 max-w-7xl px-4 sm:px-6 lg:px-8 transition-opacity duration-200",
+          "mx-auto mt-12 max-w-7xl px-4 sm:px-6 lg:px-8 transition-opacity duration-500",
           isPending ? "pointer-events-none opacity-50" : "opacity-100",
         ].join(" ")}
       >
         {error ? (
-          <div className="flex flex-col items-center justify-center rounded-2xl border border-red-200 bg-red-50 px-6 py-16 text-center dark:border-red-900 dark:bg-red-950/30">
+          <div className="flex flex-col items-center justify-center py-24 text-center animate-in fade-in duration-700">
             <ExclamationTriangleIcon
-              className="mb-4 h-12 w-12 text-red-500"
-              strokeWidth={1.5}
+              className="mb-6 h-12 w-12 text-zinc-300 dark:text-zinc-700"
+              strokeWidth={1}
             />
-            <h2 className="text-lg font-bold text-red-800 dark:text-red-400">
-              Connection Error
+            <h2 className="text-2xl font-light tracking-tight text-zinc-900 dark:text-white mb-2">
+              Connection interrupted.
             </h2>
-            <p className="mt-2 max-w-md text-sm text-red-600 dark:text-red-300">
+            <p className="max-w-md text-zinc-500 dark:text-zinc-400 mb-8">
               {error}
             </p>
             <button
               onClick={() => window.location.reload()}
-              className="mt-6 rounded-lg bg-red-600 px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-red-700"
+              className="text-sm font-bold tracking-widest uppercase text-emerald-600 dark:text-emerald-500 border-b border-emerald-600 dark:border-emerald-500 pb-1 hover:opacity-60 transition-opacity"
             >
-              Refresh Page
+              Reload Page
             </button>
           </div>
         ) : properties.length > 0 ? (
           <>
-            <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+            <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
               {properties.map((property) => (
                 <PropertyCard key={property.id} property={property} />
               ))}
             </div>
-            <div className="mt-10">
+            <div className="mt-16">
               <PropertyPagination meta={meta} searchParams={searchParams} />
             </div>
           </>
         ) : (
-          <div className="rounded-xl border border-dashed border-slate-300 bg-white px-6 py-20 text-center dark:border-slate-600 dark:bg-slate-900">
-            <h2 className="text-lg font-bold text-slate-900 dark:text-white">
-              No matching properties
+          <div className="py-32 text-center border-t border-zinc-200 dark:border-zinc-800">
+            <h2 className="text-2xl font-light tracking-tight text-zinc-900 dark:text-white mb-2">
+              No matches found.
             </h2>
-            <p className="mt-2 text-sm text-slate-500 dark:text-slate-400">
-              Try adjusting your search, category, or price filters.
+            <p className="text-zinc-500 dark:text-zinc-400">
+              Adjust your filters or try a broader search parameter.
             </p>
           </div>
         )}
