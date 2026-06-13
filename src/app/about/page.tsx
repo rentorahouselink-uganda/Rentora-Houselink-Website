@@ -4,7 +4,7 @@ import { ChevronLeftIcon, CheckCircleIcon } from '@heroicons/react/24/outline';
 import { COMPANY_NAME, COMPANY_ADDRESS } from '@/lib/constants';
 
 export const metadata: Metadata = {
-  title: 'About Us — Rentora Houselink Uganda',
+  title: 'About Us | Rentora Houselink Uganda',
   description: 'Learn about Uganda\'s most trusted property rental platform.',
 };
 

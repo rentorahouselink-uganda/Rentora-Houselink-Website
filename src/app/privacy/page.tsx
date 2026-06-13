@@ -5,7 +5,7 @@ import { COMPANY_NAME, COMPANY_ADDRESS, CONTACT_EMAIL } from '@/lib/constants';
 import LegalSection from '@/components/shared/legal-section';
 
 export const metadata: Metadata = {
-  title: 'Privacy Policy — Rentora Houselink Uganda',
+  title: 'Privacy Policy | Rentora Houselink Uganda',
   description: 'Privacy Policy for the Rentora Houselink Uganda mobile app and platform.',
 };
 

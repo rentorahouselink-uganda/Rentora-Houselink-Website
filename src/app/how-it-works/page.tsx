@@ -8,7 +8,7 @@ import {
 } from '@heroicons/react/24/outline';
 
 export const metadata: Metadata = {
-  title: 'How It Works — Rentora Houselink Uganda',
+  title: 'How It Works | Rentora Houselink Uganda',
   description: 'Simple steps to find your next home or list your property.',
 };
 
