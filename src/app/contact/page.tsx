@@ -88,9 +88,9 @@ export default function ContactPage() {
           {/* ── Left Column: Typography & Info ── */}
           <div className="lg:col-span-5">
             <h1 className="mb-8 text-5xl font-light tracking-tight text-zinc-900 dark:text-white sm:text-6xl">
-              Let&apos;s start a{' '}
+              Contact our{' '}
               <br className="hidden lg:block" />
-              <span className="font-semibold">conversation.</span>
+              <span className="font-semibold">team.</span>
             </h1>
 
             <p className="mb-12 max-w-md text-lg leading-relaxed text-zinc-500 dark:text-zinc-400">
