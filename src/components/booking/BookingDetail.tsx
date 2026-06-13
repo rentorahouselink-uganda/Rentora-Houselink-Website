@@ -49,7 +49,7 @@ function ConfirmCancelDialog({
         className="absolute inset-0 bg-zinc-900/60 backdrop-blur-sm"
         onClick={!cancelling ? onClose : undefined}
       />
-      <div className="relative w-full max-w-md bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 p-6 shadow-2xl animate-in fade-in slide-in-from-bottom-4 duration-300">
+      <div className="relative w-full max-w-md rounded-md bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 p-6 shadow-2xl animate-in fade-in slide-in-from-bottom-4 duration-300">
         <h3 className="text-sm font-bold uppercase tracking-widest text-zinc-900 dark:text-white">
           Cancel this booking?
         </h3>
@@ -65,14 +65,14 @@ function ConfirmCancelDialog({
           <button
             onClick={onClose}
             disabled={cancelling}
-            className="px-4 py-2.5 text-sm font-bold uppercase tracking-widest text-zinc-700 dark:text-zinc-300 transition hover:text-emerald-600 dark:hover:text-emerald-400 disabled:opacity-50"
+            className="rounded-md px-4 py-2.5 text-sm font-bold uppercase tracking-widest text-zinc-700 dark:text-zinc-300 transition hover:bg-zinc-100 hover:text-emerald-600 dark:hover:bg-zinc-800/50 dark:hover:text-emerald-400 disabled:opacity-50"
           >
             Keep Booking
           </button>
           <button
             onClick={onConfirm}
             disabled={cancelling}
-            className="bg-rose-600 px-5 py-2.5 text-sm font-bold uppercase tracking-widest text-white transition hover:bg-rose-700 disabled:opacity-60"
+            className="rounded-md bg-rose-600 px-5 py-2.5 text-sm font-bold uppercase tracking-widest text-white transition hover:bg-rose-700 disabled:opacity-60"
           >
             {cancelling ? "Cancelling…" : "Yes, Cancel"}
           </button>
@@ -87,12 +87,12 @@ function Skeleton() {
   return (
     <div className="min-h-screen bg-zinc-50 dark:bg-zinc-950">
       <div className="mx-auto max-w-5xl px-4 py-8 sm:px-6 lg:py-12">
-        <div className="h-4 w-32 animate-pulse bg-zinc-200 dark:bg-zinc-800" />
+        <div className="h-4 w-32 rounded-md animate-pulse bg-zinc-200 dark:bg-zinc-800" />
         <div className="mt-8 grid gap-8 lg:grid-cols-5">
-          <div className="aspect-video animate-pulse bg-zinc-200 dark:bg-zinc-800 lg:col-span-3" />
+          <div className="aspect-video rounded-md animate-pulse bg-zinc-200 dark:bg-zinc-800 lg:col-span-3" />
           <div className="space-y-4 lg:col-span-2">
             {[90, 70, 60, 50, 80].map((w, i) => (
-              <div key={i} className="h-4 animate-pulse bg-zinc-200 dark:bg-zinc-800" style={{ width: `${w}%` }} />
+              <div key={i} className="h-4 rounded-md animate-pulse bg-zinc-200 dark:bg-zinc-800" style={{ width: `${w}%` }} />
             ))}
           </div>
         </div>
@@ -183,7 +183,7 @@ export function BookingDetail({ bookingId }: Props) {
           <div className="grid gap-8 lg:grid-cols-5">
             {/* Left: image + listing link */}
             <div className="lg:col-span-3">
-              <div className="relative aspect-video w-full overflow-hidden bg-zinc-100 dark:bg-zinc-800">
+              <div className="relative aspect-video w-full overflow-hidden rounded-md bg-zinc-100 dark:bg-zinc-800">
                 {booking.thumbnailUrl ? (
                   <Image
                     src={booking.thumbnailUrl}
@@ -202,7 +202,7 @@ export function BookingDetail({ bookingId }: Props) {
 
               <Link
                 href={`/properties/${booking.propertyId}`}
-                className="mt-4 flex w-full items-center justify-center gap-2 border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 px-4 py-3 text-sm font-bold text-zinc-600 dark:text-zinc-400 transition hover:border-emerald-600 dark:hover:border-emerald-500 hover:text-emerald-600 dark:hover:text-emerald-400"
+                className="mt-4 flex w-full items-center justify-center gap-2 rounded-md border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 px-4 py-3 text-sm font-bold text-zinc-600 dark:text-zinc-400 transition hover:border-emerald-600 dark:hover:border-emerald-500 hover:text-emerald-600 dark:hover:text-emerald-400"
               >
                 <ArrowTopRightOnSquareIcon className="h-4 w-4" strokeWidth={1.5} />
                 View Original Listing
@@ -217,7 +217,7 @@ export function BookingDetail({ bookingId }: Props) {
                   {booking.propertyTitle.toLowerCase()}
                 </h1>
                 {booking.roomNumber && (
-                  <span className="mt-0.5 shrink-0 border border-emerald-600 dark:border-emerald-500 px-2 py-1 text-[10px] font-bold uppercase tracking-widest text-emerald-600 dark:text-emerald-500">
+                  <span className="mt-0.5 shrink-0 rounded-sm border border-emerald-600 dark:border-emerald-500 px-2 py-1 text-[10px] font-bold uppercase tracking-widest text-emerald-600 dark:text-emerald-500">
                     Room {booking.roomNumber}
                   </span>
                 )}
@@ -276,7 +276,7 @@ export function BookingDetail({ bookingId }: Props) {
                     )}
                     <button
                       onClick={() => { setShowConfirm(true); setCancelError(null); }}
-                      className="flex w-full items-center justify-center gap-2 border border-rose-200 dark:border-rose-900/50 bg-white dark:bg-zinc-900 px-4 py-3 text-sm font-bold text-rose-600 dark:text-rose-400 transition hover:bg-rose-50 dark:hover:bg-rose-900/10"
+                      className="flex w-full items-center justify-center gap-2 rounded-md border border-rose-200 dark:border-rose-900/50 bg-white dark:bg-zinc-900 px-4 py-3 text-sm font-bold text-rose-600 dark:text-rose-400 transition hover:bg-rose-50 dark:hover:bg-rose-900/10"
                     >
                       <XCircleIcon className="h-4 w-4" strokeWidth={1.5} />
                       Cancel Booking Request

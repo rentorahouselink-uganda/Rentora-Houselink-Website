@@ -35,7 +35,7 @@ export function MobileActionBox({ property }: { property: Property }) {
 
           <button
             onClick={() => setShowEnquire(true)}
-            className="flex shrink-0 items-center gap-2 border border-zinc-300 dark:border-zinc-700 bg-white dark:bg-zinc-900 px-4 py-3 text-sm font-bold text-zinc-900 dark:text-white transition hover:bg-zinc-50 dark:hover:bg-zinc-800"
+            className="flex shrink-0 items-center gap-2 rounded-md border border-zinc-300 dark:border-zinc-700 bg-white dark:bg-zinc-900 px-4 py-3 text-sm font-bold text-zinc-900 dark:text-white transition hover:bg-zinc-50 dark:hover:bg-zinc-800"
           >
             <ChatBubbleOvalLeftEllipsisIcon className="h-4 w-4" strokeWidth={1.5} />
             Enquire
@@ -43,7 +43,7 @@ export function MobileActionBox({ property }: { property: Property }) {
 
           <Link
             href={bookPath}
-            className="flex shrink-0 items-center gap-2 bg-emerald-600 px-5 py-3 text-sm font-bold text-white transition hover:bg-emerald-700"
+            className="flex shrink-0 items-center gap-2 rounded-md bg-emerald-600 px-5 py-3 text-sm font-bold text-white transition hover:bg-emerald-700"
           >
             <CalendarDaysIcon className="h-4 w-4" strokeWidth={1.5} />
             {bookLabel}

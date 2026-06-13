@@ -17,15 +17,15 @@ export default function RegisterPage() {
   const router = useRouter();
   const { register, isAuthenticated, isLoading: authLoading } = useAuth();
 
-  const [name, setName] = useState("");
-  const [email, setEmail] = useState("");
+  const [name,     setName]     = useState("");
+  const [email,    setEmail]    = useState("");
   const [password, setPassword] = useState("");
-  const [confirm, setConfirm] = useState("");
-  const [showPw, setShowPw] = useState(false);
-  const [showCf, setShowCf] = useState(false);
-  const [errors, setErrors] = useState<Record<string, string>>({});
+  const [confirm,  setConfirm]  = useState("");
+  const [showPw,   setShowPw]   = useState(false);
+  const [showCf,   setShowCf]   = useState(false);
+  const [errors,   setErrors]   = useState<Record<string, string>>({});
   const [apiError, setApiError] = useState("");
-  const [loading, setLoading] = useState(false);
+  const [loading,  setLoading]  = useState(false);
 
   useEffect(() => {
     if (!authLoading && isAuthenticated) router.replace("/explore");
@@ -61,7 +61,7 @@ export default function RegisterPage() {
   }
 
   const inputClass =
-    "w-full bg-transparent border-0 border-b py-4 pl-0 pr-4 text-base text-zinc-900 dark:text-white outline-none transition-colors placeholder:text-zinc-400 focus:ring-0 disabled:opacity-50 disabled:cursor-not-allowed rounded-none";
+    "w-full bg-transparent border-0 border-b py-4 pl-0 pr-4 text-base text-zinc-900 dark:text-white outline-none transition-colors placeholder:text-zinc-400 focus:ring-0 disabled:opacity-50 disabled:cursor-not-allowed rounded-none [&:-webkit-autofill]:bg-transparent [&:-webkit-autofill]:[transition:background-color_5000s_ease-in-out_0s] [&:-webkit-autofill]:[-webkit-text-fill-color:inherit] dark:[&:-webkit-autofill]:[-webkit-text-fill-color:#fff]";
   const inputNormal = `${inputClass} border-zinc-300 dark:border-zinc-800 focus:border-emerald-600 dark:focus:border-emerald-500`;
   const inputError  = `${inputClass} border-red-400 dark:border-red-600 focus:border-red-500`;
 
@@ -73,7 +73,6 @@ export default function RegisterPage() {
     <main className="min-h-[calc(100vh-64px)] flex items-center justify-center bg-zinc-50 dark:bg-zinc-950 py-12 px-4 sm:px-6 lg:px-8 font-sans selection:bg-emerald-100 selection:text-emerald-900 dark:selection:bg-emerald-500/30 dark:selection:text-emerald-100">
       <div className="w-full max-w-md">
 
-        {/* Header */}
         <div className="mb-12 text-center">
           <h1 className="text-4xl font-light tracking-tight text-zinc-900 dark:text-white">
             Create your <span className="font-semibold">account.</span>
@@ -95,9 +94,8 @@ export default function RegisterPage() {
 
           <form onSubmit={handleSubmit} noValidate className="mt-8 space-y-7">
 
-            {/* Full name */}
             <div className="relative group">
-              <label className="block text-xs font-bold uppercase tracking-widest text-zinc-500 dark:text-zinc-400 mb-1">
+              <label className="mb-1 block text-xs font-bold uppercase tracking-widest text-zinc-500 dark:text-zinc-400">
                 Full name
               </label>
               <input
@@ -114,9 +112,8 @@ export default function RegisterPage() {
               )}
             </div>
 
-            {/* Email */}
             <div className="relative group">
-              <label className="block text-xs font-bold uppercase tracking-widest text-zinc-500 dark:text-zinc-400 mb-1">
+              <label className="mb-1 block text-xs font-bold uppercase tracking-widest text-zinc-500 dark:text-zinc-400">
                 Email address
               </label>
               <input
@@ -133,9 +130,8 @@ export default function RegisterPage() {
               )}
             </div>
 
-            {/* Password */}
             <div className="relative group">
-              <label className="block text-xs font-bold uppercase tracking-widest text-zinc-500 dark:text-zinc-400 mb-1">
+              <label className="mb-1 block text-xs font-bold uppercase tracking-widest text-zinc-500 dark:text-zinc-400">
                 Password
               </label>
               <div className="relative">
@@ -151,7 +147,7 @@ export default function RegisterPage() {
                 <button
                   type="button"
                   onClick={() => setShowPw((v) => !v)}
-                  className="absolute right-0 bottom-4 text-zinc-400 transition hover:text-zinc-900 dark:hover:text-white"
+                  className="absolute bottom-4 right-0 text-zinc-400 transition hover:text-zinc-900 dark:hover:text-white"
                   tabIndex={-1}
                   aria-label={showPw ? "Hide password" : "Show password"}
                 >
@@ -163,9 +159,8 @@ export default function RegisterPage() {
               )}
             </div>
 
-            {/* Confirm password */}
             <div className="relative group">
-              <label className="block text-xs font-bold uppercase tracking-widest text-zinc-500 dark:text-zinc-400 mb-1">
+              <label className="mb-1 block text-xs font-bold uppercase tracking-widest text-zinc-500 dark:text-zinc-400">
                 Confirm password
               </label>
               <div className="relative">
@@ -181,7 +176,7 @@ export default function RegisterPage() {
                 <button
                   type="button"
                   onClick={() => setShowCf((v) => !v)}
-                  className="absolute right-0 bottom-4 text-zinc-400 transition hover:text-zinc-900 dark:hover:text-white"
+                  className="absolute bottom-4 right-0 text-zinc-400 transition hover:text-zinc-900 dark:hover:text-white"
                   tabIndex={-1}
                   aria-label={showCf ? "Hide password" : "Show password"}
                 >
@@ -195,11 +190,11 @@ export default function RegisterPage() {
 
             <p className="text-center text-xs leading-relaxed text-zinc-500 dark:text-zinc-400">
               By creating an account you agree to Rentora&apos;s{" "}
-              <Link href="/terms" className="font-bold text-zinc-700 underline underline-offset-2 hover:text-emerald-600 dark:text-zinc-300 dark:hover:text-emerald-400 transition">
+              <Link href="/terms" className="font-bold text-zinc-700 underline underline-offset-2 transition hover:text-emerald-600 dark:text-zinc-300 dark:hover:text-emerald-400">
                 Terms of Use
               </Link>
               {" "}and{" "}
-              <Link href="/privacy" className="font-bold text-zinc-700 underline underline-offset-2 hover:text-emerald-600 dark:text-zinc-300 dark:hover:text-emerald-400 transition">
+              <Link href="/privacy" className="font-bold text-zinc-700 underline underline-offset-2 transition hover:text-emerald-600 dark:text-zinc-300 dark:hover:text-emerald-400">
                 Privacy Policy
               </Link>.
             </p>
@@ -208,7 +203,7 @@ export default function RegisterPage() {
               <button
                 type="submit"
                 disabled={loading}
-                className="flex w-full items-center justify-center gap-3 bg-emerald-600 text-white py-5 text-sm font-bold tracking-widest uppercase hover:bg-emerald-700 dark:bg-emerald-500 dark:hover:bg-emerald-400 transition-colors focus:outline-none disabled:opacity-50 disabled:cursor-not-allowed"
+                className="flex w-full items-center justify-center gap-3 rounded-sm bg-emerald-600 py-5 text-sm font-bold uppercase tracking-widest text-white transition-colors hover:bg-emerald-700 focus:outline-none disabled:cursor-not-allowed disabled:opacity-50 dark:bg-emerald-500 dark:hover:bg-emerald-400"
               >
                 {loading && (
                   <svg className="h-4 w-4 animate-spin" viewBox="0 0 24 24" fill="none">

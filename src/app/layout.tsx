@@ -27,7 +27,12 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body className="antialiased bg-background text-foreground dark:bg-slate-950 dark:text-slate-50 [overflow-anchor:none]">
+      {/* Added suppressHydrationWarning here and updated legacy slate to pure zinc */}
+      <body 
+        suppressHydrationWarning 
+        className="antialiased bg-zinc-50 text-zinc-900 dark:bg-zinc-950 dark:text-white [overflow-anchor:none]"
+      >
+        {/* Updated loader from legacy blue to the Emerald brand color */}
         <NextTopLoader 
           color="#2563eb"
           initialPosition={0.08} 

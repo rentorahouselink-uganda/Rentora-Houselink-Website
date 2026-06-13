@@ -73,13 +73,13 @@ export function BookingSuccess({ property, cancellationToken }: BookingSuccessPr
       <div className="mt-10 flex flex-col gap-3">
         <Link
           href="/explore"
-          className="block w-full bg-emerald-600 px-6 py-4 text-center text-sm font-bold uppercase tracking-widest text-white transition hover:bg-emerald-700 dark:bg-emerald-500 dark:hover:bg-emerald-400"
+          className="block w-full rounded-md bg-emerald-600 px-6 py-4 text-center text-sm font-bold uppercase tracking-widest text-white transition hover:bg-emerald-700 dark:bg-emerald-500 dark:hover:bg-emerald-400"
         >
           Continue Exploring
         </Link>
         <Link
           href={`/properties/${property.id}`}
-          className="block w-full border border-zinc-300 dark:border-zinc-700 bg-white dark:bg-zinc-900 px-6 py-4 text-center text-sm font-bold uppercase tracking-widest text-zinc-900 dark:text-white transition hover:bg-zinc-50 dark:hover:bg-zinc-800"
+          className="block w-full rounded-md border border-zinc-300 dark:border-zinc-700 bg-white dark:bg-zinc-900 px-6 py-4 text-center text-sm font-bold uppercase tracking-widest text-zinc-900 dark:text-white transition hover:bg-zinc-50 dark:hover:bg-zinc-800"
         >
           Back to listing
         </Link>

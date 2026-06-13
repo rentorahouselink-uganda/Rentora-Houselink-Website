@@ -28,7 +28,7 @@ export function BookingCard({ booking, onCancel }: Props) {
     : "Unknown date";
 
   return (
-    <div className="group flex overflow-hidden border border-zinc-200 bg-white transition hover:border-emerald-600 dark:border-zinc-800 dark:bg-zinc-900 dark:hover:border-emerald-500">
+    <div className="group flex overflow-hidden rounded-md border border-zinc-200 bg-white transition hover:border-emerald-600 dark:border-zinc-800 dark:bg-zinc-900 dark:hover:border-emerald-500">
       {/* Thumbnail */}
       <div className="relative hidden w-40 shrink-0 sm:block">
         {booking.thumbnailUrl ? (
@@ -98,14 +98,14 @@ export function BookingCard({ booking, onCancel }: Props) {
             {!booking.isCancelled && (
               <button
                 onClick={() => onCancel(booking)}
-                className="px-3 py-1.5 text-xs font-bold uppercase tracking-widest text-rose-600 transition hover:text-rose-700 dark:text-rose-500 dark:hover:text-rose-400"
+                className="rounded-md px-3 py-1.5 text-xs font-bold uppercase tracking-widest text-rose-600 transition hover:bg-rose-50 hover:text-rose-700 dark:text-rose-500 dark:hover:bg-rose-950/30 dark:hover:text-rose-400"
               >
                 Cancel
               </button>
             )}
             <Link
               href={`/bookings/${booking.id}`}
-              className="bg-zinc-900 px-3 py-1.5 text-xs font-bold uppercase tracking-widest text-white transition hover:bg-zinc-700 dark:bg-zinc-800 dark:hover:bg-zinc-700"
+              className="rounded-md bg-zinc-900 px-3 py-1.5 text-xs font-bold uppercase tracking-widest text-white transition hover:bg-zinc-700 dark:bg-zinc-800 dark:hover:bg-zinc-700"
             >
               View Details →
             </Link>

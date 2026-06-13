@@ -152,10 +152,10 @@ export function PropertyFilters({ isCompact = false }: PropertyFiltersProps) {
       <div
         className={[
           "no-scrollbar overflow-hidden transition-all duration-300 ease-in-out",
-          isCompact ? "max-h-0 opacity-0" : "max-h-20 opacity-100 mt-8",
+          isCompact ? "max-h-0 opacity-0" : "max-h-16 opacity-100 mt-6",
         ].join(" ")}
       >
-        <div className="flex gap-3 overflow-x-auto pb-2">
+        <div className="flex gap-2.5 overflow-x-auto pb-2">
           {categories.map((cat) => {
             const isActive =
               activeType === cat.type && activePurpose === cat.listingPurpose;
@@ -170,10 +170,10 @@ export function PropertyFilters({ isCompact = false }: PropertyFiltersProps) {
                   })
                 }
                 className={[
-                  "shrink-0 rounded-none border px-5 py-2.5 text-xs font-bold uppercase tracking-widest transition-all duration-200",
+                  "shrink-0 rounded-md border px-4 py-1.5 text-[10px] font-bold uppercase tracking-widest transition-all duration-200",
                   isActive
-                    ? "border-zinc-900 bg-zinc-900 text-white dark:border-white dark:bg-white dark:text-zinc-950"
-                    : "border-zinc-200 text-zinc-500 hover:border-zinc-900 hover:text-zinc-900 dark:border-zinc-800 dark:text-zinc-400 dark:hover:border-white dark:hover:text-white",
+                    ? "border-emerald-600 bg-emerald-600 text-white dark:border-emerald-500 dark:bg-emerald-500 dark:text-zinc-950 shadow-sm"
+                    : "border-zinc-200 text-zinc-500 hover:border-emerald-600 hover:text-emerald-600 dark:border-zinc-800 dark:text-zinc-400 dark:hover:border-emerald-500 dark:hover:text-emerald-500",
                 ].join(" ")}
               >
                 {cat.label}

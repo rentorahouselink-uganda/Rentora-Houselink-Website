@@ -104,7 +104,7 @@ function FavoritesPageContent() {
   return (
     <main className="min-h-[calc(100vh-64px)] bg-zinc-50 pb-16 font-sans dark:bg-zinc-950 selection:bg-emerald-100 selection:text-emerald-900 dark:selection:bg-emerald-500/30 dark:selection:text-emerald-100">
       <div className="mx-auto max-w-7xl px-4 pt-10 sm:px-6 lg:px-8">
-        
+
         {/* ── Top Nav Row ── */}
         <div className="mb-12 flex items-center justify-between gap-4">
           <Link
@@ -123,28 +123,29 @@ function FavoritesPageContent() {
 
         {/* ── Flat Typography Header ── */}
         <div className="mb-12">
-          <h1 className="text-4xl sm:text-5xl font-light tracking-tight text-zinc-900 dark:text-white">
+          <h1 className="text-4xl font-light tracking-tight text-zinc-900 dark:text-white sm:text-5xl">
             Saved <span className="font-semibold">Properties.</span>
           </h1>
-          <p className="mt-4 max-w-2xl text-base text-zinc-500 dark:text-zinc-400 leading-relaxed">
+          <p className="mt-4 max-w-2xl text-base leading-relaxed text-zinc-500 dark:text-zinc-400">
             All the properties you have saved appear here. Remove them anytime
             from this page or open the detail page to review them again.
           </p>
         </div>
 
         {error ? (
-          <div className="border border-red-200 px-6 py-20 text-center dark:border-red-900/50">
-            <ExclamationTriangleIcon className="mx-auto mb-6 h-12 w-12 text-zinc-300 dark:text-zinc-700" strokeWidth={1} />
+          <div className="rounded-sm border border-red-200 px-6 py-20 text-center dark:border-red-900/50">
+            <ExclamationTriangleIcon
+              className="mx-auto mb-6 h-12 w-12 text-zinc-300 dark:text-zinc-700"
+              strokeWidth={1}
+            />
             <h2 className="text-2xl font-light tracking-tight text-zinc-900 dark:text-white">
               Could not load favorites
             </h2>
-            <p className="mt-2 text-base text-zinc-500 dark:text-zinc-400">
-              {error}
-            </p>
+            <p className="mt-2 text-base text-zinc-500 dark:text-zinc-400">{error}</p>
             <button
               type="button"
               onClick={() => setReloadKey((v) => v + 1)}
-              className="mt-8 inline-flex items-center gap-2 text-xs font-bold uppercase tracking-widest text-emerald-600 dark:text-emerald-500 border-b border-emerald-600 dark:border-emerald-500 pb-1 hover:opacity-60 transition-opacity"
+              className="mt-8 inline-flex items-center gap-2 border-b border-emerald-600 pb-1 text-xs font-bold uppercase tracking-widest text-emerald-600 transition-opacity hover:opacity-60 dark:border-emerald-500 dark:text-emerald-500"
             >
               <ArrowPathIcon className="h-4 w-4" />
               Retry
@@ -162,7 +163,7 @@ function FavoritesPageContent() {
               ))}
             </div>
 
-            <div className="mt-12 border-t border-zinc-200 dark:border-zinc-800 pt-6">
+            <div className="mt-12 border-t border-zinc-200 pt-6 dark:border-zinc-800">
               <p className="text-sm text-zinc-500 dark:text-zinc-400">
                 {properties.length.toLocaleString()}{" "}
                 {properties.length === 1 ? "property" : "properties"} shown.
@@ -170,17 +171,20 @@ function FavoritesPageContent() {
             </div>
           </>
         ) : (
-          <div className="border border-dashed border-zinc-300 bg-transparent px-6 py-24 text-center dark:border-zinc-800">
-            <HeartIcon className="mx-auto h-12 w-12 text-zinc-300 dark:text-zinc-700" strokeWidth={1} />
+          <div className="rounded-sm border border-dashed border-zinc-300 bg-transparent px-6 py-24 text-center dark:border-zinc-800">
+            <HeartIcon
+              className="mx-auto h-12 w-12 text-zinc-300 dark:text-zinc-700"
+              strokeWidth={1}
+            />
             <h2 className="mt-6 text-2xl font-light tracking-tight text-zinc-900 dark:text-white">
               No saved properties yet
             </h2>
-            <p className="mt-2 text-base text-zinc-500 dark:text-zinc-400 max-w-sm mx-auto">
+            <p className="mx-auto mt-2 max-w-sm text-base text-zinc-500 dark:text-zinc-400">
               When you favorite a property, it will show up here.
             </p>
             <Link
               href="/explore"
-              className="mt-8 inline-flex items-center justify-center bg-emerald-600 px-8 py-3.5 text-xs font-bold uppercase tracking-widest text-white transition-colors hover:bg-emerald-700"
+              className="mt-8 inline-flex items-center justify-center rounded-sm bg-emerald-600 px-8 py-3.5 text-xs font-bold uppercase tracking-widest text-white transition-colors hover:bg-emerald-700"
             >
               Browse properties
             </Link>

@@ -103,11 +103,11 @@ export function ReportPage({ propertyId, propertyTitle }: Props) {
             Thank you for bringing this to our attention. Our team reviews all reports within 24–48 hours and takes every concern seriously.
           </p>
           <div className="mt-10 flex flex-col gap-3 sm:flex-row sm:justify-center">
-            <Link href="/explore" className="bg-emerald-600 px-6 py-3.5 text-xs font-bold uppercase tracking-widest text-white transition-colors hover:bg-emerald-700">
+            <Link href="/explore" className="rounded-md bg-emerald-600 px-6 py-3.5 text-xs font-bold uppercase tracking-widest text-white transition-colors hover:bg-emerald-700">
               Back to Explore
             </Link>
             {propertyId && (
-              <Link href={`/properties/${propertyId}`} className="border border-zinc-300 dark:border-zinc-700 px-6 py-3.5 text-xs font-bold uppercase tracking-widest text-zinc-700 dark:text-zinc-300 transition-colors hover:border-emerald-600 hover:text-emerald-600 dark:hover:border-emerald-500 dark:hover:text-emerald-400">
+              <Link href={`/properties/${propertyId}`} className="rounded-md border border-zinc-300 dark:border-zinc-700 px-6 py-3.5 text-xs font-bold uppercase tracking-widest text-zinc-700 dark:text-zinc-300 transition-colors hover:border-emerald-600 hover:text-emerald-600 dark:hover:border-emerald-500 dark:hover:text-emerald-400">
                 Back to detail
               </Link>
             )}
@@ -204,7 +204,7 @@ export function ReportPage({ propertyId, propertyTitle }: Props) {
             )}
 
             <div className="flex justify-end pt-8 border-t border-zinc-200 dark:border-zinc-800">
-              <button type="submit" disabled={submitting} className="w-full md:w-auto bg-emerald-600 px-10 py-5 text-sm font-bold uppercase tracking-widest text-white transition-colors hover:bg-emerald-700 disabled:opacity-60">
+              <button type="submit" disabled={submitting} className="w-full md:w-auto rounded-md bg-emerald-600 px-10 py-5 text-sm font-bold uppercase tracking-widest text-white transition-colors hover:bg-emerald-700 disabled:opacity-60">
                 {submitting ? "Submitting…" : "Submit Report"}
               </button>
             </div>

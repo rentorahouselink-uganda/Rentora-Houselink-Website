@@ -26,7 +26,6 @@ function getInitials(name: string): string {
     : parts[0][0].toUpperCase();
 }
 
-// ── Section card ──
 type NavItem = {
   label: string;
   description: string;
@@ -36,7 +35,7 @@ type NavItem = {
 
 function SectionCard({ title, items }: { title: string; items: NavItem[] }) {
   return (
-    <div className="border border-zinc-200 dark:border-zinc-800">
+    <div className="rounded-sm border border-zinc-200 dark:border-zinc-800">
       <div className="border-b border-zinc-200 px-5 py-3 dark:border-zinc-800">
         <h2 className="text-[10px] font-bold uppercase tracking-widest text-zinc-400 dark:text-zinc-500">
           {title}
@@ -52,7 +51,7 @@ function SectionCard({ title, items }: { title: string; items: NavItem[] }) {
               href={item.href}
               className="group flex items-center gap-4 px-5 py-4 transition-colors hover:bg-zinc-50 dark:hover:bg-zinc-900"
             >
-              <span className="flex h-10 w-10 shrink-0 items-center justify-center border border-zinc-200 dark:border-zinc-800 transition-colors group-hover:border-emerald-600 dark:group-hover:border-emerald-500">
+              <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-sm border border-zinc-200 dark:border-zinc-800 transition-colors group-hover:border-emerald-600 dark:group-hover:border-emerald-500">
                 <item.icon
                   className="h-5 w-5 text-zinc-500 transition-colors group-hover:text-emerald-600 dark:text-zinc-400 dark:group-hover:text-emerald-400"
                   strokeWidth={1.5}
@@ -75,7 +74,6 @@ function SectionCard({ title, items }: { title: string; items: NavItem[] }) {
   );
 }
 
-// ── Page ──
 export default function AccountPage() {
   const router = useRouter();
   const { user, isAuthenticated, isLoading, logout, deleteAccount } = useAuth();
@@ -187,7 +185,6 @@ export default function AccountPage() {
 
   return (
     <>
-      {/* Delete Account Modal */}
       <ConfirmModal
         isOpen={showDeleteModal}
         onClose={() => setShowDeleteModal(false)}
@@ -200,7 +197,6 @@ export default function AccountPage() {
         isDanger={true}
       />
 
-      {/* Logout Confirmation Modal */}
       <ConfirmModal
         isOpen={showLogoutModal}
         onClose={() => setShowLogoutModal(false)}
@@ -215,11 +211,12 @@ export default function AccountPage() {
 
       <main className="min-h-[calc(100vh-64px)] bg-zinc-50 pb-16 font-sans dark:bg-zinc-950 selection:bg-emerald-100 selection:text-emerald-900 dark:selection:bg-emerald-500/30 dark:selection:text-emerald-100">
         <div className="mx-auto max-w-2xl px-4 pt-10 sm:px-6">
+
           {/* ── Profile card ── */}
-          <div className="mb-12 border border-zinc-200 dark:border-zinc-800">
+          <div className="mb-12 overflow-hidden rounded-sm border border-zinc-200 dark:border-zinc-800">
             <div className="h-20 bg-zinc-900 dark:bg-zinc-900" />
             <div className="relative px-6 pb-6">
-              <div className="-mt-8 mb-4 flex h-16 w-16 items-center justify-center border-4 border-zinc-50 bg-emerald-600 text-xl font-bold text-white dark:border-zinc-950">
+              <div className="-mt-8 mb-4 flex h-16 w-16 items-center justify-center rounded-sm border-4 border-zinc-50 bg-emerald-600 text-xl font-bold text-white dark:border-zinc-950">
                 {getInitials(user.name)}
               </div>
               <div className="flex flex-col justify-between gap-4 sm:flex-row sm:items-start">
@@ -231,11 +228,11 @@ export default function AccountPage() {
                     {user.email}
                   </p>
                   <div className="mt-3 flex flex-wrap gap-3">
-                    <span className="inline-flex items-center border border-emerald-600 px-2.5 py-1 text-[10px] font-bold uppercase tracking-widest text-emerald-700 dark:border-emerald-500 dark:text-emerald-400">
+                    <span className="inline-flex items-center rounded border border-emerald-600 px-2.5 py-1 text-[10px] font-bold uppercase tracking-widest text-emerald-700 dark:border-emerald-500 dark:text-emerald-400">
                       {user.role}
                     </span>
                     {user.provider !== "LOCAL" && (
-                      <span className="inline-flex items-center border border-zinc-300 px-2.5 py-1 text-[10px] font-bold uppercase tracking-widest text-zinc-500 dark:border-zinc-700 dark:text-zinc-400">
+                      <span className="inline-flex items-center rounded border border-zinc-300 px-2.5 py-1 text-[10px] font-bold uppercase tracking-widest text-zinc-500 dark:border-zinc-700 dark:text-zinc-400">
                         {user.provider} account
                       </span>
                     )}
@@ -243,7 +240,7 @@ export default function AccountPage() {
                 </div>
                 <Link
                   href="/account/edit-profile"
-                  className="flex items-center justify-center gap-2 border border-zinc-200 px-4 py-2.5 text-xs font-bold uppercase tracking-widest text-zinc-700 transition-colors hover:border-emerald-600 hover:text-emerald-600 dark:border-zinc-700 dark:text-zinc-300 dark:hover:border-emerald-500 dark:hover:text-emerald-400"
+                  className="flex items-center justify-center gap-2 rounded-sm border border-zinc-200 px-4 py-2.5 text-xs font-bold uppercase tracking-widest text-zinc-700 transition-colors hover:border-emerald-600 hover:text-emerald-600 dark:border-zinc-700 dark:text-zinc-300 dark:hover:border-emerald-500 dark:hover:text-emerald-400"
                 >
                   <PencilSquareIcon className="h-4 w-4" />
                   Edit
@@ -263,14 +260,14 @@ export default function AccountPage() {
           {/* ── Sign out ── */}
           <button
             onClick={handleLogoutClick}
-            className="mt-8 flex w-full items-center justify-center gap-2 border border-zinc-200 bg-transparent py-4 text-xs font-bold uppercase tracking-widest text-zinc-700 transition-colors hover:border-emerald-600 hover:text-emerald-600 dark:border-zinc-800 dark:text-zinc-300 dark:hover:border-emerald-500 dark:hover:text-emerald-400"
+            className="mt-8 flex w-full items-center justify-center gap-2 rounded-sm border border-zinc-200 bg-transparent py-4 text-xs font-bold uppercase tracking-widest text-zinc-700 transition-colors hover:border-emerald-600 hover:text-emerald-600 dark:border-zinc-800 dark:text-zinc-300 dark:hover:border-emerald-500 dark:hover:text-emerald-400"
           >
             <ArrowRightStartOnRectangleIcon className="h-4 w-4" />
             Sign Out
           </button>
 
           {/* ── Danger zone ── */}
-          <div className="mt-12 border border-red-200 dark:border-red-900/50">
+          <div className="mt-12 rounded-sm border border-red-200 dark:border-red-900/50">
             <div className="border-b border-red-100 px-5 py-3 dark:border-red-900/30">
               <h2 className="text-[10px] font-bold uppercase tracking-widest text-red-500 dark:text-red-400">
                 Danger Zone
@@ -285,7 +282,7 @@ export default function AccountPage() {
               onClick={() => setShowDeleteModal(true)}
               className="group flex w-full items-center gap-4 px-5 py-4 text-left transition-colors hover:bg-red-50 dark:hover:bg-red-950/20"
             >
-              <span className="flex h-10 w-10 shrink-0 items-center justify-center border border-red-200 transition-colors group-hover:border-red-400 dark:border-red-900/50">
+              <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-sm border border-red-200 transition-colors group-hover:border-red-400 dark:border-red-900/50">
                 <TrashIcon
                   className="h-5 w-5 text-red-500 dark:text-red-400"
                   strokeWidth={1.5}

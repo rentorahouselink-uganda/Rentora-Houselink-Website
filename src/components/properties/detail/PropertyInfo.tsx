@@ -20,19 +20,19 @@ export function PropertyInfo({ property }: { property: Property }) {
       {/* ── Title / badges / location ── */}
       <div>
         <div className="mb-5 flex flex-wrap items-center gap-2">
-          <span className="inline-flex items-center gap-1.5 border border-emerald-600 dark:border-emerald-500 px-2 py-1 text-[10px] font-bold uppercase tracking-widest text-emerald-600 dark:text-emerald-500">
+          <span className="inline-flex items-center gap-1.5 rounded-sm border border-emerald-600 dark:border-emerald-500 px-2 py-1 text-[10px] font-bold uppercase tracking-widest text-emerald-600 dark:text-emerald-500">
             <CheckCircleIcon className="h-3 w-3" />
             Verified
           </span>
-          <span className="border border-zinc-200 dark:border-zinc-800 px-2 py-1 text-[10px] font-bold uppercase tracking-widest text-zinc-500 dark:text-zinc-400">
+          <span className="rounded-sm border border-zinc-200 dark:border-zinc-800 px-2 py-1 text-[10px] font-bold uppercase tracking-widest text-zinc-500 dark:text-zinc-400">
             {formatLabel(property.type)}
           </span>
           {property.listingPurpose === "SALE" ? (
-            <span className="bg-zinc-900 dark:bg-white px-2 py-1 text-[10px] font-bold uppercase tracking-widest text-white dark:text-zinc-950">
+            <span className="rounded-sm bg-zinc-900 dark:bg-white px-2 py-1 text-[10px] font-bold uppercase tracking-widest text-white dark:text-zinc-950 shadow-sm">
               For Sale
             </span>
           ) : (
-            <span className="border border-zinc-300 dark:border-zinc-700 px-2 py-1 text-[10px] font-bold uppercase tracking-widest text-zinc-600 dark:text-zinc-400">
+            <span className="rounded-sm border border-zinc-300 dark:border-zinc-700 px-2 py-1 text-[10px] font-bold uppercase tracking-widest text-zinc-600 dark:text-zinc-400">
               For Rent
             </span>
           )}

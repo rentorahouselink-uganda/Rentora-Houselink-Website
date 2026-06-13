@@ -162,7 +162,7 @@ function ExplorePageContent({
                 </p>
               </div>
               {showBadge && (
-                <div className="inline-flex items-center self-start md:self-end border-b border-emerald-600 px-1 py-1 text-xs font-bold uppercase tracking-widest text-emerald-600 dark:border-emerald-500 dark:text-emerald-500">
+                <div className="inline-flex items-center self-start md:self-end rounded-md bg-emerald-50 px-3 py-1.5 text-xs font-bold uppercase tracking-widest text-emerald-700 dark:bg-emerald-500/10 dark:text-emerald-400">
                   {meta.total.toLocaleString()} results
                 </div>
               )}
@@ -202,7 +202,7 @@ function ExplorePageContent({
             </p>
             <button
               onClick={() => window.location.reload()}
-              className="text-sm font-bold tracking-widest uppercase text-emerald-600 dark:text-emerald-500 border-b border-emerald-600 dark:border-emerald-500 pb-1 hover:opacity-60 transition-opacity"
+              className="rounded-md bg-zinc-900 px-6 py-2.5 text-sm font-bold tracking-widest uppercase text-white hover:bg-zinc-800 dark:bg-white dark:text-zinc-900 dark:hover:bg-zinc-200 transition-colors"
             >
               Reload Page
             </button>

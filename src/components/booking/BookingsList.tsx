@@ -26,7 +26,7 @@ function FilterChip({
     <button
       onClick={onClick}
       className={[
-        "inline-flex items-center gap-2 border px-4 py-2 text-xs font-bold uppercase tracking-widest transition-colors",
+        "inline-flex items-center gap-2 rounded-md border px-4 py-2 text-xs font-bold uppercase tracking-widest transition-colors",
         active
           ? "border-zinc-900 bg-zinc-900 text-white dark:border-white dark:bg-white dark:text-zinc-950"
           : "border-zinc-200 text-zinc-500 hover:border-zinc-900 hover:text-zinc-900 dark:border-zinc-800 dark:text-zinc-400 dark:hover:border-white dark:hover:text-white",
@@ -52,16 +52,16 @@ function Skeleton() {
   return (
     <div className="min-h-screen bg-zinc-50 dark:bg-zinc-950">
       <div className="mx-auto max-w-4xl px-4 py-10 sm:px-6 lg:px-8">
-        <div className="h-10 w-52 animate-pulse bg-zinc-200 dark:bg-zinc-800" />
-        <div className="mt-2 h-4 w-72 animate-pulse bg-zinc-100 dark:bg-zinc-900" />
+        <div className="h-10 w-52 rounded-md animate-pulse bg-zinc-200 dark:bg-zinc-800" />
+        <div className="mt-2 h-4 w-72 rounded-md animate-pulse bg-zinc-100 dark:bg-zinc-900" />
         <div className="mt-8 flex gap-3">
           {[80, 70, 90].map((w, i) => (
-            <div key={i} className="h-9 animate-pulse bg-zinc-200 dark:bg-zinc-800" style={{ width: w }} />
+            <div key={i} className="h-9 rounded-md animate-pulse bg-zinc-200 dark:bg-zinc-800" style={{ width: w }} />
           ))}
         </div>
         <div className="mt-6 space-y-4">
           {[1, 2, 3].map((i) => (
-            <div key={i} className="h-36 animate-pulse bg-zinc-200 dark:bg-zinc-800" />
+            <div key={i} className="h-36 rounded-md animate-pulse bg-zinc-200 dark:bg-zinc-800" />
           ))}
         </div>
       </div>
@@ -227,7 +227,7 @@ export function BookingsList() {
             </div>
             <Link
               href="/explore"
-              className="bg-emerald-600 px-4 py-2.5 text-xs font-bold uppercase tracking-widest text-white transition hover:bg-emerald-700 dark:bg-emerald-500 dark:hover:bg-emerald-400"
+              className="rounded-md bg-emerald-600 px-4 py-2.5 text-xs font-bold uppercase tracking-widest text-white transition hover:bg-emerald-700 dark:bg-emerald-500 dark:hover:bg-emerald-400"
             >
               Explore Properties
             </Link>
@@ -258,7 +258,7 @@ export function BookingsList() {
 
           <div className="mt-8">
             {bookings.length === 0 ? (
-              <div className="flex flex-col items-center justify-center border border-dashed border-zinc-300 dark:border-zinc-700 px-6 py-24 text-center">
+              <div className="flex flex-col items-center justify-center rounded-md border border-dashed border-zinc-300 dark:border-zinc-700 px-6 py-24 text-center">
                 <ReceiptRefundIcon className="mb-6 h-12 w-12 text-zinc-300 dark:text-zinc-700" strokeWidth={1} />
                 <h2 className="text-2xl font-light tracking-tight text-zinc-900 dark:text-white mb-2">
                   No bookings yet.

@@ -145,7 +145,7 @@ export function PropertyCard({ property }: { property: Property }) {
 
       <div
         ref={cardRef}
-        className="group relative flex flex-col overflow-hidden bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 transition-all duration-300 hover:border-emerald-600 dark:hover:border-emerald-500"
+        className="group relative flex flex-col overflow-hidden rounded-md bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 transition-all duration-300 hover:border-emerald-600 hover:shadow-sm dark:hover:border-emerald-500"
         onMouseEnter={handleMouseEnter}
         onMouseLeave={handleMouseLeave}
       >
@@ -156,9 +156,9 @@ export function PropertyCard({ property }: { property: Property }) {
           aria-label={isSaved ? "Remove from saved" : "Save property"}
           onClick={handleFavoriteClick}
           disabled={isToggling || !ready}
-          className="absolute right-3 top-3 z-20 grid h-9 w-9 place-items-center bg-white/90 text-zinc-900 backdrop-blur-md transition-all hover:bg-emerald-600 hover:text-white dark:bg-zinc-950/80 dark:text-white disabled:opacity-70"
+          className="absolute right-3 top-3 z-20 grid h-9 w-9 place-items-center rounded-full bg-white/90 text-zinc-900 backdrop-blur-md transition-all hover:bg-emerald-600 hover:text-white dark:bg-zinc-950/80 dark:text-white disabled:opacity-70"
         >
-          {isSaved ? <HeartIconSolid className="h-5 w-5 fill-emerald-600 text-emerald-600" /> : <HeartIcon className="h-5 w-5" />}
+          {isSaved ? <HeartIconSolid className="h-5 w-5 fill-red-500 text-red-500" /> : <HeartIcon className="h-5 w-5" />}
         </button>
 
         <div className="relative aspect-[4/3] w-full overflow-hidden bg-zinc-100 dark:bg-zinc-800">
@@ -173,25 +173,25 @@ export function PropertyCard({ property }: { property: Property }) {
           )}
 
           <div className="absolute left-3 top-3 flex flex-col items-start gap-2">
-            {property.isFeatured && <span className="inline-flex items-center gap-1 bg-emerald-600 px-2 py-1 text-[10px] font-bold uppercase tracking-widest text-white"><StarIcon className="h-3 w-3" /> Featured</span>}
-            {property.listingPurpose === "SALE" && <span className="inline-flex bg-zinc-900 px-2 py-1 text-[10px] font-bold uppercase tracking-widest text-white backdrop-blur-md">For Sale</span>}
+            {property.isFeatured && <span className="inline-flex items-center gap-1 rounded-sm bg-emerald-600 px-2 py-1 text-[10px] font-bold uppercase tracking-widest text-white shadow-sm"><StarIcon className="h-3 w-3" /> Featured</span>}
+            {property.listingPurpose === "SALE" && <span className="inline-flex rounded-sm bg-zinc-900 px-2 py-1 text-[10px] font-bold uppercase tracking-widest text-white shadow-sm backdrop-blur-md">For Sale</span>}
           </div>
 
           {hasVideo && canHover && (
             <div className={["pointer-events-none absolute inset-0 flex items-center justify-center transition-all duration-300", isHovering ? "scale-90 opacity-0" : "scale-100 opacity-100"].join(" ")}>
-              <div className="flex h-12 w-12 items-center justify-center bg-black/30 text-white backdrop-blur-md"><PlayIcon className="h-6 w-6" /></div>
+              <div className="flex h-12 w-12 items-center justify-center rounded-full bg-black/40 text-white backdrop-blur-md"><PlayIcon className="h-6 w-6 ml-1" /></div>
             </div>
           )}
 
           {hasVideo && !canHover && (
             <>
-              {previewState === "idle" && ( <div className="absolute inset-0 z-[15] flex items-center justify-center"><button type="button" onClick={handlePlayClick} className="flex h-12 w-12 items-center justify-center bg-black/30 text-white backdrop-blur-md"><PlayIcon className="h-6 w-6" /></button></div>)}
-              {previewState === "playing" && ( <button type="button" onClick={handlePauseClick} className="absolute inset-0 z-[15] flex items-center justify-center"><div className="flex h-10 w-10 items-center justify-center bg-black/20 text-white/50 backdrop-blur-sm"><PauseIcon className="h-5 w-5" /></div></button>)}
-              {previewState === "paused" && ( <div className="absolute inset-0 z-[15] flex items-center justify-center"><button type="button" onClick={handleResumeClick} className="flex h-12 w-12 items-center justify-center bg-black/30 text-white backdrop-blur-md"><PlayIcon className="h-6 w-6" /></button></div>)}
+              {previewState === "idle" && ( <div className="absolute inset-0 z-[15] flex items-center justify-center"><button type="button" onClick={handlePlayClick} className="flex h-12 w-12 items-center justify-center rounded-full bg-black/40 text-white backdrop-blur-md"><PlayIcon className="h-6 w-6 ml-1" /></button></div>)}
+              {previewState === "playing" && ( <button type="button" onClick={handlePauseClick} className="absolute inset-0 z-[15] flex items-center justify-center"><div className="flex h-10 w-10 items-center justify-center rounded-full bg-black/30 text-white/70 backdrop-blur-sm"><PauseIcon className="h-5 w-5" /></div></button>)}
+              {previewState === "paused" && ( <div className="absolute inset-0 z-[15] flex items-center justify-center"><button type="button" onClick={handleResumeClick} className="flex h-12 w-12 items-center justify-center rounded-full bg-black/40 text-white backdrop-blur-md"><PlayIcon className="h-6 w-6 ml-1" /></button></div>)}
             </>
           )}
 
-          <Link href={`/properties/${property.id}`} className="absolute bottom-3 right-3 z-20 inline-flex items-center bg-emerald-600 px-3 py-1.5 text-[10px] font-bold uppercase tracking-widest text-white shadow-md transition-all hover:bg-emerald-700">Book / Enquire</Link>
+          <Link href={`/properties/${property.id}`} className="absolute bottom-3 right-3 z-20 inline-flex items-center rounded-sm bg-emerald-600 px-3 py-1.5 text-[10px] font-bold uppercase tracking-widest text-white shadow-md transition-all hover:bg-emerald-700">Book / Enquire</Link>
         </div>
 
         <div className="relative flex flex-1 flex-col p-5">

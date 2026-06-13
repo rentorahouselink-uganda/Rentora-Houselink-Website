@@ -20,7 +20,7 @@ export function StickyActionCard({ property }: { property: Property }) {
 
   return (
     <>
-      <div className="sticky top-24 border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 p-6">
+      <div className="sticky top-24 rounded-md border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 p-6 shadow-sm">
         {/* Price */}
         <div className="mb-6">
           <p className="text-[10px] font-bold uppercase tracking-widest text-zinc-400 dark:text-zinc-500">
@@ -39,7 +39,7 @@ export function StickyActionCard({ property }: { property: Property }) {
         </div>
 
         {/* Minimal stats */}
-        <div className="mb-6 grid grid-cols-2 gap-4 border border-zinc-100 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-950 p-4">
+        <div className="mb-6 grid grid-cols-2 gap-4 rounded-md border border-zinc-100 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-950 p-4">
           <div>
             <p className="text-[10px] font-bold uppercase tracking-widest text-zinc-400 dark:text-zinc-500">Rooms</p>
             <p className="mt-1 text-sm font-semibold text-zinc-900 dark:text-white">
@@ -76,13 +76,13 @@ export function StickyActionCard({ property }: { property: Property }) {
         <div className="flex flex-col gap-3">
           <Link
             href={bookPath}
-            className="block w-full bg-emerald-600 px-6 py-4 text-center text-sm font-bold uppercase tracking-widest text-white transition hover:bg-emerald-700 dark:bg-emerald-500 dark:hover:bg-emerald-400"
+            className="block w-full rounded-md bg-emerald-600 px-6 py-4 text-center text-sm font-bold uppercase tracking-widest text-white transition hover:bg-emerald-700 dark:bg-emerald-500 dark:hover:bg-emerald-400"
           >
             {bookLabel}
           </Link>
           <button
             onClick={() => setShowEnquire(true)}
-            className="w-full border border-zinc-300 dark:border-zinc-700 bg-white dark:bg-zinc-900 px-6 py-4 text-sm font-bold uppercase tracking-widest text-zinc-900 dark:text-white transition hover:bg-zinc-50 dark:hover:bg-zinc-800"
+            className="w-full rounded-md border border-zinc-300 dark:border-zinc-700 bg-white dark:bg-zinc-900 px-6 py-4 text-sm font-bold uppercase tracking-widest text-zinc-900 dark:text-white transition hover:bg-zinc-50 dark:hover:bg-zinc-800"
           >
             Enquire via WhatsApp
           </button>

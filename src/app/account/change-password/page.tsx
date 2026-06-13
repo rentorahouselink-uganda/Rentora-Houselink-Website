@@ -121,10 +121,10 @@ export default function ChangePasswordPage() {
           )}
 
           <form onSubmit={handleSubmit} noValidate className="space-y-8">
-            
+
             {/* Current Password */}
             <div className="relative group">
-              <label className="block text-xs font-bold uppercase tracking-widest text-zinc-500 dark:text-zinc-400 mb-1">
+              <label className="mb-1 block text-xs font-bold uppercase tracking-widest text-zinc-500 dark:text-zinc-400">
                 Current password
               </label>
               <div className="relative">
@@ -138,7 +138,7 @@ export default function ChangePasswordPage() {
                   autoFocus
                   className={errors.current ? inputClassError : inputClass}
                 />
-                <button type="button" onClick={() => setShowCur((v) => !v)} className="absolute right-0 bottom-4 text-zinc-400 hover:text-zinc-900 dark:hover:text-white transition-colors" tabIndex={-1}>
+                <button type="button" onClick={() => setShowCur((v) => !v)} className="absolute bottom-4 right-0 text-zinc-400 transition-colors hover:text-zinc-900 dark:hover:text-white" tabIndex={-1}>
                   {showCur ? <EyeSlashIcon className="h-5 w-5" /> : <EyeIcon className="h-5 w-5" />}
                 </button>
               </div>
@@ -147,7 +147,7 @@ export default function ChangePasswordPage() {
 
             {/* New Password */}
             <div className="relative group pt-2">
-              <label className="block text-xs font-bold uppercase tracking-widest text-zinc-500 dark:text-zinc-400 mb-1">
+              <label className="mb-1 block text-xs font-bold uppercase tracking-widest text-zinc-500 dark:text-zinc-400">
                 New password
               </label>
               <div className="relative">
@@ -160,13 +160,12 @@ export default function ChangePasswordPage() {
                   disabled={loading}
                   className={errors.next ? inputClassError : inputClass}
                 />
-                <button type="button" onClick={() => setShowNext((v) => !v)} className="absolute right-0 bottom-4 text-zinc-400 hover:text-zinc-900 dark:hover:text-white transition-colors" tabIndex={-1}>
+                <button type="button" onClick={() => setShowNext((v) => !v)} className="absolute bottom-4 right-0 text-zinc-400 transition-colors hover:text-zinc-900 dark:hover:text-white" tabIndex={-1}>
                   {showNext ? <EyeSlashIcon className="h-5 w-5" /> : <EyeIcon className="h-5 w-5" />}
                 </button>
               </div>
               {errors.next && <p className="mt-1.5 text-xs font-medium text-red-600 dark:text-red-400">{errors.next}</p>}
-              
-              {/* Strength bar */}
+
               {next.length > 0 && (
                 <div className="mt-3 space-y-2">
                   <div className="flex gap-1.5">
@@ -179,7 +178,7 @@ export default function ChangePasswordPage() {
                       />
                     ))}
                   </div>
-                  <p className={`text-xs font-bold tracking-widest uppercase ${
+                  <p className={`text-xs font-bold uppercase tracking-widest ${
                     strength.score >= 4 ? "text-emerald-600 dark:text-emerald-500"
                     : strength.score >= 3 ? "text-yellow-600 dark:text-yellow-500"
                     : "text-red-500 dark:text-red-400"
@@ -192,7 +191,7 @@ export default function ChangePasswordPage() {
 
             {/* Confirm New Password */}
             <div className="relative group pt-2">
-              <label className="block text-xs font-bold uppercase tracking-widest text-zinc-500 dark:text-zinc-400 mb-1">
+              <label className="mb-1 block text-xs font-bold uppercase tracking-widest text-zinc-500 dark:text-zinc-400">
                 Confirm new password
               </label>
               <div className="relative">
@@ -205,7 +204,7 @@ export default function ChangePasswordPage() {
                   disabled={loading}
                   className={errors.confirm ? inputClassError : inputClass}
                 />
-                <button type="button" onClick={() => setShowConf((v) => !v)} className="absolute right-0 bottom-4 text-zinc-400 hover:text-zinc-900 dark:hover:text-white transition-colors" tabIndex={-1}>
+                <button type="button" onClick={() => setShowConf((v) => !v)} className="absolute bottom-4 right-0 text-zinc-400 transition-colors hover:text-zinc-900 dark:hover:text-white" tabIndex={-1}>
                   {showConf ? <EyeSlashIcon className="h-5 w-5" /> : <EyeIcon className="h-5 w-5" />}
                 </button>
               </div>
@@ -216,7 +215,7 @@ export default function ChangePasswordPage() {
               <button
                 type="submit"
                 disabled={loading}
-                className="flex w-full items-center justify-center gap-3 bg-emerald-600 text-white py-5 text-sm font-bold tracking-widest uppercase hover:bg-emerald-700 dark:bg-emerald-500 dark:hover:bg-emerald-400 transition-colors focus:outline-none disabled:opacity-50 disabled:cursor-not-allowed"
+                className="flex w-full items-center justify-center gap-3 rounded-sm bg-emerald-600 py-5 text-sm font-bold uppercase tracking-widest text-white transition-colors hover:bg-emerald-700 focus:outline-none disabled:cursor-not-allowed disabled:opacity-50 dark:bg-emerald-500 dark:hover:bg-emerald-400"
               >
                 {loading && (
                   <svg className="h-4 w-4 animate-spin" viewBox="0 0 24 24" fill="none">

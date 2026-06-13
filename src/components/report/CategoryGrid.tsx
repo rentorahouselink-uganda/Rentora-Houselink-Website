@@ -28,7 +28,7 @@ type Props = {
 
 export function CategoryGrid({ selected, onSelect, disabled }: Props) {
   return (
-    <div className="grid grid-cols-1 gap-px sm:grid-cols-2 lg:grid-cols-3 border border-zinc-200 dark:border-zinc-800 bg-zinc-200 dark:bg-zinc-800">
+    <div className="grid grid-cols-1 gap-px overflow-hidden rounded-md sm:grid-cols-2 lg:grid-cols-3 border border-zinc-200 dark:border-zinc-800 bg-zinc-200 dark:bg-zinc-800">
       {CATEGORIES.map((cat) => {
         const isSelected = selected === cat.value;
         const { Icon } = cat;

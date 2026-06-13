@@ -7,18 +7,17 @@ import { useNotifications } from "@/lib/notifications/notification-context";
 import { NotificationTile } from "@/components/notifications/NotificationTile";
 import { BellSlashIcon } from "@heroicons/react/24/outline";
 
-// Shimmer skeleton that matches the NotificationTile shape exactly
 function NotificationSkeleton() {
   return (
     <div className="flex items-start gap-5 border-b border-zinc-200 dark:border-zinc-800 py-5 pl-5 pr-12 animate-pulse">
-      <div className="h-10 w-10 shrink-0 border border-zinc-200 dark:border-zinc-800 bg-zinc-100 dark:bg-zinc-900" />
+      <div className="h-10 w-10 shrink-0 rounded-sm border border-zinc-200 dark:border-zinc-800 bg-zinc-100 dark:bg-zinc-900" />
       <div className="flex-1 space-y-2.5 pt-0.5">
         <div className="flex items-center justify-between gap-8">
-          <div className="h-4 w-44 bg-zinc-100 dark:bg-zinc-900" />
-          <div className="h-3 w-24 bg-zinc-100 dark:bg-zinc-900" />
+          <div className="h-4 w-44 rounded-sm bg-zinc-100 dark:bg-zinc-900" />
+          <div className="h-3 w-24 rounded-sm bg-zinc-100 dark:bg-zinc-900" />
         </div>
-        <div className="h-3 w-full bg-zinc-100 dark:bg-zinc-900" />
-        <div className="h-3 w-2/3 bg-zinc-100 dark:bg-zinc-900" />
+        <div className="h-3 w-full rounded-sm bg-zinc-100 dark:bg-zinc-900" />
+        <div className="h-3 w-2/3 rounded-sm bg-zinc-100 dark:bg-zinc-900" />
       </div>
     </div>
   );
@@ -40,7 +39,6 @@ export default function NotificationsPage() {
       setNotifications(prev =>
         append ? [...prev, ...(res.data || [])] : (res.data || [])
       );
-      // FIX: API returns totalPages, not hasNextPage
       setHasMore((res.meta?.page ?? 1) < (res.meta?.totalPages ?? 1));
     } catch (error) {
       console.error("Failed to load notifications", error);
@@ -100,7 +98,7 @@ export default function NotificationsPage() {
               Notifications<span className="text-emerald-600 dark:text-emerald-500">.</span>
             </h1>
             {unreadCount > 0 && (
-              <p className="mt-2 text-xs font-bold text-emerald-600 dark:text-emerald-500 uppercase tracking-widest">
+              <p className="mt-2 text-xs font-bold uppercase tracking-widest text-emerald-600 dark:text-emerald-500">
                 {unreadCount} unread
               </p>
             )}
@@ -108,7 +106,7 @@ export default function NotificationsPage() {
           {unreadCount > 0 && (
             <button
               onClick={handleMarkAllRead}
-              className="text-xs font-bold uppercase tracking-widest text-zinc-900 dark:text-white border-b border-zinc-900 dark:border-white pb-1 hover:opacity-60 transition-opacity"
+              className="border-b border-zinc-900 pb-1 text-xs font-bold uppercase tracking-widest text-zinc-900 transition-opacity hover:opacity-60 dark:border-white dark:text-white"
             >
               Mark all read
             </button>
@@ -117,7 +115,6 @@ export default function NotificationsPage() {
 
         {/* Body */}
         {loading ? (
-          // Shimmer skeletons on initial load
           <div className="flex flex-col">
             {Array.from({ length: 7 }).map((_, i) => (
               <NotificationSkeleton key={i} />
@@ -127,7 +124,7 @@ export default function NotificationsPage() {
           <div className="flex flex-col items-center justify-center py-24 text-center">
             <BellSlashIcon className="h-12 w-12 text-zinc-300 dark:text-zinc-700" strokeWidth={1} />
             <h3 className="mt-6 text-2xl font-light tracking-tight text-zinc-900 dark:text-white">All caught up.</h3>
-            <p className="mt-2 text-base text-zinc-500 dark:text-zinc-400 max-w-sm">
+            <p className="mt-2 max-w-sm text-base text-zinc-500 dark:text-zinc-400">
               When you get messages, updates or alerts, they will appear right here.
             </p>
           </div>
@@ -142,7 +139,6 @@ export default function NotificationsPage() {
               />
             ))}
 
-            {/* Load more — shimmer skeletons while fetching next page */}
             {hasMore && (
               <div className="pt-4">
                 {loadingMore ? (
@@ -153,7 +149,7 @@ export default function NotificationsPage() {
                   <div className="py-8 text-center">
                     <button
                       onClick={handleLoadMore}
-                      className="text-xs font-bold uppercase tracking-widest text-emerald-600 dark:text-emerald-500 border-b border-emerald-600 dark:border-emerald-500 pb-1 hover:opacity-60 transition-opacity"
+                      className="border-b border-emerald-600 pb-1 text-xs font-bold uppercase tracking-widest text-emerald-600 transition-opacity hover:opacity-60 dark:border-emerald-500 dark:text-emerald-500"
                     >
                       Load older notifications
                     </button>

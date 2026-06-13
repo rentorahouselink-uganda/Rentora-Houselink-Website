@@ -69,7 +69,7 @@ export function DetailNavbar({ propertyId }: Props) {
       duration: 3000,
       position: "top-center",
       style: {
-        borderRadius: "0px",
+        borderRadius: "0px", // Kept standard, but fits minimalist aesthetic
         fontSize: "13px",
         fontWeight: "600",
       },
@@ -94,7 +94,7 @@ export function DetailNavbar({ propertyId }: Props) {
       <div className="flex items-center justify-between py-2">
         <button
           onClick={() => router.back()}
-          className="group inline-flex items-center gap-2 text-sm font-medium tracking-wide text-zinc-500 hover:text-emerald-600 dark:text-zinc-400 dark:hover:text-emerald-400 transition-colors"
+          className="group inline-flex items-center gap-2 rounded-md px-2 py-1.5 text-sm font-medium tracking-wide text-zinc-500 hover:bg-zinc-100 hover:text-emerald-600 dark:text-zinc-400 dark:hover:bg-zinc-800/50 dark:hover:text-emerald-400 transition-colors"
         >
           <ChevronLeftIcon className="h-4 w-4 transition-transform group-hover:-translate-x-1" />
           Back to Explore
@@ -105,7 +105,7 @@ export function DetailNavbar({ propertyId }: Props) {
             onClick={handleFavoriteClick}
             disabled={!ready || isToggling}
             aria-label={isSaved ? "Remove from saved" : "Save property"}
-            className="flex h-10 w-10 items-center justify-center text-zinc-500 transition hover:text-emerald-600 dark:text-zinc-400 dark:hover:text-emerald-400 disabled:opacity-50"
+            className="flex h-10 w-10 items-center justify-center rounded-full text-zinc-500 transition hover:bg-zinc-100 hover:text-emerald-600 dark:text-zinc-400 dark:hover:bg-zinc-800/50 dark:hover:text-emerald-400 disabled:opacity-50"
           >
             {isSaved ? (
               <HeartIconSolid className="h-5 w-5 fill-rose-500 text-rose-500" />
@@ -117,7 +117,7 @@ export function DetailNavbar({ propertyId }: Props) {
           <button
             onClick={handleShare}
             aria-label="Copy link to property"
-            className="flex h-10 w-10 items-center justify-center text-zinc-500 transition hover:text-emerald-600 dark:text-zinc-400 dark:hover:text-emerald-400"
+            className="flex h-10 w-10 items-center justify-center rounded-full text-zinc-500 transition hover:bg-zinc-100 hover:text-emerald-600 dark:text-zinc-400 dark:hover:bg-zinc-800/50 dark:hover:text-emerald-400"
           >
             {copied ? (
               <span className="text-[10px] font-bold uppercase tracking-widest text-emerald-600 dark:text-emerald-400">

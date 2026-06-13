@@ -30,12 +30,12 @@ export function VideoModal({ url, title, onClose }: Props) {
           <button
             onClick={onClose}
             aria-label="Close video"
-            className="ml-auto flex h-10 w-10 items-center justify-center bg-white/10 text-white transition hover:bg-white/20"
+            className="ml-auto flex h-10 w-10 items-center justify-center rounded-full bg-white/10 text-white transition hover:bg-white/20"
           >
             <XMarkIcon className="h-5 w-5" />
           </button>
         </div>
-        <div className="relative aspect-video w-full overflow-hidden bg-black shadow-2xl">
+        <div className="relative aspect-video w-full overflow-hidden rounded-md bg-black shadow-2xl">
           <video
             ref={videoRef}
             src={url}

@@ -81,12 +81,12 @@ export default function EditProfilePage() {
 
         <div className="border-t border-zinc-200 dark:border-zinc-800 pt-8">
           <div className="mb-10 flex items-center gap-5">
-            <div className="flex h-16 w-16 items-center justify-center bg-emerald-600 text-xl font-bold text-white">
+            <div className="flex h-16 w-16 items-center justify-center rounded-sm bg-emerald-600 text-xl font-bold text-white">
               {getInitials(name || user.name)}
             </div>
             <div>
               <p className="text-lg font-medium text-zinc-900 dark:text-white">{name || user.name}</p>
-              <p className="text-sm text-zinc-500 dark:text-zinc-400 mt-1">Your initials update as you type</p>
+              <p className="mt-1 text-sm text-zinc-500 dark:text-zinc-400">Your initials update as you type</p>
             </div>
           </div>
 
@@ -105,7 +105,7 @@ export default function EditProfilePage() {
 
           <form onSubmit={handleSubmit} noValidate className="space-y-8">
             <div className="relative group">
-              <label className="block text-xs font-bold uppercase tracking-widest text-zinc-500 dark:text-zinc-400 mb-1">
+              <label className="mb-1 block text-xs font-bold uppercase tracking-widest text-zinc-500 dark:text-zinc-400">
                 Full name
               </label>
               <input
@@ -121,7 +121,7 @@ export default function EditProfilePage() {
             </div>
 
             <div className="relative group">
-              <label className="block text-xs font-bold uppercase tracking-widest text-zinc-500 dark:text-zinc-400 mb-1">
+              <label className="mb-1 block text-xs font-bold uppercase tracking-widest text-zinc-500 dark:text-zinc-400">
                 Email address
               </label>
               <input
@@ -140,7 +140,7 @@ export default function EditProfilePage() {
               <button
                 type="submit"
                 disabled={loading || name.trim() === user.name}
-                className="flex w-full items-center justify-center gap-3 bg-emerald-600 text-white py-5 text-sm font-bold tracking-widest uppercase hover:bg-emerald-700 dark:bg-emerald-500 dark:hover:bg-emerald-400 transition-colors focus:outline-none disabled:opacity-50 disabled:cursor-not-allowed"
+                className="flex w-full items-center justify-center gap-3 rounded-sm bg-emerald-600 py-5 text-sm font-bold uppercase tracking-widest text-white transition-colors hover:bg-emerald-700 focus:outline-none disabled:cursor-not-allowed disabled:opacity-50 dark:bg-emerald-500 dark:hover:bg-emerald-400"
               >
                 {loading && (
                   <svg className="h-4 w-4 animate-spin" viewBox="0 0 24 24" fill="none">

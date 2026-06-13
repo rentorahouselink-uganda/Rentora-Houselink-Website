@@ -1,3 +1,5 @@
+"use client";
+
 import { FavoritesProvider } from "@/components/properties/favorites-context";
 import { VideoPlaybackProvider } from "@/components/properties/video-playback-context";
 import { Property } from "@/types/property";

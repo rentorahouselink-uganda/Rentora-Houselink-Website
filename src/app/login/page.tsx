@@ -11,11 +11,11 @@ export default function LoginPage() {
   const router = useRouter();
   const { login, isAuthenticated, isLoading: authLoading } = useAuth();
 
-  const [email, setEmail] = useState("");
+  const [email,    setEmail]    = useState("");
   const [password, setPassword] = useState("");
-  const [showPw, setShowPw] = useState(false);
-  const [error, setError] = useState("");
-  const [loading, setLoading] = useState(false);
+  const [showPw,   setShowPw]   = useState(false);
+  const [error,    setError]    = useState("");
+  const [loading,  setLoading]  = useState(false);
 
   useEffect(() => {
     if (!authLoading && isAuthenticated) router.replace("/explore");
@@ -40,13 +40,12 @@ export default function LoginPage() {
   }
 
   const inputClass =
-    "w-full bg-transparent border-0 border-b border-zinc-300 dark:border-zinc-800 py-4 pl-0 pr-4 text-base text-zinc-900 dark:text-white outline-none transition-colors placeholder:text-zinc-400 focus:border-emerald-600 dark:focus:border-emerald-500 focus:ring-0 disabled:opacity-50 disabled:cursor-not-allowed rounded-none";
+    "w-full bg-transparent border-0 border-b border-zinc-300 dark:border-zinc-800 py-4 pl-0 pr-4 text-base text-zinc-900 dark:text-white outline-none transition-colors placeholder:text-zinc-400 focus:border-emerald-600 dark:focus:border-emerald-500 focus:ring-0 disabled:opacity-50 disabled:cursor-not-allowed rounded-none [&:-webkit-autofill]:bg-transparent [&:-webkit-autofill]:[transition:background-color_5000s_ease-in-out_0s] [&:-webkit-autofill]:[-webkit-text-fill-color:inherit] dark:[&:-webkit-autofill]:[-webkit-text-fill-color:#fff]";
 
   return (
     <main className="min-h-[calc(100vh-64px)] flex items-center justify-center bg-zinc-50 dark:bg-zinc-950 py-12 px-4 sm:px-6 lg:px-8 font-sans selection:bg-emerald-100 selection:text-emerald-900 dark:selection:bg-emerald-500/30 dark:selection:text-emerald-100">
       <div className="w-full max-w-md">
 
-        {/* Header — outside card for breathing room */}
         <div className="mb-12 text-center">
           <h1 className="text-4xl font-light tracking-tight text-zinc-900 dark:text-white">
             Welcome <span className="font-semibold">back.</span>
@@ -60,7 +59,6 @@ export default function LoginPage() {
 
           <SocialAuthButtons mode="login" />
 
-          {/* Error banner */}
           {error && (
             <div className="mt-6 text-sm font-medium text-red-600 dark:text-red-400">
               {error}
@@ -69,7 +67,7 @@ export default function LoginPage() {
 
           <form onSubmit={handleSubmit} noValidate className="mt-8 space-y-7">
             <div className="relative group">
-              <label className="block text-xs font-bold uppercase tracking-widest text-zinc-500 dark:text-zinc-400 mb-1">
+              <label className="mb-1 block text-xs font-bold uppercase tracking-widest text-zinc-500 dark:text-zinc-400">
                 Email address
               </label>
               <input
@@ -110,7 +108,7 @@ export default function LoginPage() {
                 <button
                   type="button"
                   onClick={() => setShowPw((v) => !v)}
-                  className="absolute right-0 bottom-4 text-zinc-400 transition hover:text-zinc-900 dark:hover:text-white"
+                  className="absolute bottom-4 right-0 text-zinc-400 transition hover:text-zinc-900 dark:hover:text-white"
                   tabIndex={-1}
                   aria-label={showPw ? "Hide password" : "Show password"}
                 >
@@ -123,7 +121,7 @@ export default function LoginPage() {
               <button
                 type="submit"
                 disabled={loading}
-                className="flex w-full items-center justify-center gap-3 bg-emerald-600 text-white py-5 text-sm font-bold tracking-widest uppercase hover:bg-emerald-700 dark:bg-emerald-500 dark:hover:bg-emerald-400 transition-colors focus:outline-none disabled:opacity-50 disabled:cursor-not-allowed"
+                className="flex w-full items-center justify-center gap-3 rounded-sm bg-emerald-600 py-5 text-sm font-bold uppercase tracking-widest text-white transition-colors hover:bg-emerald-700 focus:outline-none disabled:cursor-not-allowed disabled:opacity-50 dark:bg-emerald-500 dark:hover:bg-emerald-400"
               >
                 {loading && (
                   <svg className="h-4 w-4 animate-spin" viewBox="0 0 24 24" fill="none">

@@ -43,13 +43,18 @@ function validate(values: FormValues): FormErrors {
   return errors;
 }
 
-function SectionHeader({ number, title }: { number: string; title: string }) {
+function SectionHeader({ number, title, subtitle }: { number: string; title: string; subtitle?: string; }) {
   return (
-    <div className="flex items-baseline gap-4 mb-6">
-      <span className="text-[10px] font-bold uppercase tracking-widest text-zinc-400 dark:text-zinc-500">
+    <div className="mb-8 flex items-baseline gap-4">
+      <span className="text-4xl font-light text-zinc-200 dark:text-zinc-800 shrink-0">
         {number}
       </span>
-      <h2 className="text-lg font-bold tracking-tight text-zinc-900 dark:text-white">{title}</h2>
+      <div>
+        <h2 className="text-xl font-bold text-zinc-900 dark:text-white">{title}</h2>
+        {subtitle && (
+          <p className="mt-0.5 text-sm text-zinc-500 dark:text-zinc-400">{subtitle}</p>
+        )}
+      </div>
     </div>
   );
 }
@@ -102,7 +107,6 @@ export function BookingForm({ property }: { property: Property }) {
   const [serverError, setServerError] = useState<string | null>(null);
   const [successToken, setSuccessToken] = useState<string | null>(null);
 
-  // Auto-fill name/email from the logged-in user once auth state resolves
   useEffect(() => {
     if (!authLoading && user) {
       setValues((prev) => ({
@@ -113,7 +117,6 @@ export function BookingForm({ property }: { property: Property }) {
     }
   }, [authLoading, user]);
 
-  // ── FIX: Prioritize video thumbnails over standard images ──
   const thumbnail = property.videos?.[0]?.thumbnailUrl
     || property.images.find((i) => i.isPrimary)?.url
     || property.images?.[0]?.url;
@@ -168,7 +171,6 @@ export function BookingForm({ property }: { property: Property }) {
 
   return (
     <div>
-      {/* Back link */}
       <Link
         href={`/properties/${property.id}`}
         className="group inline-flex items-center gap-3 text-sm font-medium tracking-wide text-zinc-500 hover:text-emerald-600 dark:text-zinc-400 dark:hover:text-emerald-400 transition-colors mb-12"
@@ -177,9 +179,8 @@ export function BookingForm({ property }: { property: Property }) {
         Back to listing
       </Link>
 
-      {/* Property summary */}
       <div className="mb-12 flex items-start gap-5 pb-8 border-b border-zinc-200 dark:border-zinc-800">
-        <div className="relative h-20 w-28 shrink-0 overflow-hidden bg-zinc-100 dark:bg-zinc-800">
+        <div className="relative h-20 w-28 shrink-0 overflow-hidden rounded-md bg-zinc-100 dark:bg-zinc-800">
           {thumbnail ? (
             <img src={thumbnail} alt={property.title} className="h-full w-full object-cover" />
           ) : (
@@ -209,18 +210,21 @@ export function BookingForm({ property }: { property: Property }) {
         </div>
       </div>
 
-      <form onSubmit={handleSubmit} className="space-y-12" noValidate>
+      <form onSubmit={handleSubmit} className="space-y-16" noValidate>
         {serverError && (
           <div className="border-l-2 border-rose-500 dark:border-rose-400 pl-4 py-1">
             <p className="text-sm text-rose-600 dark:text-rose-400">{serverError}</p>
           </div>
         )}
 
-        {/* Section 01 */}
         <section>
-          <SectionHeader number="01" title="Your Details" />
+          <SectionHeader 
+            number="01" 
+            title="Your Details" 
+            subtitle="We will use this information to reach out to you."
+          />
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-8 mt-2">
             <Field label="Full Name" required error={errors.name}>
               <InputWithIcon icon={<UserIcon className="h-4 w-4" />}>
                 <input
@@ -284,13 +288,14 @@ export function BookingForm({ property }: { property: Property }) {
           </div>
         </section>
 
-        <hr className="border-zinc-200 dark:border-zinc-800" />
+        <section className="border-t border-zinc-200 dark:border-zinc-800 pt-16">
+          <SectionHeader 
+            number="02" 
+            title="Booking Details" 
+            subtitle="Let the agent know your preferred timeline and requirements."
+          />
 
-        {/* Section 02 */}
-        <section>
-          <SectionHeader number="02" title="Booking Details" />
-
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-8 mt-2">
             <Field label="Move-in Date" required error={errors.moveInDate}>
               <InputWithIcon icon={<CalendarDaysIcon className="h-4 w-4" />}>
                 <input
@@ -329,24 +334,23 @@ export function BookingForm({ property }: { property: Property }) {
           </div>
         </section>
 
-        {/* Info notice */}
         <div className="border-l-2 border-zinc-300 dark:border-zinc-700 pl-4 py-1">
           <p className="text-sm leading-relaxed text-zinc-500 dark:text-zinc-400">
             Your request will be reviewed by the property contact. You'll receive a cancellation token to manage this booking if plans change.
           </p>
         </div>
 
-        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 pt-2">
+        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 pt-2 border-t border-zinc-200 dark:border-zinc-800">
           <p className="text-xs text-zinc-400 dark:text-zinc-500">
             <span className="font-bold text-rose-500">*</span> Required fields
           </p>
           <button
             type="submit"
             disabled={loading}
-            className="flex w-full md:w-auto items-center justify-center gap-3 bg-emerald-600 px-8 py-4 text-sm font-bold uppercase tracking-widest text-white transition hover:bg-emerald-700 focus:outline-none dark:bg-emerald-500 dark:hover:bg-emerald-400 disabled:cursor-not-allowed disabled:opacity-60"
+            className="flex w-full md:w-auto items-center justify-center gap-3 rounded-md bg-emerald-600 px-10 py-5 text-sm font-bold uppercase tracking-widest text-white transition hover:bg-emerald-700 focus:outline-none dark:bg-emerald-500 dark:hover:bg-emerald-400 disabled:cursor-not-allowed disabled:opacity-60"
           >
             {loading ? (
-              <><span className="h-4 w-4 animate-spin border-2 border-white border-t-transparent" /> Submitting…</>
+              <><span className="h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent" /> Submitting…</>
             ) : (
               <>Review & Submit <ArrowRightIcon className="h-4 w-4" /></>
             )}
