@@ -130,6 +130,11 @@ export function PropertyCard({ property }: { property: Property }) {
     ? new Intl.DateTimeFormat("en-GB", { day: "2-digit", month: "2-digit", year: "numeric" }).format(new Date(property.availableFrom))
     : "";
 
+  // Check if it's a residential rental vs sale
+  const displayTypeLabel = property.type === "RESIDENTIAL_HOUSE" && property.listingPurpose === "RENT" 
+    ? "Rental" 
+    : formatLabel(property.type);
+
   return (
     <>
       <ConfirmModal
@@ -196,7 +201,10 @@ export function PropertyCard({ property }: { property: Property }) {
 
         <div className="relative flex flex-1 flex-col p-5">
           <div className="mb-2 flex items-center justify-between">
-            <span className="text-[10px] font-bold uppercase tracking-widest text-emerald-600 dark:text-emerald-500">{formatLabel(property.type)}</span>
+            {/* Display our dynamic label here */}
+            <span className="text-[10px] font-bold uppercase tracking-widest text-emerald-600 dark:text-emerald-500">
+              {displayTypeLabel}
+            </span>
             <span className="flex items-center gap-1 text-[10px] font-medium text-zinc-400"><EyeIcon className="h-3 w-3" /> {property.viewCount}</span>
           </div>
           <h3 className="line-clamp-1 text-base font-bold text-zinc-900 dark:text-white">
