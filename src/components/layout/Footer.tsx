@@ -4,6 +4,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { EnvelopeIcon, MapPinIcon } from "@heroicons/react/24/outline";
 import { useTheme } from "next-themes";
+import { useEffect, useState } from "react";
 
 // ── Data ─────────────────────────────────────────────────────────────
 const exploreLinks = [
@@ -34,6 +35,13 @@ const socialLinks = [
 export function Footer() {
   const year = new Date().getFullYear();
   const { resolvedTheme } = useTheme();
+  
+  // Use a mounted state to prevent hydration mismatches
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   return (
     <footer className="border-t border-zinc-200 bg-white text-zinc-600 transition-colors duration-300 dark:border-zinc-800 dark:bg-zinc-950 dark:text-zinc-400">
@@ -85,7 +93,8 @@ export function Footer() {
               </p>
               <div className="flex items-center gap-2.5">
                 {socialLinks.map(({ label, href, Icon, color, darkColor }) => {
-                  const isDarkMode = resolvedTheme === "dark";
+                  // Only evaluate the theme color if the component has mounted on the client
+                  const isDarkMode = mounted && resolvedTheme === "dark";
                   const iconColor = (label === "X" && darkColor && isDarkMode) ? darkColor : color;
 
                   return (

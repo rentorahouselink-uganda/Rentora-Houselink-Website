@@ -83,7 +83,7 @@ export default function RegisterPage() {
         </div>
 
         {/* Removed border-t classes here to eliminate the top line */}
-        <div className="pt-6"> 
+        <div className="pt-0"> 
 
           <SocialAuthButtons mode="register" />
 

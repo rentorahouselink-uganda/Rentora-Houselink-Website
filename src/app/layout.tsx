@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { Header } from "@/components/layout/Header";
@@ -8,6 +8,7 @@ import { NotificationProvider } from "@/lib/notifications/notification-context";
 import NextTopLoader from "nextjs-toploader";
 import { ThemeProvider } from "@/components/shared/theme-provider";
 import { HeaderCompactProvider } from "@/components/layout/header-compact-context";
+import { MobileAppBanner } from "@/components/layout/MobileAppBanner";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -18,6 +19,12 @@ const geistMono = Geist_Mono({
   variable: "--font-geist-mono",
   subsets: ["latin"],
 });
+
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  maximumScale: 1,
+};
 
 // ── REAL-WORLD SEO OPTIMIZATION ─────────────────────────────────────────────
 export const metadata: Metadata = {
@@ -96,9 +103,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         suppressHydrationWarning 
         className={`${geistSans.variable} ${geistMono.variable} antialiased bg-zinc-50 text-zinc-900 dark:bg-zinc-950 dark:text-white [overflow-anchor:none]`}
       >
-        {/* Fixed loader hex code to Emerald-500 (#10b981) for architectural brand consistency */}
         <NextTopLoader 
-          color="#2563eb"
+          color="#10b981" 
           initialPosition={0.08} 
           crawlSpeed={200} 
           height={3} 
@@ -106,7 +112,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           showSpinner={false} 
           easing="ease" 
           speed={200} 
-          shadow="0 0 10px #2563eb,0 0 5px #2563eb"
+          shadow="0 0 10px #10b981,0 0 5px #10b981"
         />
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
           <AuthProvider>
@@ -116,6 +122,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                 {children}
               </HeaderCompactProvider>
               <Footer />
+              <MobileAppBanner />
             </NotificationProvider>
           </AuthProvider>
         </ThemeProvider>
