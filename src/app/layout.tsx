@@ -104,7 +104,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         className={`${geistSans.variable} ${geistMono.variable} antialiased bg-zinc-50 text-zinc-900 dark:bg-zinc-950 dark:text-white [overflow-anchor:none]`}
       >
         <NextTopLoader 
-          color="#10b981" 
+          color="#2563eb" 
           initialPosition={0.08} 
           crawlSpeed={200} 
           height={3} 
@@ -112,7 +112,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           showSpinner={false} 
           easing="ease" 
           speed={200} 
-          shadow="0 0 10px #10b981,0 0 5px #10b981"
+          shadow="0 0 10px #2563eb,0 0 5px #2563eb"
         />
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
           <AuthProvider>
