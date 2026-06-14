@@ -8,7 +8,7 @@ export function MobileAppBanner() {
   const [isVisible, setIsVisible] = useState(false);
   const [isAndroid, setIsAndroid] = useState(false);
   const [appInstalled, setAppInstalled] = useState(false);
-  const [ready, setReady] = useState(false); // 👈 New state to prevent flicker
+  const [ready, setReady] = useState(false); // state to prevent flicker
 
   useEffect(() => {
     const isDismissed = sessionStorage.getItem("app-banner-dismissed");
@@ -58,7 +58,7 @@ export function MobileAppBanner() {
   const targetAttr = appInstalled || isAndroid ? "_self" : "_blank";
 
   return (
-    <div className="fixed left-4 right-4 top-24 z-[100] flex items-center justify-between gap-4 rounded-md border border-zinc-200 bg-white/95 p-4 shadow-lg backdrop-blur-md transition-colors duration-300 animate-in fade-in slide-in-from-top-8 dark:border-zinc-800 dark:bg-zinc-950/95 md:left-6 md:right-auto md:w-auto md:min-w-[380px] md:shadow-xl">
+    <div className="fixed bottom-0 left-0 right-0 z-[100] flex items-center justify-between gap-4 border-t border-zinc-200 bg-white/95 p-4 shadow-[0_-4px_15px_-5px_rgba(0,0,0,0.05)] backdrop-blur-md transition-colors duration-300 animate-in slide-in-from-bottom-full dark:border-zinc-800 dark:bg-zinc-950/95 md:bottom-6 md:left-auto md:right-6 md:w-auto md:min-w-[380px] md:rounded-md md:border md:p-5 md:shadow-xl">
       <div className="flex items-center gap-3">
         <button 
           onClick={handleDismiss} 
