@@ -8,23 +8,20 @@ export function MobileAppBanner() {
   const [isVisible, setIsVisible] = useState(false);
   const [isAndroid, setIsAndroid] = useState(false);
   const [appInstalled, setAppInstalled] = useState(false);
+  const [ready, setReady] = useState(false); // 👈 New state to prevent flicker
 
   useEffect(() => {
-    // 1. Check if user already dismissed the banner
     const isDismissed = sessionStorage.getItem("app-banner-dismissed");
-    
-    // We want to show this to EVERYONE (Desktop & Mobile) who hasn't dismissed it
-    if (!isDismissed) {
-      setIsVisible(true);
-    }
-
-    // 2. Detect if they are specifically on an Android phone
     const userAgent = navigator.userAgent || navigator.vendor || (window as any).opera;
-    if (/android/i.test(userAgent)) {
-      setIsAndroid(true);
-    }
+    
+    // 1. Check device types
+    const isIOSMobile = /iPhone|iPad|iPod/i.test(userAgent);
+    const android = /android/i.test(userAgent);
+    
+    if (android) setIsAndroid(true);
+    if (!isDismissed && !isIOSMobile) setIsVisible(true);
 
-    // 3. Check if the app is actively installed on their device
+    // 2. Check installation status and set Ready state
     if ('getInstalledRelatedApps' in navigator) {
       (navigator as any).getInstalledRelatedApps()
         .then((apps: any[]) => {
@@ -33,12 +30,19 @@ export function MobileAppBanner() {
           }
         })
         .catch(() => {
-          // Fail silently if the browser blocks the check
+          // Fail silently
+        })
+        .finally(() => {
+          setReady(true); // 👈 Tell the UI it's safe to render
         });
+    } else {
+      // If browser doesn't support the API, mark as ready immediately
+      setReady(true);
     }
   }, []);
 
-  if (!isVisible) return null;
+  // Guard: Don't render anything until we know the installation status
+  if (!isVisible || !ready) return null;
 
   const handleDismiss = () => {
     sessionStorage.setItem("app-banner-dismissed", "true");
@@ -47,20 +51,14 @@ export function MobileAppBanner() {
 
   // ── Smart Link Logic ──
   const playStoreUrl = "https://play.google.com/store/apps/details?id=com.rentoraug.app";
-  
-  // Android Intent: Tries to open the app. If missing, automatically falls back to Play Store app natively.
   const androidIntentUrl = `intent://rentorahouselink.com/#Intent;scheme=https;package=com.rentoraug.app;S.browser_fallback_url=${encodeURIComponent(playStoreUrl)};end`;
 
-  // Use the native intent if the app is installed OR if they are on an Android device (to trigger Play Store app natively).
-  // Otherwise (like on a MacBook), just link to the Play Store website.
   const linkHref = appInstalled || isAndroid ? androidIntentUrl : playStoreUrl;
-  
-  // Dynamic button text and targets based on installation status
   const buttonText = appInstalled ? "Open App" : "Download";
   const targetAttr = appInstalled || isAndroid ? "_self" : "_blank";
 
   return (
-    <div className="fixed bottom-0 left-0 right-0 z-[100] flex items-center justify-between gap-4 border-t border-zinc-200 bg-white/95 p-4 backdrop-blur-md shadow-[0_-4px_15px_-5px_rgba(0,0,0,0.05)] transition-colors duration-300 dark:border-zinc-800 dark:bg-zinc-950/95 animate-in slide-in-from-bottom-full md:bottom-6 md:left-auto md:right-6 md:w-auto md:min-w-[380px] md:rounded-md md:border md:p-5 md:shadow-xl">
+    <div className="fixed left-4 right-4 top-24 z-[100] flex items-center justify-between gap-4 rounded-md border border-zinc-200 bg-white/95 p-4 shadow-lg backdrop-blur-md transition-colors duration-300 animate-in fade-in slide-in-from-top-8 dark:border-zinc-800 dark:bg-zinc-950/95 md:left-6 md:right-auto md:w-auto md:min-w-[380px] md:shadow-xl">
       <div className="flex items-center gap-3">
         <button 
           onClick={handleDismiss} 
@@ -70,7 +68,6 @@ export function MobileAppBanner() {
           <XMarkIcon className="h-5 w-5" strokeWidth={1.5} />
         </button>
         
-        {/* App Icon Container */}
         <div className="shrink-0 overflow-hidden rounded-md border border-zinc-200 bg-white p-1 shadow-sm dark:border-zinc-700">
           <Image
             src="/logo_no_bg.png"

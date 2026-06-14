@@ -32,6 +32,7 @@ export const metadata: Metadata = {
   metadataBase: new URL(
     process.env.NEXT_PUBLIC_APP_URL || "https://rentorahouselink.com"
   ),
+  manifest: "/manifest.json",
   title: {
     default: "Rentora Houselink Uganda | Exclusive Real Estate & Rentals",
     template: "%s | Rentora Houselink Uganda",
