@@ -56,18 +56,18 @@ export function Footer() {
               </span>
             </Link>
 
-            <p className="mt-6 text-sm leading-relaxed max-w-sm">
+            <p className="mt-6 text-base leading-relaxed max-w-sm">
               Uganda&apos;s trusted platform for finding verified rental
               properties and homes for sale. Transparent pricing, real photos,
               direct landlord contact.
             </p>
 
             <div className="mt-8 space-y-4">
-              <div className="flex items-center gap-3 text-sm">
+              <div className="flex items-center gap-3 text-base">
                 <MapPinIcon className="h-5 w-5 shrink-0 text-zinc-400 dark:text-zinc-500" strokeWidth={1.5} />
                 Kampala, Uganda
               </div>
-              <div className="flex items-center gap-3 text-sm">
+              <div className="flex items-center gap-3 text-base">
                 <EnvelopeIcon className="h-5 w-5 shrink-0 text-zinc-400 dark:text-zinc-500" strokeWidth={1.5} />
                 <a
                   href="mailto:rentorahouselink@gmail.com"
@@ -80,7 +80,7 @@ export function Footer() {
 
             {/* Social Links - Always colored */}
             <div className="mt-8">
-              <p className="text-xs font-bold uppercase tracking-widest text-zinc-900 dark:text-zinc-300 mb-4">
+              <p className="text-sm font-bold uppercase tracking-widest text-zinc-900 dark:text-zinc-300 mb-4">
                 Follow us
               </p>
               <div className="flex items-center gap-2.5">
@@ -110,7 +110,7 @@ export function Footer() {
 
           {/* Explore */}
           <div className="lg:col-span-2">
-            <h3 className="text-xs font-bold uppercase tracking-widest text-zinc-900 dark:text-zinc-300 mb-6">
+            <h3 className="text-sm font-bold uppercase tracking-widest text-zinc-900 dark:text-zinc-300 mb-6">
               Explore
             </h3>
             <ul className="space-y-4">
@@ -118,7 +118,7 @@ export function Footer() {
                 <li key={link.label}>
                   <Link
                     href={link.href}
-                    className="text-sm transition-colors hover:text-emerald-600 dark:hover:text-emerald-400"
+                    className="text-base transition-colors hover:text-emerald-600 dark:hover:text-emerald-400"
                   >
                     {link.label}
                   </Link>
@@ -129,7 +129,7 @@ export function Footer() {
 
           {/* Company */}
           <div className="lg:col-span-2">
-            <h3 className="text-xs font-bold uppercase tracking-widest text-zinc-900 dark:text-zinc-300 mb-6">
+            <h3 className="text-sm font-bold uppercase tracking-widest text-zinc-900 dark:text-zinc-300 mb-6">
               Company
             </h3>
             <ul className="space-y-4">
@@ -137,7 +137,7 @@ export function Footer() {
                 <li key={link.label}>
                   <Link
                     href={link.href}
-                    className="text-sm transition-colors hover:text-emerald-600 dark:hover:text-emerald-400"
+                    className="text-base transition-colors hover:text-emerald-600 dark:hover:text-emerald-400"
                   >
                     {link.label}
                   </Link>
@@ -148,10 +148,10 @@ export function Footer() {
 
           {/* Mobile App */}
           <div className="lg:col-span-3">
-            <h3 className="text-xs font-bold uppercase tracking-widest text-zinc-900 dark:text-zinc-300 mb-6">
+            <h3 className="text-sm font-bold uppercase tracking-widest text-zinc-900 dark:text-zinc-300 mb-6">
               Mobile App
             </h3>
-            <p className="text-sm leading-relaxed mb-6">
+            <p className="text-base leading-relaxed mb-6">
               Browse and save properties on the go with the native application.
             </p>
             <div className="space-y-3">
@@ -161,8 +161,8 @@ export function Footer() {
               >
                 <AppleIcon className="h-6 w-6 text-zinc-400 transition-colors group-hover:text-emerald-600 dark:group-hover:text-white" />
                 <div>
-                  <p className="text-[9px] font-bold uppercase tracking-widest text-zinc-500">Download on the</p>
-                  <p className="text-sm font-semibold text-zinc-900 dark:text-white">App Store</p>
+                  <p className="text-[10px] font-bold uppercase tracking-widest text-zinc-500">Download on the</p>
+                  <p className="text-base font-semibold text-zinc-900 dark:text-white">App Store</p>
                 </div>
               </a>
 
@@ -172,8 +172,8 @@ export function Footer() {
               >
                 <PlayStoreIcon className="h-6 w-6 text-zinc-400 transition-colors group-hover:text-emerald-600 dark:group-hover:text-emerald-400" />
                 <div>
-                  <p className="text-[9px] font-bold uppercase tracking-widest text-zinc-500">Get it on</p>
-                  <p className="text-sm font-semibold text-zinc-900 dark:text-white">Google Play</p>
+                  <p className="text-[10px] font-bold uppercase tracking-widest text-zinc-500">Get it on</p>
+                  <p className="text-base font-semibold text-zinc-900 dark:text-white">Google Play</p>
                 </div>
               </a>
             </div>
@@ -181,7 +181,7 @@ export function Footer() {
         </div>
 
         {/* Bottom bar */}
-        <div className="flex flex-col items-center justify-between gap-6 border-t border-zinc-200 py-8 text-xs font-medium tracking-wide dark:border-zinc-800/50 sm:flex-row">
+        <div className="flex flex-col items-center justify-between gap-6 border-t border-zinc-200 py-8 text-sm font-medium tracking-wide dark:border-zinc-800/50 sm:flex-row">
           <p>&copy; {year} Rentora Houselink UG. All rights reserved.</p>
           <div className="flex gap-8">
             <Link href="/privacy" className="transition-colors hover:text-emerald-600 dark:hover:text-emerald-400">

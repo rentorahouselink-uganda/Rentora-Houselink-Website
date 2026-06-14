@@ -83,8 +83,8 @@ export default function ContactPageContent() {
         </Link>
 
         {/* Grid layout handles positioning:
-          - Mobile: Single column with `gap-y-16` spacing between Header -> Form -> Info
-          - Desktop: Explicit row/col starts bind them to their original 2-column look
+          - Mobile: Single column with `gap-y-16` spacing. Order follows DOM.
+          - Desktop: Explicit row/col starts bind them to their original positions.
         */}
         <div className="grid items-start gap-y-16 lg:grid-cols-12 lg:gap-x-24 lg:gap-y-0">
           
@@ -102,8 +102,22 @@ export default function ContactPageContent() {
             </p>
           </div>
 
-          {/* ── 2. Form / Success State (Rendered before Info for mobile layout) ── */}
-          <div className="lg:col-span-7 lg:col-start-6 lg:row-span-2 lg:row-start-1 lg:pl-12 xl:pl-24">
+          {/* ── 2. Resolution Center (Rendered BEFORE form on mobile, explicitly pushed to Row 3 on desktop) ── */}
+          <div className="max-w-md border-t border-zinc-200 pt-8 dark:border-zinc-800/50 lg:col-span-5 lg:col-start-1 lg:row-start-3 lg:mt-12">
+            <p className="mb-3 text-sm leading-relaxed text-zinc-500 dark:text-zinc-400">
+              Encountered a platform issue or a dispute with an agent?
+            </p>
+            <Link
+              href="/report"
+              className="inline-flex items-center gap-2 text-sm font-bold text-zinc-900 transition-colors hover:text-emerald-600 dark:text-white dark:hover:text-emerald-400"
+            >
+              Access our Resolution Center
+              <ArrowRightIcon className="h-4 w-4" />
+            </Link>
+          </div>
+
+          {/* ── 3. Form / Success State (Rendered AFTER Resolution Center on mobile, explicitly covers all rows on right side) ── */}
+          <div className="lg:col-span-7 lg:col-start-6 lg:row-span-3 lg:row-start-1 lg:pl-12 xl:pl-24">
             {sent ? (
               <div className="animate-in fade-in slide-in-from-bottom-4 flex min-h-[400px] flex-col justify-center duration-700">
                 <CheckCircleIcon
@@ -226,7 +240,7 @@ export default function ContactPageContent() {
             )}
           </div>
 
-          {/* ── 3. Contact Info (Email, Headquarters, Resolution Center) ── */}
+          {/* ── 4. Contact Info (Email, Headquarters - Rendered LAST on mobile, explicitly in Row 2 on desktop) ── */}
           <div className="space-y-12 lg:col-span-5 lg:col-start-1 lg:row-start-2">
             <div className="group">
               <h3 className="mb-3 text-xs font-bold uppercase tracking-widest text-zinc-400 dark:text-zinc-500">
@@ -249,19 +263,6 @@ export default function ContactPageContent() {
                 <MapPinIcon className="mt-1 h-6 w-6 shrink-0 text-zinc-400" />
                 <p className="max-w-[200px] leading-snug">{COMPANY_ADDRESS}</p>
               </div>
-            </div>
-
-            <div className="max-w-md border-t border-zinc-200 pt-8 dark:border-zinc-800/50">
-              <p className="mb-3 text-sm leading-relaxed text-zinc-500 dark:text-zinc-400">
-                Encountered a platform issue or a dispute with an agent?
-              </p>
-              <Link
-                href="/report"
-                className="inline-flex items-center gap-2 text-sm font-bold text-zinc-900 transition-colors hover:text-emerald-600 dark:text-white dark:hover:text-emerald-400"
-              >
-                Access our Resolution Center
-                <ArrowRightIcon className="h-4 w-4" />
-              </Link>
             </div>
           </div>
 
