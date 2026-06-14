@@ -74,7 +74,6 @@ export default function ContactPageContent() {
   return (
     <div className="min-h-screen bg-zinc-50 font-sans dark:bg-zinc-950 selection:bg-emerald-100 selection:text-emerald-900 dark:selection:bg-emerald-500/30 dark:selection:text-emerald-100">
       <main className="mx-auto max-w-7xl px-6 py-6 sm:px-12 lg:py-10">
-
         <Link
           href="/"
           className="group inline-flex items-center gap-3 text-sm font-medium tracking-wide text-zinc-500 hover:text-emerald-600 dark:text-zinc-400 dark:hover:text-emerald-400 transition-colors mb-5"
@@ -83,64 +82,28 @@ export default function ContactPageContent() {
           RETURN HOME
         </Link>
 
-        <div className="grid items-start gap-16 lg:grid-cols-12 lg:gap-24">
-
-          {/* ── Left Column: Typography & Info ── */}
-          <div className="lg:col-span-5">
+        {/* Grid layout handles positioning:
+          - Mobile: Single column with `gap-y-16` spacing between Header -> Form -> Info
+          - Desktop: Explicit row/col starts bind them to their original 2-column look
+        */}
+        <div className="grid items-start gap-y-16 lg:grid-cols-12 lg:gap-x-24 lg:gap-y-0">
+          
+          {/* ── 1. Typography (Title & Desc) ── */}
+          <div className="lg:col-span-5 lg:col-start-1 lg:row-start-1">
             <h1 className="mb-8 text-5xl font-light tracking-tight text-zinc-900 dark:text-white sm:text-6xl">
               Contact our{' '}
               <br className="hidden lg:block" />
               <span className="font-semibold">team.</span>
             </h1>
 
-            <p className="mb-12 max-w-md text-lg leading-relaxed text-zinc-500 dark:text-zinc-400">
+            <p className="max-w-md text-lg leading-relaxed text-zinc-500 dark:text-zinc-400 lg:mb-12">
               Whether you need to list new properties, request account changes,
               or have a general inquiry, our team is directly available to assist you.
             </p>
-
-            <div className="space-y-12">
-
-              <div className="group">
-                <h3 className="mb-3 text-xs font-bold uppercase tracking-widest text-zinc-400 dark:text-zinc-500">
-                  Direct Inquiries
-                </h3>
-                <a
-                  href={`mailto:${CONTACT_EMAIL}`}
-                  className="flex items-center gap-4 text-xl font-medium text-zinc-900 transition-colors hover:text-emerald-600 dark:text-white dark:hover:text-emerald-400"
-                >
-                  <EnvelopeIcon className="h-6 w-6 text-zinc-400 transition-colors group-hover:text-emerald-600 dark:group-hover:text-emerald-400" />
-                  {CONTACT_EMAIL}
-                </a>
-              </div>
-
-              <div>
-                <h3 className="mb-3 text-xs font-bold uppercase tracking-widest text-zinc-400 dark:text-zinc-500">
-                  Headquarters
-                </h3>
-                <div className="flex items-start gap-4 text-xl font-medium text-zinc-900 dark:text-white">
-                  <MapPinIcon className="mt-1 h-6 w-6 shrink-0 text-zinc-400" />
-                  <p className="max-w-[200px] leading-snug">{COMPANY_ADDRESS}</p>
-                </div>
-              </div>
-
-              <div className="max-w-md border-t border-zinc-200 pt-8 dark:border-zinc-800/50">
-                <p className="mb-3 text-sm leading-relaxed text-zinc-500 dark:text-zinc-400">
-                  Encountered a platform issue or a dispute with an agent?
-                </p>
-                <Link
-                  href="/report"
-                  className="inline-flex items-center gap-2 text-sm font-bold text-zinc-900 transition-colors hover:text-emerald-600 dark:text-white dark:hover:text-emerald-400"
-                >
-                  Access our Resolution Center
-                  <ArrowRightIcon className="h-4 w-4" />
-                </Link>
-              </div>
-
-            </div>
           </div>
 
-          {/* ── Right Column: Form / Success State ── */}
-          <div className="lg:col-span-7 lg:pl-12 xl:pl-24">
+          {/* ── 2. Form / Success State (Rendered before Info for mobile layout) ── */}
+          <div className="lg:col-span-7 lg:col-start-6 lg:row-span-2 lg:row-start-1 lg:pl-12 xl:pl-24">
             {sent ? (
               <div className="animate-in fade-in slide-in-from-bottom-4 flex min-h-[400px] flex-col justify-center duration-700">
                 <CheckCircleIcon
@@ -261,6 +224,45 @@ export default function ContactPageContent() {
                 </div>
               </form>
             )}
+          </div>
+
+          {/* ── 3. Contact Info (Email, Headquarters, Resolution Center) ── */}
+          <div className="space-y-12 lg:col-span-5 lg:col-start-1 lg:row-start-2">
+            <div className="group">
+              <h3 className="mb-3 text-xs font-bold uppercase tracking-widest text-zinc-400 dark:text-zinc-500">
+                Direct Inquiries
+              </h3>
+              <a
+                href={`mailto:${CONTACT_EMAIL}`}
+                className="flex items-center gap-4 text-xl font-medium text-zinc-900 transition-colors hover:text-emerald-600 dark:text-white dark:hover:text-emerald-400"
+              >
+                <EnvelopeIcon className="h-6 w-6 text-zinc-400 transition-colors group-hover:text-emerald-600 dark:group-hover:text-emerald-400" />
+                {CONTACT_EMAIL}
+              </a>
+            </div>
+
+            <div>
+              <h3 className="mb-3 text-xs font-bold uppercase tracking-widest text-zinc-400 dark:text-zinc-500">
+                Headquarters
+              </h3>
+              <div className="flex items-start gap-4 text-xl font-medium text-zinc-900 dark:text-white">
+                <MapPinIcon className="mt-1 h-6 w-6 shrink-0 text-zinc-400" />
+                <p className="max-w-[200px] leading-snug">{COMPANY_ADDRESS}</p>
+              </div>
+            </div>
+
+            <div className="max-w-md border-t border-zinc-200 pt-8 dark:border-zinc-800/50">
+              <p className="mb-3 text-sm leading-relaxed text-zinc-500 dark:text-zinc-400">
+                Encountered a platform issue or a dispute with an agent?
+              </p>
+              <Link
+                href="/report"
+                className="inline-flex items-center gap-2 text-sm font-bold text-zinc-900 transition-colors hover:text-emerald-600 dark:text-white dark:hover:text-emerald-400"
+              >
+                Access our Resolution Center
+                <ArrowRightIcon className="h-4 w-4" />
+              </Link>
+            </div>
           </div>
 
         </div>
