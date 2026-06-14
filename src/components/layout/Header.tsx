@@ -141,14 +141,14 @@ export function Header() {
                 className="h-10 w-10 object-contain dark:invert dark:brightness-0 transition-transform group-hover:scale-105"
                 priority
               />
-              <span className="text-2xl font-bold tracking-tight text-zinc-900 dark:text-white">
+              <span className="text-xl lg:text-2xl font-bold tracking-tight text-zinc-900 dark:text-white">
                 Rentora
                 <span className="font-medium text-emerald-600 dark:text-emerald-500 ml-1.5">Houselink UG</span>
               </span>
             </Link>
 
             {/* ── Desktop nav ── */}
-            <nav className="hidden md:flex items-center gap-2" aria-label="Main navigation">
+            <nav className="hidden lg:flex items-center gap-1" aria-label="Main navigation">
               {navLinks.map((link) => {
                 const isActive = pathname === link.href;
                 return (
@@ -156,7 +156,7 @@ export function Header() {
                     key={link.href}
                     href={link.href}
                     className={[
-                      "px-4 py-2 text-base tracking-wide transition-all duration-300 rounded-md",
+                      "px-3 py-2 text-base tracking-wide transition-all duration-300 rounded-md whitespace-nowrap",
                       isActive
                         ? "font-bold text-emerald-700 bg-emerald-50 dark:bg-emerald-500/10 dark:text-emerald-400"
                         : "font-medium text-zinc-500 hover:text-emerald-600 hover:bg-zinc-50 dark:text-zinc-400 dark:hover:text-emerald-400 dark:hover:bg-zinc-800/50",
@@ -169,7 +169,7 @@ export function Header() {
             </nav>
 
             {/* ── Desktop right side ── */}
-            <div className="hidden items-center gap-6 md:flex">
+            <div className="hidden items-center gap-6 lg:flex">
               <ThemeToggle />
 
               {isLoading ? (
@@ -197,7 +197,7 @@ export function Header() {
                       <span className="flex h-8 w-8 items-center justify-center rounded-md bg-emerald-600 text-[11px] font-bold tracking-widest text-white select-none shadow-sm shadow-emerald-600/20">
                         {getInitials(user.name)}
                       </span>
-                      <span className="hidden max-w-[120px] truncate lg:block font-semibold">
+                      <span className="hidden max-w-[120px] truncate xl:block font-semibold">
                         {user.name.split(" ")[0]}
                       </span>
                       <ChevronDownIcon
@@ -252,8 +252,8 @@ export function Header() {
               )}
             </div>
 
-            {/* ── Mobile: theme toggle + hamburger ── */}
-            <div className="flex items-center gap-4 md:hidden">
+            {/* ── Mobile: theme toggle + hamburger (shown below lg) ── */}
+            <div className="flex items-center gap-4 lg:hidden">
               <ThemeToggle />
               <button
                 type="button"
@@ -266,9 +266,9 @@ export function Header() {
             </div>
           </div>
 
-          {/* ── Mobile menu ── */}
+          {/* ── Mobile menu (shown below lg) ── */}
           {mobileOpen && (
-            <div className="border-t border-zinc-200 py-6 dark:border-zinc-800/50 md:hidden animate-in fade-in slide-in-from-top-4 duration-300">
+            <div className="border-t border-zinc-200 py-6 dark:border-zinc-800/50 lg:hidden animate-in fade-in slide-in-from-top-4 duration-300">
               <nav className="flex flex-col gap-2">
                 {navLinks.map((link) => {
                   const isActive = pathname === link.href;
@@ -277,7 +277,7 @@ export function Header() {
                       key={link.href}
                       href={link.href}
                       className={[
-                        "text-3xl px-4 py-3 rounded-md transition-colors",
+                        "text-xl px-4 py-3 rounded-md transition-colors",
                         isActive
                           ? "font-bold text-emerald-700 bg-emerald-50 dark:bg-emerald-500/10 dark:text-emerald-400"
                           : "font-light text-zinc-900 hover:bg-zinc-50 dark:text-white dark:hover:bg-zinc-800/50"

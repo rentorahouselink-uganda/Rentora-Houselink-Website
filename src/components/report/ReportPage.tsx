@@ -119,10 +119,10 @@ export function ReportPage({ propertyId, propertyTitle }: Props) {
 
   return (
     <div className="min-h-screen bg-zinc-50 dark:bg-zinc-950 font-sans selection:bg-emerald-100 selection:text-emerald-900 dark:selection:bg-emerald-500/30 dark:selection:text-emerald-100">
-      <div className="mx-auto max-w-4xl px-4 py-12 sm:px-6 lg:py-16">
+      <div className="mx-auto max-w-4xl px-4 py-6 sm:px-6 lg:py-6 lg:px-8">
         <Link 
           href={propertyId ? `/properties/${propertyId}` : "/explore"} 
-          className="group inline-flex items-center gap-3 text-sm font-medium tracking-wide text-zinc-500 hover:text-emerald-600 dark:text-zinc-400 dark:hover:text-emerald-400 transition-colors mb-12"
+          className="group inline-flex items-center gap-3 text-sm font-medium tracking-wide text-zinc-500 hover:text-emerald-600 dark:text-zinc-400 dark:hover:text-emerald-400 transition-colors mb-8"
         >
           <ChevronLeftIcon className="h-4 w-4 transition-transform group-hover:-translate-x-1" />
           {propertyId ? "BACK TO DETAIL" : "BACK"}

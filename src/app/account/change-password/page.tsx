@@ -89,12 +89,12 @@ export default function ChangePasswordPage() {
   const inputClassError = "w-full bg-transparent border-0 border-b border-red-400 dark:border-red-600 py-4 pl-0 pr-12 text-base text-zinc-900 dark:text-white outline-none transition-colors placeholder:text-zinc-400 focus:border-red-500 focus:ring-0 disabled:opacity-50 disabled:cursor-not-allowed rounded-none";
 
   return (
-    <main className="min-h-[calc(100vh-64px)] bg-zinc-50 dark:bg-zinc-950 py-12 lg:py-20 font-sans selection:bg-emerald-100 selection:text-emerald-900 dark:selection:bg-emerald-500/30 dark:selection:text-emerald-100">
+    <main className="min-h-[calc(100vh-64px)] bg-zinc-50 dark:bg-zinc-950 py-6 lg:py-20 font-sans selection:bg-emerald-100 selection:text-emerald-900 dark:selection:bg-emerald-500/30 dark:selection:text-emerald-100">
       <div className="mx-auto max-w-lg px-4 sm:px-6">
 
         <Link
           href="/account"
-          className="mb-12 inline-flex items-center gap-2 text-sm font-medium text-zinc-500 dark:text-zinc-400 hover:text-emerald-600 dark:hover:text-emerald-400 transition-colors"
+          className="mb-6 inline-flex items-center gap-2 text-sm font-medium text-zinc-500 dark:text-zinc-400 hover:text-emerald-600 dark:hover:text-emerald-400 transition-colors"
         >
           <ArrowLeftIcon className="h-4 w-4" />
           Back to account

@@ -73,11 +73,11 @@ export default function ContactPageContent() {
 
   return (
     <div className="min-h-screen bg-zinc-50 font-sans dark:bg-zinc-950 selection:bg-emerald-100 selection:text-emerald-900 dark:selection:bg-emerald-500/30 dark:selection:text-emerald-100">
-      <main className="mx-auto max-w-7xl px-6 py-16 sm:px-12 lg:py-10">
+      <main className="mx-auto max-w-7xl px-6 py-6 sm:px-12 lg:py-10">
 
         <Link
           href="/"
-          className="group mb-16 inline-flex items-center gap-3 text-sm font-medium tracking-wide text-zinc-500 transition-colors hover:text-emerald-600 dark:text-zinc-400 dark:hover:text-emerald-400 lg:mb-24"
+          className="group inline-flex items-center gap-3 text-sm font-medium tracking-wide text-zinc-500 hover:text-emerald-600 dark:text-zinc-400 dark:hover:text-emerald-400 transition-colors mb-5"
         >
           <ChevronLeftIcon className="h-4 w-4 transition-transform group-hover:-translate-x-1" />
           RETURN HOME

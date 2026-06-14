@@ -173,7 +173,7 @@ export function BookingForm({ property }: { property: Property }) {
     <div>
       <Link
         href={`/properties/${property.id}`}
-        className="group inline-flex items-center gap-3 text-sm font-medium tracking-wide text-zinc-500 hover:text-emerald-600 dark:text-zinc-400 dark:hover:text-emerald-400 transition-colors mb-12"
+        className="group inline-flex items-center gap-3 text-sm font-medium tracking-wide text-zinc-500 hover:text-emerald-600 dark:text-zinc-400 dark:hover:text-emerald-400 transition-colors mb-8"
       >
         <ChevronLeftIcon className="h-4 w-4 transition-transform group-hover:-translate-x-1" />
         Back to listing
