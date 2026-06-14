@@ -1,6 +1,9 @@
+"use client";
+
 import Link from "next/link";
 import Image from "next/image";
 import { EnvelopeIcon, MapPinIcon } from "@heroicons/react/24/outline";
+import { useTheme } from "next-themes";
 
 // ── Data ─────────────────────────────────────────────────────────────
 const exploreLinks = [
@@ -21,7 +24,7 @@ const companyLinks = [
 
 const socialLinks = [
   { label: "Facebook", href: "https://www.facebook.com/share/18dvDnbdYw/", Icon: FacebookIcon, color: "#1877F2" },
-  { label: "X", href: "https://x.com/rentoraUganda", Icon: XIcon, color: "#000000" },
+  { label: "X", href: "https://x.com/rentoraUganda", Icon: XIcon, color: "#000000", darkColor: "#FFFFFF" },
   { label: "Instagram", href: "https://www.instagram.com/rentorahouselink?utm_source=qr&igsh=dGE5MGJiZGIzemZr", Icon: InstagramIcon, color: "#E1306C" },
   { label: "TikTok", href: "https://www.tiktok.com/@rentorahouselink?_r=1&_t=ZS-97BKTzA0eoO", Icon: TikTokIcon, color: "#FF0050" },
   { label: "LinkedIn", href: "http://www.linkedin.com/in/rentorahouselinkuganda-rentorahouselink-uganda-97534440b", Icon: LinkedInIcon, color: "#0A66C2" },
@@ -30,6 +33,7 @@ const socialLinks = [
 // ── Main Component ───────────────────────────────────────────────────
 export function Footer() {
   const year = new Date().getFullYear();
+  const { resolvedTheme } = useTheme();
 
   return (
     <footer className="border-t border-zinc-200 bg-white text-zinc-600 transition-colors duration-300 dark:border-zinc-800 dark:bg-zinc-950 dark:text-zinc-400">
@@ -80,21 +84,26 @@ export function Footer() {
                 Follow us
               </p>
               <div className="flex items-center gap-2.5">
-                {socialLinks.map(({ label, href, Icon, color }) => (
-                  <a
-                    key={label}
-                    href={href}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    aria-label={`Rentora Houselink on ${label}`}
-                    className="flex h-9 w-9 items-center justify-center rounded-md border border-zinc-200 dark:border-zinc-800 transition-all hover:border-zinc-300 dark:hover:border-zinc-700 hover:shadow-md"
-                  >
-                    <Icon 
-                      className="h-4 w-4 transition-transform hover:scale-110" 
-                      style={{ color }}
-                    />
-                  </a>
-                ))}
+                {socialLinks.map(({ label, href, Icon, color, darkColor }) => {
+                  const isDarkMode = resolvedTheme === "dark";
+                  const iconColor = (label === "X" && darkColor && isDarkMode) ? darkColor : color;
+
+                  return (
+                    <a
+                      key={label}
+                      href={href}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      aria-label={`Rentora Houselink on ${label}`}
+                      className="flex h-9 w-9 items-center justify-center rounded-md border border-zinc-200 dark:border-zinc-800 transition-all hover:border-zinc-300 dark:hover:border-zinc-700 hover:shadow-md"
+                    >
+                      <Icon
+                        className="h-4 w-4 transition-transform hover:scale-110"
+                        style={{ color: iconColor }}
+                      />
+                    </a>
+                  );
+                })}
               </div>
             </div>
           </div>
