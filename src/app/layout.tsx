@@ -70,7 +70,7 @@ export const metadata: Metadata = {
     type: "website",
     images: [
       {
-        url: "/og-image.jpg", 
+        url: "/og-image.jpg",
         width: 1200,
         height: 630,
         alt: "Rentora Houselink Uganda - Real Estate Platform",
@@ -97,22 +97,39 @@ export const metadata: Metadata = {
   },
 };
 
+// ── JSON-LD STRUCTURED DATA ──────────────────────────────────────────────────
+// Tells Google the official site name to display in search results
+// instead of falling back to the domain (rentorahouselink.com)
+const websiteJsonLd = {
+  "@context": "https://schema.org",
+  "@type": "WebSite",
+  name: "Rentora Houselink Uganda",
+  alternateName: "Rentora Houselink",
+  url: "https://rentorahouselink.com",
+};
+
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body 
-        suppressHydrationWarning 
+      <body
+        suppressHydrationWarning
         className={`${geistSans.variable} ${geistMono.variable} antialiased bg-zinc-50 text-zinc-900 dark:bg-zinc-950 dark:text-white [overflow-anchor:none]`}
       >
-        <NextTopLoader 
-          color="#2563eb" 
-          initialPosition={0.08} 
-          crawlSpeed={200} 
-          height={3} 
-          crawl={true} 
-          showSpinner={false} 
-          easing="ease" 
-          speed={200} 
+        {/* JSON-LD: WebSite schema — fixes Google showing domain instead of brand name */}
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(websiteJsonLd) }}
+        />
+
+        <NextTopLoader
+          color="#2563eb"
+          initialPosition={0.08}
+          crawlSpeed={200}
+          height={3}
+          crawl={true}
+          showSpinner={false}
+          easing="ease"
+          speed={200}
           shadow="0 0 10px #2563eb,0 0 5px #2563eb"
         />
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
