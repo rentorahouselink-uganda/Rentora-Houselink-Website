@@ -5,6 +5,7 @@ import Image from "next/image";
 import { EnvelopeIcon, MapPinIcon } from "@heroicons/react/24/outline";
 import { useTheme } from "next-themes";
 import { useEffect, useState } from "react";
+import { ConfirmModal } from "@/components/shared/ConfirmModal"; // Added ConfirmModal import
 
 // ── Data ─────────────────────────────────────────────────────────────
 const exploreLinks = [
@@ -36,173 +37,209 @@ export function Footer() {
   const year = new Date().getFullYear();
   const { resolvedTheme } = useTheme();
   
-  // Use a mounted state to prevent hydration mismatches
+  // States
   const [mounted, setMounted] = useState(false);
+  const [isAndroid, setIsAndroid] = useState(false);
+  const [showIosModal, setShowIosModal] = useState(false);
 
   useEffect(() => {
     setMounted(true);
+    // Detect Android device for smart app linking
+    const userAgent = navigator.userAgent || navigator.vendor || (window as any).opera;
+    if (/android/i.test(userAgent)) {
+      setIsAndroid(true);
+    }
   }, []);
 
+  // ── Smart Link Logic for Android ──
+  const playStoreUrl = "https://play.google.com/store/apps/details?id=com.rentoraug.app";
+  const androidIntentUrl = `intent://rentorahouselink.com/#Intent;scheme=https;package=com.rentoraug.app;S.browser_fallback_url=${encodeURIComponent(playStoreUrl)};end`;
+  const playStoreHref = isAndroid ? androidIntentUrl : playStoreUrl;
+
+  const handleIosClick = (e: React.MouseEvent) => {
+    e.preventDefault();
+    setShowIosModal(true);
+  };
+
   return (
-    <footer className="border-t border-zinc-200 bg-white text-zinc-600 transition-colors duration-300 dark:border-zinc-800 dark:bg-zinc-950 dark:text-zinc-400">
-      <div className="mx-auto max-w-7xl px-6 sm:px-12">
-        {/* Main grid */}
-        <div className="grid gap-16 py-20 lg:py-24 sm:grid-cols-2 lg:grid-cols-12">
-          {/* Brand */}
-          <div className="sm:col-span-2 lg:col-span-5">
-            <Link href="/" className="inline-flex items-center gap-3 group">
-              <Image
-                src="/logo_no_bg.png"
-                alt="Rentora Houselink logo"
-                width={40}
-                height={40}
-                className="h-10 w-10 object-contain dark:invert dark:brightness-0 transition-transform group-hover:scale-105"
-              />
-              <span className="text-2xl font-bold tracking-tight text-zinc-900 dark:text-white">
-                Rentora
-                <span className="font-medium text-emerald-600 dark:text-emerald-500 ml-1.5">Houselink UG</span>
-              </span>
-            </Link>
+    <>
+      <ConfirmModal
+        isOpen={showIosModal}
+        onClose={() => setShowIosModal(false)}
+        onConfirm={() => setShowIosModal(false)}
+        title="iOS App Coming Soon!"
+        description="We're working hard behind the scenes to bring the Rentora Houselink experience to iPhone and iPad. Hang tight, it will be worth the wait! In the meantime, our website is fully optimized for your mobile browser."
+        confirmText="Got it"
+        isDanger={false}
+        icon={<AppleIcon className="h-6 w-6 text-zinc-900 dark:text-white" />}
+      />
 
-            <p className="mt-6 text-base leading-relaxed max-w-sm">
-              Uganda&apos;s trusted platform for finding verified rental
-              properties and homes for sale. Transparent pricing, real photos,
-              direct landlord contact.
-            </p>
+      <footer className="border-t border-zinc-200 bg-white text-zinc-600 transition-colors duration-300 dark:border-zinc-800 dark:bg-zinc-950 dark:text-zinc-400">
+        <div className="mx-auto max-w-7xl px-6 sm:px-12">
+          {/* Main grid */}
+          <div className="grid gap-16 py-20 lg:py-24 sm:grid-cols-2 lg:grid-cols-12">
+            {/* Brand */}
+            <div className="sm:col-span-2 lg:col-span-5">
+              <Link href="/" className="inline-flex items-center gap-3 group">
+                <Image
+                  src="/logo_no_bg.png"
+                  alt="Rentora Houselink logo"
+                  width={40}
+                  height={40}
+                  className="h-10 w-10 object-contain dark:invert dark:brightness-0 transition-transform group-hover:scale-105"
+                />
+                <span className="text-2xl font-bold tracking-tight text-zinc-900 dark:text-white">
+                  Rentora
+                  <span className="font-medium text-emerald-600 dark:text-emerald-500 ml-1.5">Houselink UG</span>
+                </span>
+              </Link>
 
-            <div className="mt-8 space-y-4">
-              <div className="flex items-center gap-3 text-base">
-                <MapPinIcon className="h-5 w-5 shrink-0 text-zinc-400 dark:text-zinc-500" strokeWidth={1.5} />
-                Kampala, Uganda
-              </div>
-              <div className="flex items-center gap-3 text-base">
-                <EnvelopeIcon className="h-5 w-5 shrink-0 text-zinc-400 dark:text-zinc-500" strokeWidth={1.5} />
-                <a
-                  href="mailto:rentorahouselink@gmail.com"
-                  className="transition-colors hover:text-emerald-600 dark:hover:text-emerald-400"
-                >
-                  rentorahouselink@gmail.com
-                </a>
-              </div>
-            </div>
-
-            {/* Social Links - Always colored */}
-            <div className="mt-8">
-              <p className="text-sm font-bold uppercase tracking-widest text-zinc-900 dark:text-zinc-300 mb-4">
-                Follow us
+              <p className="mt-6 text-base leading-relaxed max-w-sm">
+                Uganda&apos;s trusted platform for finding verified rental
+                properties and homes for sale. Transparent pricing, real photos,
+                direct landlord contact.
               </p>
-              <div className="flex items-center gap-2.5">
-                {socialLinks.map(({ label, href, Icon, color, darkColor }) => {
-                  // Only evaluate the theme color if the component has mounted on the client
-                  const isDarkMode = mounted && resolvedTheme === "dark";
-                  const iconColor = (label === "X" && darkColor && isDarkMode) ? darkColor : color;
 
-                  return (
-                    <a
-                      key={label}
-                      href={href}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      aria-label={`Rentora Houselink on ${label}`}
-                      className="flex h-9 w-9 items-center justify-center rounded-md border border-zinc-200 dark:border-zinc-800 transition-all hover:border-zinc-300 dark:hover:border-zinc-700 hover:shadow-md"
+              <div className="mt-8 space-y-4">
+                <div className="flex items-center gap-3 text-base">
+                  <MapPinIcon className="h-5 w-5 shrink-0 text-zinc-400 dark:text-zinc-500" strokeWidth={1.5} />
+                  Kampala, Uganda
+                </div>
+                <div className="flex items-center gap-3 text-base">
+                  <EnvelopeIcon className="h-5 w-5 shrink-0 text-zinc-400 dark:text-zinc-500" strokeWidth={1.5} />
+                  <a
+                    href="mailto:rentorahouselink@gmail.com"
+                    className="transition-colors hover:text-emerald-600 dark:hover:text-emerald-400"
+                  >
+                    rentorahouselink@gmail.com
+                  </a>
+                </div>
+              </div>
+
+              {/* Social Links - Always colored */}
+              <div className="mt-8">
+                <p className="text-sm font-bold uppercase tracking-widest text-zinc-900 dark:text-zinc-300 mb-4">
+                  Follow us
+                </p>
+                <div className="flex items-center gap-2.5">
+                  {socialLinks.map(({ label, href, Icon, color, darkColor }) => {
+                    const isDarkMode = mounted && resolvedTheme === "dark";
+                    const iconColor = (label === "X" && darkColor && isDarkMode) ? darkColor : color;
+
+                    return (
+                      <a
+                        key={label}
+                        href={href}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        aria-label={`Rentora Houselink on ${label}`}
+                        className="flex h-9 w-9 items-center justify-center rounded-md border border-zinc-200 dark:border-zinc-800 transition-all hover:border-zinc-300 dark:hover:border-zinc-700 hover:shadow-md"
+                      >
+                        <Icon
+                          className="h-4 w-4 transition-transform hover:scale-110"
+                          style={{ color: iconColor }}
+                        />
+                      </a>
+                    );
+                  })}
+                </div>
+              </div>
+            </div>
+
+            {/* Explore */}
+            <div className="lg:col-span-2">
+              <h3 className="text-sm font-bold uppercase tracking-widest text-zinc-900 dark:text-zinc-300 mb-6">
+                Explore
+              </h3>
+              <ul className="space-y-4">
+                {exploreLinks.map((link) => (
+                  <li key={link.label}>
+                    <Link
+                      href={link.href}
+                      className="text-base transition-colors hover:text-emerald-600 dark:hover:text-emerald-400"
                     >
-                      <Icon
-                        className="h-4 w-4 transition-transform hover:scale-110"
-                        style={{ color: iconColor }}
-                      />
-                    </a>
-                  );
-                })}
+                      {link.label}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </div>
+
+            {/* Company */}
+            <div className="lg:col-span-2">
+              <h3 className="text-sm font-bold uppercase tracking-widest text-zinc-900 dark:text-zinc-300 mb-6">
+                Company
+              </h3>
+              <ul className="space-y-4">
+                {companyLinks.map((link) => (
+                  <li key={link.label}>
+                    <Link
+                      href={link.href}
+                      className="text-base transition-colors hover:text-emerald-600 dark:hover:text-emerald-400"
+                    >
+                      {link.label}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </div>
+
+            {/* Mobile App */}
+            <div className="lg:col-span-3">
+              <h3 className="text-sm font-bold uppercase tracking-widest text-zinc-900 dark:text-zinc-300 mb-6">
+                Mobile App
+              </h3>
+              <p className="text-base leading-relaxed mb-6">
+                Browse and save properties on the go with the native application.
+              </p>
+              <div className="space-y-3">
+                
+                {/* iOS Button (Triggers Modal) */}
+                <a
+                  href="#"
+                  onClick={handleIosClick}
+                  className="group flex items-center gap-4 rounded-md border border-zinc-200 bg-transparent px-5 py-3.5 transition-all hover:border-emerald-600 hover:bg-emerald-50 dark:border-zinc-800 dark:hover:border-emerald-500 dark:hover:bg-emerald-950/20 cursor-pointer"
+                >
+                  <AppleIcon className="h-6 w-6 text-zinc-400 transition-colors group-hover:text-emerald-600 dark:group-hover:text-white" />
+                  <div>
+                    <p className="text-[10px] font-bold uppercase tracking-widest text-zinc-500">Download on the</p>
+                    <p className="text-base font-semibold text-zinc-900 dark:text-white">App Store</p>
+                  </div>
+                </a>
+
+                {/* Android Button (Uses Smart Link) */}
+                <a
+                  href={playStoreHref}
+                  target={isAndroid ? "_self" : "_blank"}
+                  rel="noopener noreferrer"
+                  className="group flex items-center gap-4 rounded-md border border-zinc-200 bg-transparent px-5 py-3.5 transition-all hover:border-emerald-600 hover:bg-emerald-50 dark:border-zinc-800 dark:hover:border-emerald-500 dark:hover:bg-emerald-950/20"
+                >
+                  <PlayStoreIcon className="h-6 w-6 text-zinc-400 transition-colors group-hover:text-emerald-600 dark:group-hover:text-emerald-400" />
+                  <div>
+                    <p className="text-[10px] font-bold uppercase tracking-widest text-zinc-500">Get it on</p>
+                    <p className="text-base font-semibold text-zinc-900 dark:text-white">Google Play</p>
+                  </div>
+                </a>
+
               </div>
             </div>
           </div>
 
-          {/* Explore */}
-          <div className="lg:col-span-2">
-            <h3 className="text-sm font-bold uppercase tracking-widest text-zinc-900 dark:text-zinc-300 mb-6">
-              Explore
-            </h3>
-            <ul className="space-y-4">
-              {exploreLinks.map((link) => (
-                <li key={link.label}>
-                  <Link
-                    href={link.href}
-                    className="text-base transition-colors hover:text-emerald-600 dark:hover:text-emerald-400"
-                  >
-                    {link.label}
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </div>
-
-          {/* Company */}
-          <div className="lg:col-span-2">
-            <h3 className="text-sm font-bold uppercase tracking-widest text-zinc-900 dark:text-zinc-300 mb-6">
-              Company
-            </h3>
-            <ul className="space-y-4">
-              {companyLinks.map((link) => (
-                <li key={link.label}>
-                  <Link
-                    href={link.href}
-                    className="text-base transition-colors hover:text-emerald-600 dark:hover:text-emerald-400"
-                  >
-                    {link.label}
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </div>
-
-          {/* Mobile App */}
-          <div className="lg:col-span-3">
-            <h3 className="text-sm font-bold uppercase tracking-widest text-zinc-900 dark:text-zinc-300 mb-6">
-              Mobile App
-            </h3>
-            <p className="text-base leading-relaxed mb-6">
-              Browse and save properties on the go with the native application.
-            </p>
-            <div className="space-y-3">
-              <a
-                href="#"
-                className="group flex items-center gap-4 rounded-md border border-zinc-200 bg-transparent px-5 py-3.5 transition-all hover:border-emerald-600 hover:bg-emerald-50 dark:border-zinc-800 dark:hover:border-emerald-500 dark:hover:bg-emerald-950/20"
-              >
-                <AppleIcon className="h-6 w-6 text-zinc-400 transition-colors group-hover:text-emerald-600 dark:group-hover:text-white" />
-                <div>
-                  <p className="text-[10px] font-bold uppercase tracking-widest text-zinc-500">Download on the</p>
-                  <p className="text-base font-semibold text-zinc-900 dark:text-white">App Store</p>
-                </div>
-              </a>
-
-              <a
-                href="#"
-                className="group flex items-center gap-4 rounded-md border border-zinc-200 bg-transparent px-5 py-3.5 transition-all hover:border-emerald-600 hover:bg-emerald-50 dark:border-zinc-800 dark:hover:border-emerald-500 dark:hover:bg-emerald-950/20"
-              >
-                <PlayStoreIcon className="h-6 w-6 text-zinc-400 transition-colors group-hover:text-emerald-600 dark:group-hover:text-emerald-400" />
-                <div>
-                  <p className="text-[10px] font-bold uppercase tracking-widest text-zinc-500">Get it on</p>
-                  <p className="text-base font-semibold text-zinc-900 dark:text-white">Google Play</p>
-                </div>
-              </a>
+          {/* Bottom bar */}
+          <div className="flex flex-col items-center justify-between gap-6 border-t border-zinc-200 py-8 text-sm font-medium tracking-wide dark:border-zinc-800/50 sm:flex-row">
+            <p>&copy; {year} Rentora Houselink UG. All rights reserved.</p>
+            <div className="flex gap-8">
+              <Link href="/privacy" className="transition-colors hover:text-emerald-600 dark:hover:text-emerald-400">
+                Privacy Policy
+              </Link>
+              <Link href="/terms" className="transition-colors hover:text-emerald-600 dark:hover:text-emerald-400">
+                Terms of Service
+              </Link>
             </div>
           </div>
         </div>
-
-        {/* Bottom bar */}
-        <div className="flex flex-col items-center justify-between gap-6 border-t border-zinc-200 py-8 text-sm font-medium tracking-wide dark:border-zinc-800/50 sm:flex-row">
-          <p>&copy; {year} Rentora Houselink UG. All rights reserved.</p>
-          <div className="flex gap-8">
-            <Link href="/privacy" className="transition-colors hover:text-emerald-600 dark:hover:text-emerald-400">
-              Privacy Policy
-            </Link>
-            <Link href="/terms" className="transition-colors hover:text-emerald-600 dark:hover:text-emerald-400">
-              Terms of Service
-            </Link>
-          </div>
-        </div>
-      </div>
-    </footer>
+      </footer>
+    </>
   );
 }
 
